@@ -12,7 +12,7 @@ This script performs two dedicated empirical audits directly from raw FASTQ data
 1. Dual-Strand All-384-Target Alignment Audit (Deterministic sample of 5,000 non-dimer reads):
    Aligns reads against ALL 384 reference amplicons across BOTH forward and reverse-complement
    orientations (768 target alignments per read) to measure:
-   - Cross-target false positive alignment rate among cognate reads across both strands.
+   - Cross-target best-match alignment rate among cognate reads across both strands.
    - Target sequence capture rate among non-cognate reads across both strands.
    - Operational binary concordance between cognate-anchored alignment and exhaustive dual-strand all-target search.
 
@@ -252,7 +252,7 @@ def run_audits():
     print(f"  Total Cognate Reads: {total_cognate:,} ({total_cognate/tested_count*100:.2f}%)")
     print(f"    - Matched intended target (>=75%): {cognate_match_own:,} ({cognate_match_own/total_cognate*100:.2f}%)")
     print(f"    - Failed intended target (<75%):    {cognate_fail_own:,} ({cognate_fail_own/total_cognate*100:.2f}%)")
-    print(f"    - Matched a DIFFERENT target (>=75%): {cognate_match_different:,} (0.00% cross-target false positive rate)")
+    print(f"    - Matched a DIFFERENT target as best match (>=75%): {cognate_match_different:,} (0/2,203 cross-target best matches; secondary alignments not tracked)")
     print(f"  Total Non-Cognate Reads: {total_noncognate:,} ({total_noncognate/tested_count*100:.2f}%)")
     print(f"    - Matched ANY target on either strand (>=75%): {noncognate_match_any:,} ({noncognate_match_any/total_noncognate*100:.2f}%)")
     print(f"    - Failed ALL 384 targets on both strands (<75%): {noncognate_fail_all:,} ({noncognate_fail_all/total_noncognate*100:.2f}%)")
@@ -428,7 +428,7 @@ def run_audits():
                 "discordance_pct": round(discordance, 2),
                 "cognate_failed_own_and_failed_all_targets": cognate_fail_own_all_fail,
                 "cognate_failed_own_and_passed_any_target": cognate_fail_own_all_pass,
-                "explanation": "All 10 cognate reads that failed alignment to their assigned target due to low quality also failed alignment against all 384 reference amplicons on both strands. Under both methods, they are classified as off-target (nonspecific), placing them in the both_offtarget cell (2,671 non-cognates + 10 cognates = 2,681 reads), establishing a verified per-read binary concordance of 97.48% (4,874 / 5,000)."
+                "explanation": "All 10 cognate reads that failed the 75% alignment threshold against their assigned target also failed alignment against all 384 reference amplicons on both strands. Under both methods, they are classified as off-target (nonspecific), placing them in the both_offtarget cell (2,671 non-cognates + 10 cognates = 2,681 reads), establishing a verified per-read binary concordance of 97.48% (4,874 / 5,000)."
             },
             "binary_agreement_reads": total_concordant,
             "binary_discordant_reads": total_discordant,

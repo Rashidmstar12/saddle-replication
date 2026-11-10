@@ -607,22 +607,25 @@ Insights}\label{biological-and-methodological-insights}
   assigned target amplicon. To test whether this cognate anchoring
   introduces classification bias compared to an exhaustive search, we
   developed an independent empirical audit script
-  (\texttt{code/audit\_alignment\_and\_indels.py}) and recorded full
-  per-read results in \texttt{data/alignment\_and\_indel\_audit.json}.
-  Testing an initial deterministic sample of the first 5,000 qualifying
-  non-dimer reads from Sample E19 against all 384 reference amplicons in
-  both forward and reverse-complement orientations (768 target
-  alignments per read) partitions the sample into:
+  (\texttt{code/audit\_alignment\_and\_indels.py}) and recorded summary
+  confusion statistics, aggregate partition counts, and all 615
+  recovered indel CIGAR records in
+  \texttt{data/alignment\_and\_indel\_audit.json}. Testing an initial
+  deterministic sample of the first 5,000 qualifying non-dimer reads
+  from Sample E19 against all 384 reference amplicons in both forward
+  and reverse-complement orientations (768 target alignments per read)
+  partitions the sample into:
 
   \begin{itemize}
   \tightlist
   \item
     \emph{Cognate Reads (2,203 reads, 44.06\% of sample):} Exactly 2,193
     reads (99.55\% of cognates) aligned to their intended cognate target
-    (\(\ge 75\%\) identity) and 10 reads (0.45\%) failed due to low
-    sequence quality. Crucially, \textbf{0 reads (0.00\%)} aligned to a
-    different amplicon, demonstrating zero cross-target false positive
-    assignments across the 384 loci.
+    (\(\ge 75\%\) identity) and 10 reads (0.45\%) failed the 75\%
+    alignment threshold against their assigned target. Crucially,
+    \textbf{0 reads (0.00\%)} had a non-cognate amplicon as their
+    highest-identity alignment \(\ge 75\%\) (0/2,203 cross-target best
+    matches; secondary sub-threshold alignments were not logged).
   \item
     \emph{Non-Cognate Reads (2,797 reads, 55.94\% of sample):} Exactly
     2,671 reads (95.50\% of non-cognates) failed alignment against all
@@ -910,16 +913,18 @@ Benchmarking}\label{findings-from-supplementary-benchmarking}
     aligned directly against its assigned target amplicon from MOESM5. A
     separate dual-strand all-target audit across an initial
     deterministic sample of 5,000 classified reads (768 targets per
-    read) confirmed 0.00\% cross-target false positive alignment among
-    cognate reads and a minor 2.52\% target capture among non-cognate
-    reads, establishing 97.48\% operational binary concordance across an
-    exhaustive 2 \(\times\) 2 confusion matrix
-    (\([2,193 + 2,681] / 5,000\)). Crucially, this concordance metric
-    measures agreement specifically within this 5,000-read sample; it is
-    not derived from a full-dataset confusion matrix, should not be
-    extrapolated as proof of identical classification across all 3.94
-    million reads, and does not establish mathematical equivalence to
-    the original Bowtie2 amplicon mapping workflow.
+    read) confirmed 0 cross-target best matches among cognate reads
+    (0/2,203 best-scoring alignments \(\ge 75\%\) were non-cognate;
+    secondary sub-threshold alignments were not logged) and a minor
+    2.52\% target capture among non-cognate reads, establishing 97.48\%
+    operational binary concordance across an exhaustive 2 \(\times\) 2
+    confusion matrix (\([2,193 + 2,681] / 5,000\)). Crucially, this
+    concordance metric measures agreement specifically within this
+    5,000-read sample; it is not derived from a full-dataset confusion
+    matrix, should not be extrapolated as proof of identical
+    classification across all 3.94 million reads, and does not establish
+    mathematical equivalence to the original Bowtie2 amplicon mapping
+    workflow.
   \end{itemize}
 \item
   \textbf{Preprocessing Denominators:} As detailed in Section 3,

@@ -38,7 +38,7 @@
       "discordance_pct": 2.52,
       "cognate_failed_own_and_failed_all_targets": 10,
       "cognate_failed_own_and_passed_any_target": 0,
-      "explanation": "All 10 cognate reads that failed alignment to their assigned target due to low quality also failed alignment against all 384 reference amplicons on both strands. Under both methods, they are classified as off-target (nonspecific), placing them in the both_offtarget cell (2,671 non-cognates + 10 cognates = 2,681 reads), establishing a verified per-read binary concordance of 97.48% (4,874 / 5,000)."
+      "explanation": "All 10 cognate reads that failed the 75% alignment threshold against their assigned target also failed alignment against all 384 reference amplicons on both strands. Under both methods, they are classified as off-target (nonspecific), placing them in the both_offtarget cell (2,671 non-cognates + 10 cognates = 2,681 reads), establishing a verified per-read binary concordance of 97.48% (4,874 / 5,000)."
     },
     "binary_agreement_reads": 4874,
     "binary_discordant_reads": 126,

@@ -58,7 +58,7 @@ python code/reproduce_from_fastq.py --full
 - **Dataset:** SADDLE-designed 384-plex panel (Sample E19, Illumina MiniSeq 2 $\times$ 150 bp, 3,942,385 raw reads; Figshare: `10.6084/m9.figshare.16944154.v3`, CC BY 4.0).
 - **Denominator Reconciliation:**
   - **Derived Classified Read Denominator ($N = 2,860,664$, reconciling with published Figure 3f proportions):**
-    *(Note: The exact integer count of classified reads was not reported in Figure 3f; we report both the derived post-filter classified denominator and total raw library output).*
+    *(Note: The exact integer count of classified reads was not reported in Figure 3f by Xie et al. and remains unverified; we report both the derived post-filter classified denominator under our filtering criteria and the total raw library output, presenting agreement as approximate).*
     - Published Figure 3f: **~43% on-target**, **~56% nonspecific**, **~1% primer-dimers** (sum = 100%).
     - Method 1 (Primer Pairing): **43.86% on-target**, **55.27% nonspecific**, **0.87% primer-dimers** ($\Delta \le 0.86\%$, PASS).
     - Method 2 (Gapped Alignment $\ge 75\%$): **43.61% on-target**, **55.52% nonspecific**, **0.87% primer-dimers** ($\Delta \le 0.61\%$, PASS).
@@ -70,7 +70,7 @@ python code/reproduce_from_fastq.py --full
     - Excluded reads: 27.44% ($1,081,721$ reads: 19.07% adapter missing, 3.48% low QC/short, 4.90% primer unmatched).
 - **Empirical Alignment Concordance & Two-Method Confusion Matrix:**
   - Audited via `code/audit_alignment_and_indels.py` across an initial deterministic sample of the first 5,000 qualifying non-dimer reads from Sample E19 tested against all 384 reference amplicons in both forward and reverse-complement orientations (768 target alignments per read). The sample partitions into:
-    - 2,203 cognate reads: 2,193 match own target ($\ge 75\%$), 10 fail due to low sequence quality, and **0 match any different target (0.00% cross-target false positive rate)**.
+    - 2,203 cognate reads: 2,193 match own target ($\ge 75\%$), 10 fail the 75% alignment threshold against their assigned target, and **0 had a different amplicon as their best-scoring alignment $\ge 75\%$ (0/2,203 cross-target best matches; secondary sub-threshold alignments were not logged)**.
     - 2,797 non-cognate reads: 126 match target sequences on either strand (4.50% of non-cognates, 2.52% of total sample), while 2,671 fail all 384 targets on both strands (95.50% of non-cognates).
     - Arithmetic Check: $2,193 + 10 + 126 + 2,671 = 5,000$ (exact 100% group partition).
   - **Two-Method Confusion Matrix (Cognate-Anchored Method 2 vs Dual-Strand All-Target Search):**
@@ -80,7 +80,7 @@ python code/reproduce_from_fastq.py --full
     - Cognate ON / All-Target OFF: **0 reads** (0.00%; a read matching its assigned target cannot fail all-target search).
     - **Verified Per-Read Binary Concordance:** $(2,193 + 2,681) / 5,000 = \mathbf{97.48\%}$ (4,874 / 5,000 reads agree).
     - **Verified Per-Read Binary Discordance:** $126 / 5,000 = \mathbf{2.52\%}$.
-    - Crucially, this concordance is measured within the 5,000-read sample between cognate-anchored and all-target gapped alignment; it is not a full-dataset confusion matrix and does not claim mathematical equivalence to Bowtie2 reference amplicon mapping.
+    - Crucially, this concordance is measured within the 5,000-read sample between cognate-anchored and all-target gapped alignment; it is not a full-dataset confusion matrix and does not claim mathematical equivalence to Bowtie2 reference amplicon mapping. The JSON archive `data/alignment_and_indel_audit.json` records the summary 2x2 confusion matrix, aggregate partition counts, and all 615 per-read CIGAR alignment records of recovered indel reads.
 - **Quantitative Indel Analysis:**
   - CIGAR inspection across 615 audit reads recovered by gapped alignment confirms that **100.0% (615/615) contain indels** (7.80% 1-bp deletion, 0.33% 1-bp insertion, 91.87% multi-indel/stutters; **0.0% substitution-only**). Frameshift indels (e.g. `56=1D9=1X37=`) cause unaligned positional identity to drop to 64.1%, whereas gapped alignment preserves 98.1% identity. All 615 per-read CIGAR alignment records are permanently preserved without truncation in `data/alignment_and_indel_audit.json`. These records confirm that alignment gap operations account for the recovery of reads failing positional comparison, documenting the operational need for gapped alignment rather than proving the biological vs technical cause of each individual indel.
 - **Interaction Concentration:** 24,872 to 24,878 observed primer-dimer reads across 295,296 candidate primer pairings. Dimer formation is strongly heavy-tailed: only 1,172 pairs form dimers, and a single dominant interaction (`rp213` $\times$ `rp371`, 16,805 reads) accounts for **67.57%** of all dimer reads in the verified pair-level interaction table ($16,805 / 24,872$).
@@ -114,7 +114,7 @@ saddle-replication/
 │   ├── verify_read_accounting.py  # Mutually exclusive read partition audit
 │   └── verify_replication.py      # Standalone replication verifier (~1.5s runtime)
 └── data/
-    ├── alignment_and_indel_audit.json      # Empirical all-target concordance & 615 CIGAR output
+    ├── alignment_and_indel_audit.json      # Empirical all-target concordance (2x2 confusion matrix) & 615 CIGAR output
     ├── baseline_predictions_384.tsv        # 295,296 rows of candidate pairs & predictions
     ├── full_fastq_run_audit.log            # Execution audit log across all 3.94M raw FASTQ reads
     ├── phase0e_recalculated_metrics.json   # Full benchmark metric dictionary
@@ -129,7 +129,7 @@ saddle-replication/
 
 ## 4. Methodological Disclosures
 
-1. **Replication Scope and Framework:** This work is an independent, open-source **qualified partial replication** and approximate reanalysis of the empirical NGS validation from Xie et al. (2022). While Xie et al. openly provided their post-sequencing analysis workflow (`analysis_code.ipynb`, `Data_process.m`, `Dimer_Identify.m`) and Bowtie2 index files under CC BY 4.0, executing it requires commercial MATLAB and external Bowtie2 installations. In our lightweight, standalone Python implementation, Method 2 executes cognate-anchored semi-global gapped alignment (`edlib`) against the 384 intended target amplicons from MOESM5. Both methods independently confirm the published read proportions (~43% on-target, ~56% nonspecific, ~1% primer-dimer) within 0.86% absolute difference (Method 1 difference = +0.86%, Method 2 difference = +0.61%, both within a 1.0 percentage point tolerance), and dual-strand all-target testing within a 5,000-read audit sample confirms 97.48% operational binary concordance across a verified 2x2 confusion matrix without external dependencies.
+1. **Replication Scope and Framework:** This work is an independent, open-source **qualified partial replication** and approximate reanalysis of the empirical NGS validation from Xie et al. (2022). While Xie et al. openly provided their post-sequencing analysis workflow (`analysis_code.ipynb`, `Data_process.m`, `Dimer_Identify.m`) and Bowtie2 index files under CC BY 4.0, executing it requires commercial MATLAB and external Bowtie2 installations. In our lightweight, standalone Python implementation, Method 2 executes cognate-anchored semi-global gapped alignment (`edlib`) against the 384 intended target amplicons from MOESM5. Both methods independently confirm the published read proportions (~43% on-target, ~56% nonspecific, ~1% primer-dimer) within 0.86% absolute difference (Method 1 difference = +0.86%, Method 2 difference = +0.61%, both within a 1.0 percentage point tolerance), and dual-strand all-target testing within a 5,000-read audit sample confirms 97.48% operational binary concordance across a verified 2x2 confusion matrix (with zero cross-target best matches among cognate reads) without external dependencies.
 2. **Dual Evaluation: Primer Pairing vs. Genuine Gapped Alignment:** This replication provides both a turnkey primer-pairing heuristic (Method 1) and genuine gapped semi-global sequence alignment via `edlib` (Method 2), confirming that both methods replicate published read proportions (~43% on-target, ~56% nonspecific, ~1% primer-dimer) within 0.86% absolute difference (Method 1 difference = +0.86%, Method 2 difference = +0.61%, within a 1.0 percentage point tolerance).
 3. **Proprietary Algorithm Status:** SADDLE's simulated annealing primer selection software remains withheld under patent protection. Only the empirical NGS validation and heuristic scoring components are publicly replicable.
 4. **Distributional Characterization:** Primer-dimer formation is described as heavy-tailed and highly concentrated; no formal power-law distribution fit was conducted.

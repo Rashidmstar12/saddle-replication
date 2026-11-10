@@ -457,7 +457,7 @@ def run_verification(check_fastq: bool = False, full_fastq: bool = False) -> boo
             return False
 
         print(f"\n  All-384-Target Alignment Audit (Sample N={s_size:,}):")
-        print(f"    - Cognate reads: {c_own + c_fail:,} ({c_own:,} match intended target, {c_fail:,} fail, 0 cross-target false positives)")
+        print(f"    - Cognate reads: {c_own + c_fail:,} ({c_own:,} match intended target, {c_fail:,} fail the 75% alignment threshold, 0 cross-target best matches)")
         print(f"    - Non-cognate reads: {nc_any + nc_fail:,} ({nc_any:,} match target sequences, {nc_fail:,} fail all targets)")
         print(f"    - Arithmetic Check: {c_own} + {c_fail} + {nc_any} + {nc_fail} = {s_size} (exact 100% group partition)")
         print(f"    - Two-Method Confusion Matrix (Cognate-Anchored vs All-Target):")

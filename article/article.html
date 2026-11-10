@@ -783,8 +783,9 @@ Concordance:</strong> In the full FASTQ reconstruction pipeline (Method
 assigned target amplicon. To test whether this cognate anchoring
 introduces classification bias compared to an exhaustive search, we
 developed an independent empirical audit script
-(<code>code/audit_alignment_and_indels.py</code>) and recorded full
-per-read results in <code>data/alignment_and_indel_audit.json</code>.
+(<code>code/audit_alignment_and_indels.py</code>) and recorded summary
+confusion statistics, aggregate partition counts, and all 615 recovered
+indel CIGAR records in <code>data/alignment_and_indel_audit.json</code>.
 Testing an initial deterministic sample of the first 5,000 qualifying
 non-dimer reads from Sample E19 against all 384 reference amplicons in
 both forward and reverse-complement orientations (768 target alignments
@@ -793,9 +794,11 @@ per read) partitions the sample into:
 <li><em>Cognate Reads (2,203 reads, 44.06% of sample):</em> Exactly
 2,193 reads (99.55% of cognates) aligned to their intended cognate
 target (<span class="math inline"> ≥ 75%</span> identity) and 10 reads
-(0.45%) failed due to low sequence quality. Crucially, <strong>0 reads
-(0.00%)</strong> aligned to a different amplicon, demonstrating zero
-cross-target false positive assignments across the 384 loci.</li>
+(0.45%) failed the 75% alignment threshold against their assigned
+target. Crucially, <strong>0 reads (0.00%)</strong> had a non-cognate
+amplicon as their highest-identity alignment <span
+class="math inline"> ≥ 75%</span> (0/2,203 cross-target best matches;
+secondary sub-threshold alignments were not logged).</li>
 <li><em>Non-Cognate Reads (2,797 reads, 55.94% of sample):</em> Exactly
 2,671 reads (95.50% of non-cognates) failed alignment against all 384
 amplicons on both strands, while 126 reads (4.50% of non-cognates, 2.52%
@@ -1079,10 +1082,12 @@ alignment (<code>edlib</code>, Myers’ bit-vector algorithm) where each
 cognate-primer read is aligned directly against its assigned target
 amplicon from MOESM5. A separate dual-strand all-target audit across an
 initial deterministic sample of 5,000 classified reads (768 targets per
-read) confirmed 0.00% cross-target false positive alignment among
-cognate reads and a minor 2.52% target capture among non-cognate reads,
-establishing 97.48% operational binary concordance across an exhaustive
-2 <span class="math inline">×</span> 2 confusion matrix (<span
+read) confirmed 0 cross-target best matches among cognate reads (0/2,203
+best-scoring alignments <span class="math inline"> ≥ 75%</span> were
+non-cognate; secondary sub-threshold alignments were not logged) and a
+minor 2.52% target capture among non-cognate reads, establishing 97.48%
+operational binary concordance across an exhaustive 2 <span
+class="math inline">×</span> 2 confusion matrix (<span
 class="math inline">[2,193+2,681]/5, 000</span>). Crucially, this
 concordance metric measures agreement specifically within this
 5,000-read sample; it is not derived from a full-dataset confusion
