@@ -343,8 +343,8 @@ def run_benchmark():
         print(f"SKIPPED_MISSING_INPUT: External raw or generated inputs missing: {missing}")
         print("This baseline modeling script requires external supplementary spreadsheets and raw matrix.")
         print("To verify benchmark metrics from bundled artifacts without retraining, run:")
-        print("    python code/verify_package_predictions.py")
-        print("For raw data download instructions, see DOWNLOAD_INSTRUCTIONS.md.")
+        print("    python code/verify_replication.py")
+        print("For raw data download instructions, see README.md.")
         sys.exit(2)
 
     X_train, y_train = load_development_data()

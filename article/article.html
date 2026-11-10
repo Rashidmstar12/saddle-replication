@@ -289,21 +289,22 @@ SADDLE-designed 384-plex validation panel across 3,942,385 raw
 paired-end sequencing reads (Sample E19; Figure 3f). Using an
 independent, open-source Python reimplementation incorporating both
 primer-pairing classification (Method 1) and genuine gapped semi-global
-sequence alignment (Method 2 via <code>edlib</code>) against the 384
-reference amplicons, our pipeline classifies a derived post-filter
+sequence alignment against assigned target amplicons (Method 2 via
+<code>edlib</code>), our pipeline classifies a derived post-filter
 denominator of 2,860,664 reads into 43.61% to 43.86% on-target
 amplicons, 55.27% to 55.52% nonspecific products, and 0.87%
-primer-dimers (24,878 reads), quantitatively reproducing the published
-Figure 3f proportions (~43%, ~56%, ~1%) within 0.61% absolute
-difference. Evaluated over the full raw instrument library (<span
+primer-dimers (24,878 reads), approximately reproducing the published
+Figure 3f proportions (~43%, ~56%, ~1%) within 0.86% for Method 1 and
+0.61% for Method 2 (within a 1.0 percentage point scientific tolerance).
+Evaluated over the full raw instrument library (<span
 class="math inline"><em>N</em> = 3, 942, 385</span>), on-target
 amplicons represent 31.64% of sequencer output. We further corroborate
 the severe heavy-tailed concentration of primer-dimer formation across
 the 295,296 candidate primer pairings, where only 1,172 pairs (0.397%)
-exhibit non-zero dimerization and a single interaction
+exhibit non-zero dimerization and a single dominant interaction
 (<code>rp213</code> <span class="math inline">×</span>
-<code>rp371</code>) accounts for 67.55% of all dimer reads (16,805
-reads; 67.57% under the earlier 24,872 baseline partition). In a
+<code>rp371</code>) accounts for 67.57% of all dimer reads in the
+verified pair-level interaction matrix (16,805 / 24,872 reads). In a
 supplementary exploratory benchmark, we evaluate the predictive validity
 of the SADDLE Badness heuristic against nearest-neighbor thermodynamics
 and supervised machine learning models, documenting an Average Precision
@@ -353,7 +354,7 @@ designed by SADDLE (768 primers; Sample E19)</strong>. In <strong>Figure
 sequencing library of this 384-plex panel achieved high on-target
 specificity (~43%) and low primer-dimer formation (~1%), with the
 remaining reads (~56%) representing nonspecific background products
-aligning across the human genome via non-cognate primer pairs.</p>
+formed by non-cognate primer pairings.</p>
 <p>Despite the impact of SADDLE, computational reproducibility is
 constrained by two key factors: 1. <strong>Software Ecosystem and
 Proprietary Restrictions:</strong> While the original authors openly
@@ -417,8 +418,8 @@ authors openly deposited post-hoc analysis scripts
 (<code>analysis_code.ipynb</code>, <code>Data_process.m</code>,
 <code>Dimer_Identify.m</code>) and Bowtie2 reference indices on Figshare
 and GitHub under CC BY 4.0. The pipeline trims Illumina adapters,
-filters reads by Phred quality and length, aligns reads to reference
-amplicons using Bowtie2 <span class="citation"
+filters reads by Phred quality and length, aligns reads to intended
+reference amplicons using Bowtie2 <span class="citation"
 data-cites="langmead2012fast">(Langmead and Salzberg 2012)</span>,
 matches 5’ primer sequences via an 8-base hash lookup, and classifies
 reads with insert lengths strictly shorter than <span
@@ -611,14 +612,15 @@ evaluation methodologies and denominators.</p>
 proportions against published SADDLE 384-plex results (Sample E19,
 MiniSeq 2 <span class="math inline">×</span> 150 bp, Figure 3f). Method
 1 evaluates cognate primer pairing; Method 2 evaluates genuine gapped
-semi-global sequence alignment via <code>edlib</code> against intended
-reference amplicons. Percentages are presented on both the derived
-post-filter classified-read basis (<span
-class="math inline"><em>N</em> = 2, 860, 664</span>, which
-quantitatively reconciles with published Figure 3f proportions) and the
+semi-global sequence alignment via <code>edlib</code> against assigned
+cognate reference amplicons. Percentages are presented on both the
+derived post-filter classified-read basis (<span
+class="math inline"><em>N</em> = 2, 860, 664</span>, which yields
+proportions approximately reconciling with published Figure 3f) and the
 total raw sequencer output basis (<span
 class="math inline"><em>N</em> = 3, 942, 385</span>). The exact integer
-denominator was not published in Figure 3f.</caption>
+denominator was not published in Figure 3f and remains
+unverified.</caption>
 <colgroup>
 <col style="width: 14%" />
 <col style="width: 14%" />
@@ -708,22 +710,27 @@ Partitioning:</strong> In Figure 3f of Xie et al. <span class="citation"
 data-cites="xie2022designing">(2022)</span>, published proportions (~43%
 on-target, ~56% nonspecific, ~1% primer-dimers) sum to 100%, indicating
 that they represent percentages of post-filter classified reads rather
-than raw sequencer output. Because the authors did not explicitly report
-their exact integer classified read count in Figure 3f, we report two
-transparent denominators: (a) our pipeline’s derived classified
+than raw sequencer output. However, the fact that the original paper’s
+percentages total 100% does not prove that its authors used our specific
+post-filter denominator. Because Xie et al. did not explicitly report
+their exact integer classified read count in Figure 3f, their original
+internal denominator remains unverified. We report two transparent
+denominators: (a) our pipeline’s derived post-filter classified
 denominator (<span class="math inline"><em>N</em> = 2, 860, 664</span>
 read pairs), after filtering 27.44% unclassifiable reads (19.07% missing
 adapters, 3.48% low quality/short, 4.90% unmatched primers), which
-yields on-target (43.61%–43.86%), nonspecific (55.27%–55.52%), and
-primer-dimer (0.87%) fractions closely replicating published values
-within 0.61% absolute difference; and (b) the total raw sequencer output
-(<span class="math inline"><em>N</em> = 3, 942, 385</span> read pairs),
-across which on-target amplicons represent 31.64% to 31.82%, nonspecific
+yields on-target (43.61% for Method 2, 43.86% for Method 1), nonspecific
+(55.27%–55.52%), and primer-dimer (0.87%) fractions in approximate
+agreement with the published values within a 1.0 percentage point
+scientific tolerance (differences of +0.61% and +0.86% on-target); and
+(b) the total raw sequencer output (<span
+class="math inline"><em>N</em> = 3, 942, 385</span> read pairs), across
+which on-target amplicons represent 31.64% to 31.82%, nonspecific
 products represent 40.11% to 40.29%, primer-dimers represent 0.63%, and
-excluded reads represent 27.44%. We do not claim that Xie et al. used
-precisely 2,860,664 as their internal denominator, but rather document
-that this post-filter denominator quantitatively reconciles the
-published proportions. Both denominators are fully documented in
+excluded reads represent 27.44%. We do not present the original
+denominator as established, but rather report this derived post-filter
+denominator as an approximate operational alignment under our filtering
+criteria. Both denominators are fully documented in
 <code>data/reference_alignment_comparison.json</code> and the execution
 audit logs.</li>
 <li><strong>Invariance of Primer-Dimer Suppression:</strong> Under all
@@ -771,9 +778,11 @@ confirm the operational requirement for gapped alignment rather than
 proving the biological versus technical etiology of each individual
 indel.</li>
 <li><strong>Dual-Strand All-384-Target Alignment Audit and
-Concordance:</strong> To test whether restricting sequence alignment to
-the cognate target amplicon introduces classification bias, we developed
-an independent empirical audit script
+Concordance:</strong> In the full FASTQ reconstruction pipeline (Method
+2), each cognate-primer read is aligned semi-globally against its single
+assigned target amplicon. To test whether this cognate anchoring
+introduces classification bias compared to an exhaustive search, we
+developed an independent empirical audit script
 (<code>code/audit_alignment_and_indels.py</code>) and recorded full
 per-read results in <code>data/alignment_and_indel_audit.json</code>.
 Testing an initial deterministic sample of the first 5,000 qualifying
@@ -807,21 +816,23 @@ this concordance metric measures agreement specifically within this
 gapped alignment; it is not derived from a full-dataset confusion
 matrix, should not be extrapolated as proof of identical classification
 across all 3.94 million reads, and does not establish mathematical
-equivalence to the original Bowtie2 genome-wide classifier.</li>
+equivalence to the original Bowtie2 amplicon mapping workflow.</li>
 </ul></li>
 <li><strong>Replication Scope and Framework Framing:</strong> This study
 is an independent, open-source <strong>qualified partial
 replication</strong> and approximate reanalysis. In the original
 publication <span class="citation" data-cites="xie2022designing">(Xie et
-al. 2022)</span>, reads were aligned genome-wide using Bowtie2 in
-MATLAB. In our standalone Python implementation, Method 2 executes
-cognate-anchored semi-global gapped alignment (<code>edlib</code>,
-Myers’ bit-vector algorithm) against the 384 intended target amplicons
-from MOESM5. As established by the dual-strand 384-target audit, cognate
-anchoring achieves high operational concordance within the audit sample
-while requiring zero commercial software licenses or external binary
-aligner dependencies. SADDLE’s simulated annealing primer pool design
-software was withheld under patent protection and is not evaluated.</li>
+al. 2022)</span>, on-target reads were aligned to intended amplicon
+sequences using Bowtie2 in MATLAB. In our standalone Python
+implementation, Method 2 executes cognate-anchored semi-global gapped
+alignment (<code>edlib</code>, Myers’ bit-vector algorithm) where each
+cognate-primer read is aligned directly against its assigned target
+amplicon from MOESM5. As established by the dual-strand 384-target
+audit, cognate anchoring achieves high operational concordance within
+the audit sample while requiring zero commercial software licenses or
+external binary aligner dependencies. SADDLE’s simulated annealing
+primer pool design software was withheld under patent protection and is
+not evaluated.</li>
 </ol>
 <h2 id="extreme-heavy-tailed-interaction-concentration">Extreme
 Heavy-Tailed Interaction Concentration</h2>
@@ -837,10 +848,13 @@ dimer reads. - <strong>Dominant Interaction:</strong> A single primer
 pair—reverse primer 213 (<code>rp213</code>) <span
 class="math inline">×</span> reverse primer 371
 (<code>rp371</code>)—generated 16,805 dimer reads, accounting for
-<strong>67.57%</strong> of dimer reads under the archived 24,872-dimer
-baseline partition (<span class="math inline">16, 805/24, 872</span>)
-and <strong>67.55%</strong> under the 24,878-dimer prefix-matched rerun
-(<span class="math inline">16, 805/24, 878</span>).</p>
+<strong>67.57%</strong> of all observed dimer reads in the verified
+pair-level distribution (<span
+class="math inline">16, 805/24, 872</span> reads in
+<code>data/saddle_384_dimer_pairs.tsv</code>). In the current rerun
+partition (<span class="math inline">24, 878</span> total dimer reads),
+the 6 additional extreme-short reads across the library do not
+materially alter this extreme concentration (~67.6%).</p>
 <p>This reproduces the qualitative finding highlighted by Xie et al.:
 primer-dimer formation is not uniformly distributed across sequence
 space, but is characterized by an extreme, heavy-tailed concentration
@@ -1015,18 +1029,18 @@ and insert length threshold <span
 class="math inline"> ≥ <em>L</em><sub>1</sub> + <em>L</em><sub>2</sub> − 2</span>
 bp, yielding 43.86% on-target, 55.27% nonspecific, and 0.87%
 primer-dimers. This reproduces published Figure 3f (~43% / ~56% / ~1%)
-within 1.0% absolute tolerance.</li>
+within a 1.0% absolute tolerance (difference = +0.86% on-target).</li>
 <li><em>Method 2 (Genuine Gapped Sequence Alignment via edlib):</em>
 Performs Myers’ exact bit-vector semi-global sequence alignment against
-all 384 intended reference amplicons from Supplementary Data MOESM5
+the assigned cognate reference amplicon from Supplementary Data MOESM5
 <span class="citation" data-cites="xie2022designing">(Xie et al.
 2022)</span>. At <span class="math inline"> ≥ 75%</span> identity, reads
 partition into 43.61% on-target, 55.52% nonspecific, and 0.87%
-primer-dimers (<span class="math inline"><em>Δ</em> =  + 0.61%</span>).
-At <span class="math inline"> ≥ 80%</span> identity, reads partition
-into 42.76% on-target, 56.37% nonspecific, and 0.87% primer-dimers
-(<span class="math inline"><em>Δ</em> =  − 0.24%</span>). Both aligner
-cutoffs match published Figure 3f within scientific tolerance.</li>
+primer-dimers (difference = +0.61% on-target). At <span
+class="math inline"> ≥ 80%</span> identity, reads partition into 42.76%
+on-target, 56.37% nonspecific, and 0.87% primer-dimers (difference =
+-0.24% on-target). Both aligner cutoffs match published Figure 3f within
+scientific tolerance.</li>
 <li><em>Positional vs Gapped Alignment Insight:</em> Naive ungapped
 string matching artificially depresses on-target reads to 39.49% due to
 1–2 bp sequencing indels, whereas genuine gapped alignment robustly
@@ -1035,35 +1049,36 @@ tolerates sequencing variations. Crucially, primer-dimer quantification
 methods.</li>
 <li><em>Alignment Scope and Concordance:</em> In the original SADDLE
 publication <span class="citation" data-cites="xie2022designing">(Xie et
-al. 2022)</span>, reads were aligned genome-wide using Bowtie2 in
-MATLAB. In our lightweight, turnkey Python implementation, Method 2
-executes cognate-anchored semi-global gapped alignment
-(<code>edlib</code>, Myers’ bit-vector algorithm) against the 384
-intended target amplicons from MOESM5. A dual-strand all-target audit
-across an initial deterministic sample of 5,000 classified reads (768
-targets per read) confirmed 0.00% cross-target false positive alignment
-among cognate reads and a minor 2.52% target capture among non-cognate
-reads, establishing 97.48% operational concordance between
-cognate-anchored and all-target alignment. Crucially, this concordance
-metric measures agreement specifically within this 5,000-read sample; it
-is not derived from a full-dataset confusion matrix, should not be
-extrapolated as proof of identical classification across all 3.94
-million reads, and does not establish mathematical equivalence to the
-original Bowtie2 genome-wide classifier.</li>
+al. 2022)</span>, on-target reads were aligned to intended amplicon
+sequences using Bowtie2 in MATLAB. In our lightweight, turnkey Python
+implementation, Method 2 executes cognate-anchored semi-global gapped
+alignment (<code>edlib</code>, Myers’ bit-vector algorithm) where each
+cognate-primer read is aligned directly against its assigned target
+amplicon from MOESM5. A separate dual-strand all-target audit across an
+initial deterministic sample of 5,000 classified reads (768 targets per
+read) confirmed 0.00% cross-target false positive alignment among
+cognate reads and a minor 2.52% target capture among non-cognate reads,
+establishing 97.48% operational concordance between cognate-anchored and
+all-target alignment. Crucially, this concordance metric measures
+agreement specifically within this 5,000-read sample; it is not derived
+from a full-dataset confusion matrix, should not be extrapolated as
+proof of identical classification across all 3.94 million reads, and
+does not establish mathematical equivalence to the original Bowtie2
+amplicon mapping workflow.</li>
 </ul></li>
 <li><strong>Preprocessing Denominators:</strong> As detailed in Section
 3, published Figure 3f proportions (~43% / ~56% / ~1%) sum to 100%,
 indicating that they reflect a post-filter classified-read basis rather
-than total instrument throughput. Because Xie et al. did not explicitly
-report the exact integer count of classified reads in Figure 3f, we
-report both the derived classified denominator (<span
-class="math inline"><em>N</em> = 2, 860, 664</span>, which yields 43.61%
-/ 55.52% / 0.87%) and the total raw sequencer output (<span
+than total instrument throughput. However, because Xie et al. did not
+explicitly report the exact integer count of classified reads in Figure
+3f, their original internal denominator remains unverified. We report
+both the derived classified denominator under our filtering criteria
+(<span class="math inline"><em>N</em> = 2, 860, 664</span>, which yields
+43.61% / 55.52% / 0.87%) and the total raw sequencer output (<span
 class="math inline"><em>N</em> = 3, 942, 385</span>, which yields 31.64%
-/ 40.11% / 0.63% / 27.44% excluded). We do not claim that Xie et
-al. used precisely 2,860,664 as their internal denominator, but rather
-document that this derived post-filter denominator quantitatively
-reconciles the published proportions.</li>
+/ 40.11% / 0.63% / 27.44% excluded). We present the agreement with
+Figure 3f as approximate agreement under our specific filtering pipeline
+rather than an established identical execution.</li>
 <li><strong>Qualified Partial Replication Scope Limitation:</strong>
 This study constitutes an independent <strong>qualified partial
 replication</strong> focused strictly on the empirical validation read
@@ -1071,8 +1086,7 @@ partitions and heuristic scoring. SADDLE’s simulated annealing primer
 pool design software was withheld under patent protection and is not
 evaluated. In addition, the read classification is reimplemented in
 Python using cognate-anchored semi-global gapped alignment against
-target amplicons rather than whole-genome Bowtie2 mapping in
-MATLAB.</li>
+target amplicons rather than Bowtie2 amplicon mapping in MATLAB.</li>
 <li><strong>Distributional Terminology:</strong> We characterize the
 distribution of primer-dimer read counts as heavy-tailed and highly
 concentrated; no formal power-law distribution fit (e.g.,
@@ -1095,24 +1109,24 @@ On our pipeline’s derived post-filter classified denominator (<span
 class="math inline"><em>N</em> = 2, 860, 664</span>), reads partition
 under primer-pairing classification (Method 1) into 43.86% on-target,
 55.27% nonspecific, and 0.87% primer-dimers. Under genuine gapped
-sequence alignment against the 384 intended target amplicons (Method 2
-via <code>edlib</code>), reads partition into 43.61% on-target (<span
+sequence alignment against assigned target amplicons (Method 2 via
+<code>edlib</code>), reads partition into 43.61% on-target (<span
 class="math inline"> ≥ 75%</span> identity) or 42.76% on-target (<span
 class="math inline"> ≥ 80%</span> identity), 55.52% to 56.37%
-nonspecific, and 0.87% primer-dimers (24,878 reads), reproducing the
-published ~43% / ~56% / ~1% figures within 0.61% absolute difference.
-Evaluated across all 3,942,385 raw sequencing reads, on-target amplicons
-represent 31.64% of sequencer output. Under all criteria and
-denominators, primer-dimer formation is strictly suppressed (0.87% of
-classified reads, 0.63% of raw reads), confirming the core experimental
-claim of SADDLE. We also corroborated the severe heavy-tailed
-concentration of dimer reads, with a single primer pair generating
-67.55% of dimer reads under the current rerun partition (16,805 /
-24,878) and 67.57% under the earlier baseline partition (16,805 /
-24,872). Finally, our supplementary exploratory benchmark illustrated
-the predictive utility of the SADDLE Badness heuristic over standard
-thermodynamics while documenting the calibration characteristics of
-supervised models.</p>
+nonspecific, and 0.87% primer-dimers (24,878 reads), approximately
+reproducing the published ~43% / ~56% / ~1% figures within 0.61% to
+0.86% absolute difference. Evaluated across all 3,942,385 raw sequencing
+reads, on-target amplicons represent 31.64% of sequencer output. Under
+all criteria and denominators, primer-dimer formation is strictly
+suppressed (0.87% of classified reads, 0.63% of raw reads), confirming
+the core experimental claim of SADDLE. We also corroborated the severe
+heavy-tailed concentration of dimer reads, with a single primer pair
+generating 67.57% of all dimer reads in the verified pair-level
+distribution (16,805 / 24,872 reads in
+<code>data/saddle_384_dimer_pairs.tsv</code>). Finally, our
+supplementary exploratory benchmark illustrated the predictive utility
+of the SADDLE Badness heuristic over standard thermodynamics while
+documenting the calibration characteristics of supervised models.</p>
 <p>All data, scripts, and a standalone verification suite are available
 in the public replication repository.</p>
 <h1 id="code-and-data-availability">Code and Data Availability</h1>

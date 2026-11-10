@@ -50,8 +50,8 @@ def run_accounting():
         print(f"SKIPPED_MISSING_INPUT: External raw input files missing: {missing}")
         print("This read accounting script requires the 914 MB raw FASTQ files and supplementary spreadsheets.")
         print("To verify read accounting totals from bundled package artifacts, run:")
-        print("    python code/verify_package_predictions.py")
-        print("For raw data download instructions, see DOWNLOAD_INSTRUCTIONS.md.")
+        print("    python code/verify_replication.py")
+        print("For raw data download instructions, see README.md.")
         sys.exit(2)
 
     all_primers, prefix_map = load_primers()

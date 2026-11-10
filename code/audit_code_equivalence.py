@@ -138,7 +138,7 @@ def run_sample_reclassification_audit(sample_step=40):
     if not FASTQ_R1.exists() or not MOESM5_PATH.exists():
         print(f"SKIPPED_MISSING_INPUT: External raw input files not found ({FASTQ_R1.name} or {MOESM5_PATH.name}).")
         print("This script requires the 914 MB raw FASTQ files and supplementary spreadsheets.")
-        print("See reproducibility/DOWNLOAD_INSTRUCTIONS.md for download instructions.")
+        print("See README.md for raw data download instructions.")
         sys.exit(2)
 
     import openpyxl

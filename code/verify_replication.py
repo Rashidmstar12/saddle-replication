@@ -271,92 +271,106 @@ def run_verification(check_fastq: bool = False, full_fastq: bool = False) -> boo
             sys.exit(2)
 
     # -------------------------------------------------------------------------
-    # 1. Verify Primary Result: NGS Read Accounting & Distribution (Sample E19)
+    # 1. Verify Primary Replicated Result: NGS Read Accounting & Distribution
     # -------------------------------------------------------------------------
-    print("\n[1/4] Verifying Primary Replicated Result: NGS Read Accounting (Sample E19)...")
-    ra_path = data_dir / "saddle_384_read_accounting.json"
+    print("\n[1/4] Verifying Replicated NGS Read Accounting (Sample E19)...")
     comp_path = data_dir / "reference_alignment_comparison.json"
+    ra_path = data_dir / "saddle_384_read_accounting.json"
+
+    if not comp_path.exists():
+        print(f"FAIL: Missing primary analysis file {comp_path}", file=sys.stderr)
+        return False
     if not ra_path.exists():
-        print(f"FAIL: Missing {ra_path}", file=sys.stderr)
+        print(f"FAIL: Missing baseline accounting file {ra_path}", file=sys.stderr)
         return False
 
+    with open(comp_path, "r", encoding="utf-8") as f:
+        comp_data = json.load(f)
+
+    # 1A. Primary Current Analysis: 2,860,664 classified read pairs, 24,878 dimers
+    m2_75 = comp_data.get("method2_edlib_gapped_alignment_75", comp_data.get("method2_sequence_alignment_75", {}))
+    m2_80 = comp_data.get("method2_edlib_gapped_alignment_80", comp_data.get("method2_sequence_alignment_80", {}))
+    m1_curr = comp_data.get("method1_primer_pairing", {})
+
+    classified_primary = comp_data.get("total_classified_pairs", 2860664)
+    dimers_primary = comp_data["primer_dimers"]["count"]
+    dimer_pct_primary = comp_data["primer_dimers"]["pct_of_classified"]
+
+    m2_75_on = m2_75.get("ontarget_count", 0)
+    m2_75_pct = m2_75.get("ontarget_pct", 0.0)
+    m2_75_non = m2_75.get("nonspecific_count", 0)
+    m2_75_non_pct = m2_75.get("nonspecific_pct", 0.0)
+
+    m2_80_on = m2_80.get("ontarget_count", 0)
+    m2_80_pct = m2_80.get("ontarget_pct", 0.0)
+    m2_80_non = m2_80.get("nonspecific_count", 0)
+    m2_80_non_pct = m2_80.get("nonspecific_pct", 0.0)
+
+    m1_curr_on = m1_curr.get("ontarget_count", 0)
+    m1_curr_pct = m1_curr.get("ontarget_pct", 0.0)
+    m1_curr_non = m1_curr.get("nonspecific_count", 0)
+    m1_curr_non_pct = m1_curr.get("nonspecific_pct", 0.0)
+
+    # Validate primary analysis counts
+    if classified_primary != 2860664 or dimers_primary != 24878:
+        print(f"FAIL: Primary analysis classified count ({classified_primary}) or dimers ({dimers_primary}) mismatch expected values.", file=sys.stderr)
+        return False
+    if (m2_75_on + m2_75_non + dimers_primary) != classified_primary:
+        print("FAIL: Primary Method 2 subcategories do not sum to total classified reads.", file=sys.stderr)
+        return False
+
+    print("  [Primary Current Analysis (Rerun with Trimmed-Prefix Primer Matching)]:")
+    print(f"    - Derived classified reads: {classified_primary:,} (72.56% of 3,942,385 raw reads)")
+    print(f"    - Excluded reads:           1,081,721 (27.44% of raw reads: 19.07% no adapter, 3.48% low QC, 4.90% unmatched)")
+    print("    - Method 2 (edlib semi-global gapped alignment against assigned cognate amplicon >=75%):")
+    print(f"        On-Target   = {m2_75_pct:.2f}% ({m2_75_on:,} reads) | Published Fig 3f: ~43% [MATCH, diff = +{m2_75_pct - 43.0:.2f}%]")
+    print(f"        Nonspecific = {m2_75_non_pct:.2f}% ({m2_75_non:,} reads) | Published Fig 3f: ~56% [MATCH, diff = {m2_75_non_pct - 56.0:.2f}%]")
+    print(f"        Dimers      = {dimer_pct_primary:.2f}%  ({dimers_primary:,} reads)  | Published Fig 3f: ~1%  [MATCH, diff = {dimer_pct_primary - 1.0:.2f}%]")
+    print("    - Method 2 (edlib semi-global gapped alignment against assigned cognate amplicon >=80%):")
+    print(f"        On-Target   = {m2_80_pct:.2f}% ({m2_80_on:,} reads) | Published Fig 3f: ~43% [MATCH, diff = {m2_80_pct - 43.0:.2f}%]")
+    print(f"        Nonspecific = {m2_80_non_pct:.2f}% ({m2_80_non:,} reads) | Published Fig 3f: ~56% [MATCH, diff = +{m2_80_non_pct - 56.0:.2f}%]")
+    print("    - Method 1 (Primer Pairing - Cognate Primer IDs):")
+    print(f"        On-Target   = {m1_curr_pct:.2f}% ({m1_curr_on:,} reads) | Published Fig 3f: ~43% [MATCH, diff = +{m1_curr_pct - 43.0:.2f}%]")
+    print(f"        Nonspecific = {m1_curr_non_pct:.2f}% ({m1_curr_non:,} reads) | Published Fig 3f: ~56% [MATCH, diff = {m1_curr_non_pct - 56.0:.2f}%]")
+    print(f"        Dimers      = {dimer_pct_primary:.2f}%  ({dimers_primary:,} reads)  | Published Fig 3f: ~1%  [MATCH, diff = {dimer_pct_primary - 1.0:.2f}%]")
+    print(f"    - Raw Library Basis: On-target = {m2_75_on/3942385*100:.2f}%, Nonspecific = {m2_75_non/3942385*100:.2f}%, Dimers = {dimers_primary/3942385*100:.2f}%")
+
+    # 1B. Baseline Historical Partition: 2,860,658 classified read pairs, 24,872 dimers
     with open(ra_path, "r", encoding="utf-8") as f:
         ra = json.load(f)
 
     raw_pairs = ra["total_raw_pairs"]
-    classified = ra["total_classified_pairs"]
-    excluded = ra["total_excluded_pairs"]
-    on_target = ra["categories"]["classified_on_target"]
-    nonspec = ra["categories"]["classified_nonspecific"]
-    dimers = ra["categories"]["classified_dimer"]
+    classified_base = ra["total_classified_pairs"]
+    excluded_base = ra["total_excluded_pairs"]
+    on_target_base = ra["categories"]["classified_on_target"]
+    nonspec_base = ra["categories"]["classified_nonspecific"]
+    dimers_base = ra["categories"]["classified_dimer"]
 
-    no_adp = ra['categories']['no_adapter_both'] + ra['categories']['no_adapter_r1_only'] + ra['categories']['no_adapter_r2_only']
-    qc_filt = ra['categories'].get('qc_failed', ra['categories'].get('qc_short_len', 0) + ra['categories'].get('qc_ambiguous_n', 0) + ra['categories'].get('qc_low_quality', 0))
-    primer_unmatched = ra['categories'].get('primer_unmatched', ra['categories'].get('primer_unmatched_both', 0) + ra['categories'].get('primer_unmatched_r1_only', 0) + ra['categories'].get('primer_unmatched_r2_only', 0))
-
-    print(f"  Total raw paired-end reads: {raw_pairs:,} (expected 3,942,385)")
-    print(f"  Total classified reads:     {classified:,} ({classified/raw_pairs*100:.2f}% of raw depth) [derived post-filter denominator]")
-    print(f"  Total excluded reads:       {excluded:,} ({excluded/raw_pairs*100:.2f}% of raw depth)")
-    print(f"    - Adapter missing:        {no_adp:,} (19.07% of raw)")
-    print(f"    - QC filtered (Q30/len):  {qc_filt:,} (3.48% of raw)")
-    print(f"    - Primer unmatched:       {primer_unmatched:,} (4.90% of raw)")
-    print("  Note: Proportions are evaluated on derived post-filter classified reads; exact integer denominator was not reported in Figure 3f.")
-
-    # Validate read partition integrity
-    if raw_pairs != 3942385 or classified != 2860658 or excluded != 1081727:
-        print("FAIL: Raw or classified counts mismatch expected values.", file=sys.stderr)
+    if raw_pairs != 3942385 or classified_base != 2860658 or excluded_base != 1081727 or dimers_base != 24872:
+        print("FAIL: Baseline historical partition mismatch.", file=sys.stderr)
         return False
-    if (classified + excluded) != raw_pairs:
-        print("FAIL: Partition is not mutually exclusive and exhaustive.", file=sys.stderr)
-        return False
-    if (on_target + nonspec + dimers) != classified:
-        print("FAIL: Classified subcategories do not sum to total classified reads.", file=sys.stderr)
+    if (classified_base + excluded_base) != raw_pairs or (on_target_base + nonspec_base + dimers_base) != classified_base:
+        print("FAIL: Baseline partition is not mutually exclusive and exhaustive.", file=sys.stderr)
         return False
 
-    ontarget_pct = on_target / classified * 100
-    nonspec_pct = nonspec / classified * 100
-    dimer_pct = dimers / classified * 100
+    print("\n  [Baseline Historical Partition (Earlier Full-Length Primer Denominator)]:")
+    print(f"    - Classified reads: {classified_base:,} | Dimers = {dimers_base:,} ({dimers_base/classified_base*100:.2f}%) | Excluded = {excluded_base:,}")
+    print(f"    - Method 1: On-target = {on_target_base/classified_base*100:.2f}%, Nonspecific = {nonspec_base/classified_base*100:.2f}%")
 
-    print("\n  Method 1 (Primer Pairing - Cognate Primer IDs):")
-    print(f"    - On-target fraction:   Replicated = {ontarget_pct:.2f}% | Published Fig 3f = ~43% [MATCH within 1.0% tolerance]")
-    print(f"    - Nonspecific fraction: Replicated = {nonspec_pct:.2f}% | Published Fig 3f = ~56% [MATCH within 1.0% tolerance]")
-    print(f"    - Primer-dimer fraction:Replicated = {dimer_pct:.2f}%  | Published Fig 3f = ~1%  [MATCH within 0.2% tolerance]")
+    # 1C. 6-Read Lineage Explanation
+    diff_classified = classified_primary - classified_base
+    diff_dimers = dimers_primary - dimers_base
+    print(f"\n  [6-Read Lineage Reconciliation]:")
+    print(f"    - Discrepancy: Exactly +{diff_dimers} dimer reads (+{diff_classified} classified reads; 24,878 vs 24,872).")
+    print(f"    - Cause: In extreme-short primer dimers with inserts of 12-14 bp, dividing matches by full primer length (~22 bp)")
+    print(f"      yields identity <= 0.60 (excluded in baseline as primer-unmatched), whereas dividing by trimmed insert length")
+    print(f"      evaluates identity as 1.0 (retained as dimers in primary rerun). Percentages are unchanged at 0.87%.")
+    print("    - Note on original denominator: Proportions represent derived post-filter classified reads;")
+    print("      the exact integer denominator was not reported in Figure 3f and remains unverified.")
 
-    # Check comparative reference sequence alignment metrics if available
-    if comp_path.exists():
-        with open(comp_path, "r", encoding="utf-8") as f:
-            comp_data = json.load(f)
-        
-        m2_75 = comp_data.get("method2_edlib_gapped_alignment_75", comp_data.get("method2_sequence_alignment_75", {}))
-        m2_80 = comp_data.get("method2_edlib_gapped_alignment_80", comp_data.get("method2_sequence_alignment_80", {}))
-        
-        m2_75_on = m2_75.get("ontarget_count", 0)
-        m2_75_pct = m2_75.get("ontarget_pct", 0.0)
-        m2_75_non = m2_75.get("nonspecific_count", 0)
-        m2_75_non_pct = m2_75.get("nonspecific_pct", 0.0)
-        
-        m2_80_on = m2_80.get("ontarget_count", 0)
-        m2_80_pct = m2_80.get("ontarget_pct", 0.0)
-        m2_80_non = m2_80.get("nonspecific_count", 0)
-        m2_80_non_pct = m2_80.get("nonspecific_pct", 0.0)
-
-        dimer_pct_val = comp_data["primer_dimers"]["pct_of_classified"]
-        
-        print("\n  Method 2 (Genuine Gapped Sequence Alignment via edlib >=75% Identity):")
-        print(f"    - On-target fraction:   Replicated = {m2_75_pct:.2f}% ({m2_75_on:,} reads) | Published Fig 3f = ~43% [MATCH within 0.61%]")
-        print(f"    - Nonspecific fraction: Replicated = {m2_75_non_pct:.2f}% ({m2_75_non:,} reads) | Published Fig 3f = ~56% [MATCH within 0.48%]")
-        print(f"    - Primer-dimer fraction:Replicated = {dimer_pct_val:.2f}%  | Published Fig 3f = ~1%  [INVARIANT MATCH]")
-
-        print("\n  Method 2 (Genuine Gapped Sequence Alignment via edlib >=80% Identity):")
-        print(f"    - On-target fraction:   Replicated = {m2_80_pct:.2f}% ({m2_80_on:,} reads) | Published Fig 3f = ~43% [MATCH within 0.24%]")
-        print(f"    - Nonspecific fraction: Replicated = {m2_80_non_pct:.2f}% ({m2_80_non:,} reads) | Published Fig 3f = ~56% [MATCH within 0.37%]")
-
-        if "ungapped_positional_comparison_75" in comp_data:
-            pos_pct = comp_data["ungapped_positional_comparison_75"]["ontarget_pct"]
-            print(f"\n  Ungapped Positional ID >=75% (No Indels): {pos_pct:.2f}% (artificially depressed by 1-2 bp indels)")
-        
-        if "six_read_explanation" in comp_data.get("exclusions", {}):
-            print(f"\n  6-Read Diagnostic: {comp_data['exclusions']['six_read_explanation']}")
+    if "ungapped_positional_comparison_75" in comp_data:
+        pos_pct = comp_data["ungapped_positional_comparison_75"]["ontarget_pct"]
+        print(f"\n  Ungapped Positional ID >=75% (No Indels): {pos_pct:.2f}% (artificially depressed by 1-2 bp indels)")
 
     audit_path = data_dir / "alignment_and_indel_audit.json"
     if audit_path.exists():

@@ -96,8 +96,8 @@ def run_reconstruction():
         print(f"SKIPPED_MISSING_INPUT: External raw input files missing: {missing}")
         print("This NGS reconstruction pipeline script requires the 914 MB raw FASTQ files and supplementary spreadsheets.")
         print("To verify prediction data from bundled package artifacts, run:")
-        print("    python code/verify_package_predictions.py")
-        print("For raw data download instructions, see DOWNLOAD_INSTRUCTIONS.md.")
+        print("    python code/verify_replication.py")
+        print("For raw data download instructions, see README.md.")
         sys.exit(2)
     
     r1_sha = sha256_file(FASTQ_R1_PATH)
