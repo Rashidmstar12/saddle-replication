@@ -24,24 +24,27 @@ Email: `rashidkadayil@gmail.com`
 Reviewers can verify this computational replication through two independent modalities:
 
 ### Modality A: Fast Standalone Consistency Check (~1.5 Seconds)
-Verifies the complete 295,296-row candidate prediction table, read partitions, label matrices, Brier score calibration, and SHA-256 member checksums without downloading raw FASTQ files:
+Verifies the complete 295,296-row candidate prediction table, read partitions, label matrices, Brier score calibration, and SHA-256 member checksums without downloading raw FASTQ files. **Requires only Python standard library and standard data science packages (no C-compilers or aligners required)**:
 
 ```bash
 git clone https://github.com/Rashidmstar12/saddle-replication.git
 cd saddle-replication
-pip install numpy scikit-learn openpyxl edlib
+pip install numpy scikit-learn
 
 python code/verify_replication.py
 ```
 
 ### Modality B: Direct Raw FASTQ Execution
-Verifies the classification pipeline directly against raw sequencing reads (Sample E19):
+Verifies the classification pipeline directly against raw sequencing reads (Sample E19) using `edlib` and `openpyxl`:
 
 ```bash
+# Prerequisites for raw FASTQ execution:
+pip install openpyxl edlib
+
 # Live sample test on first 50,000 raw reads (~1 second):
 python code/reproduce_from_fastq.py --sample 50000
 
-# Complete reconstruction across all 3,942,385 reads (~2 minutes runtime):
+# Complete reconstruction across all 3,942,385 reads (~105 seconds runtime):
 python code/reproduce_from_fastq.py --full
 ```
 *(Requires raw FASTQ files `E19_384plex_NGS_R1_fastq.gz` and `E19_384plex_NGS_R2_fastq.gz` and `41467_2022_29500_MOESM5_ESM.xlsx` in `data/raw/`. When raw files are absent, scripts exit with code 2 `SKIPPED_MISSING_INPUT` rather than falsely claiming PASS).*
@@ -53,19 +56,22 @@ python code/reproduce_from_fastq.py --full
 ### Primary Replicated Result: SADDLE 384-plex NGS Read Classification
 - **Target:** Figure 3f and main text of Xie et al. (2022).
 - **Dataset:** SADDLE-designed 384-plex panel (Sample E19, Illumina MiniSeq 2 $\times$ 150 bp, 3,942,385 raw reads; Figshare: `10.6084/m9.figshare.16944154.v3`, CC BY 4.0).
-- **Replication Outcomes Across Both Methodologies:**
-  - **Method 1 (Primer Pairing):**
-    - On-target amplicons: Published Figure 3f ~43% $\rightarrow$ **Replicated 43.86%** ($\Delta = +0.86\%$, PASS).
-    - Nonspecific background: Published Figure 3f ~56% $\rightarrow$ **Replicated 55.27%** ($\Delta = -0.73\%$, PASS).
-    - Primer-dimers: Published Figure 3f ~1% $\rightarrow$ **Replicated 0.87%** ($\Delta = -0.13\%$, PASS).
-  - **Method 2 (Genuine Gapped Sequence Alignment via edlib):**
-    - At $\ge 75\%$ sequence identity: **43.61% on-target** ($1,247,496$ reads), **55.52% nonspecific** ($1,588,290$ reads), **0.87% dimers** ($\Delta = +0.61\%$, PASS).
-    - At $\ge 80\%$ sequence identity: **42.76% on-target** ($1,223,216$ reads), **56.37% nonspecific** ($1,612,570$ reads), **0.87% dimers** ($\Delta = -0.24\%$, PASS).
-    - Primer-dimer suppression is **100% invariant** across all methods at **0.87%** (matching published ~1%).
-  - **Diagnostic Lineage Notes:**
-    - *Ungapped String Comparison:* Ungapped positional comparison artificially depressed on-target classification to 39.49% due to 1–2 bp sequencing indels, whereas genuine gapped alignment (`edlib`) resolves these variations.
-    - *6-Read Difference:* Exactly 6 extreme-short primer dimer reads (12–14 bp) were excluded by full-length primer denominator (`matches/len(p) <= 0.60`) in earlier scripts, but retained as dimers when evaluated over trimmed insert prefixes.
-- **Interaction Concentration:** 24,872 observed primer-dimer reads across 295,296 candidate primer pairings. Dimer formation is strongly heavy-tailed: only 1,172 pairs form dimers, and a single dominant interaction (`rp213` $\times$ `rp371`) accounts for 16,805 reads (**67.57%** of all primer-dimer reads).
+- **Denominator Reconciliation:**
+  - **Classified Read Denominator ($N = 2,860,664$, matching published Figure 3f):**
+    - Published Figure 3f: **~43% on-target**, **~56% nonspecific**, **~1% primer-dimers** (sum = 100%).
+    - Method 1 (Primer Pairing): **43.86% on-target**, **55.27% nonspecific**, **0.87% primer-dimers** ($\Delta \le 0.86\%$, PASS).
+    - Method 2 (Gapped Alignment $\ge 75\%$): **43.61% on-target**, **55.52% nonspecific**, **0.87% primer-dimers** ($\Delta \le 0.61\%$, PASS).
+    - Method 2 (Gapped Alignment $\ge 80\%$): **42.76% on-target**, **56.37% nonspecific**, **0.87% primer-dimers** ($\Delta \le 0.37\%$, PASS).
+  - **Total Raw Read Denominator ($N = 3,942,385$):**
+    - On-target: 31.64% to 31.82% ($1,247,496$ to $1,254,647$ reads)
+    - Nonspecific: 40.11% to 40.29% ($1,581,139$ to $1,588,290$ reads)
+    - Primer-dimers: 0.63% ($24,878$ reads)
+    - Excluded reads: 27.44% ($1,081,721$ reads: 19.07% adapter missing, 3.48% low QC/short, 4.90% primer unmatched).
+- **Empirical Alignment Concordance:**
+  - Restricting gapped sequence alignment to cognate pairs achieves **98.8% operational concordance** with a full all-384-target search: 0.00% cross-target false positive alignment among cognate reads, and only 1.22% target sequence capture among non-cognate reads.
+- **Quantitative Indel Analysis:**
+  - 100% of reads recovered by gapped alignment that failed ungapped positional matching contain indels (7.8% 1-bp deletion, 0.3% 1-bp insertion, 91.9% multi-indel/frameshifts; 0.0% substitution-only). Frameshift indels (e.g. `56=1D9=1X37=`) cause ungapped positional identity to drop artificially to 64.1%, whereas gapped alignment preserves 98.1% sequence identity.
+- **Interaction Concentration:** 24,872 to 24,878 observed primer-dimer reads across 295,296 candidate primer pairings. Dimer formation is strongly heavy-tailed: only 1,172 pairs form dimers, and a single dominant interaction (`rp213` $\times$ `rp371`, 16,805 reads) accounts for **67.57%** of dimer reads under the 24,872 baseline partition ($16,805 / 24,872$) and **67.55%** under the 24,878 rerun partition ($16,805 / 24,878$).
 
 ### Supplementary Exploratory Benchmark: Heuristics vs. Baselines
 *Note: This benchmark was not published in Xie et al. (2022); it is presented as a supplementary exploratory analysis.*

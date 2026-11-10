@@ -360,9 +360,17 @@ def run_pipeline(raw_dir: Path, max_reads: int = None):
     print(f"    - On-Target Amplicons:       {categories['method2_ontarget_80']:,} ({m2_80_on:.2f}%)  | Published Fig 3f: ~43% [{m2_80_status}]")
     print(f"    - Nonspecific Products:      {categories['method2_nonspecific_80']:,} ({m2_80_non:.2f}%)  | Published Fig 3f: ~56%")
 
+    # Dynamic pass/fail verification
+    all_matched = (dimer_diff <= 0.5) and (m1_diff <= 1.0) and (m2_75_diff <= 1.0 or m2_80_diff <= 1.0)
     print("\n" + "=" * 78)
-    print("STATUS: FASTQ CLASSIFICATION SUCCESSFULLY COMPLETED AND REPLICATED")
-    print("=" * 78)
+    if all_matched:
+        print("STATUS: FASTQ CLASSIFICATION SUCCESSFULLY COMPLETED AND REPLICATED")
+        print("=" * 78)
+        return True
+    else:
+        print("STATUS: FASTQ CLASSIFICATION COMPLETED - REPLICATION TOLERANCE NOT MET", file=sys.stderr)
+        print("=" * 78, file=sys.stderr)
+        return False
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Reproduce SADDLE Read Classification Directly from Raw FASTQ")
@@ -374,4 +382,5 @@ if __name__ == "__main__":
 
     raw_directory = find_raw_dir(args.raw_dir)
     max_count = None if args.full else (args.sample if args.sample else 50000)
-    run_pipeline(raw_directory, max_reads=max_count)
+    success = run_pipeline(raw_directory, max_reads=max_count)
+    sys.exit(0 if success else 1)

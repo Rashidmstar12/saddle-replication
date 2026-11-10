@@ -41,14 +41,6 @@ from pathlib import Path
 import numpy as np
 from sklearn.metrics import roc_auc_score, average_precision_score, brier_score_loss
 
-# Strict requirement: edlib is required for Method 2 gapped alignment
-try:
-    import edlib
-except ImportError:
-    print("ERROR: 'edlib' is required for genuine gapped sequence alignment (Method 2).", file=sys.stderr)
-    print("Please install via: pip install edlib", file=sys.stderr)
-    sys.exit(1)
-
 def sha256_file(path: Path) -> str:
     h = hashlib.sha256()
     with open(path, "rb") as f:
@@ -98,6 +90,13 @@ def test_fastq_pipeline(base_dir: Path, n_reads: int = 50000) -> bool:
 
     mode_label = f"first {n_reads:,} reads" if n_reads is not None else "all 3,942,385 reads"
     print(f"\n[FASTQ Live Verification]: Streaming {mode_label} from {r1_path.name}...")
+    try:
+        import edlib
+    except ImportError:
+        print("FAIL: 'edlib' is required for live FASTQ gapped sequence alignment (Method 2).", file=sys.stderr)
+        print("Install via: pip install edlib", file=sys.stderr)
+        return False
+
     try:
         import openpyxl
     except ImportError:
