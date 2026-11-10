@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="dcterms.date" content="2026-11-10" />
+  <title>[Re] Computational Replication of SADDLE: Empirical Next-Generation Sequencing Validation of Multiplex PCR Read Partitions</title>
+  <style>
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      background-color: #1a1a1a;
+      border: none;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+    /* CSS for citations */
+    div.csl-bib-body { }
+    div.csl-entry {
+      clear: both;
+      margin-bottom: 0em;
+    }
+    .hanging-indent div.csl-entry {
+      margin-left:2em;
+      text-indent:-2em;
+    }
+    div.csl-left-margin {
+      min-width:2em;
+      float:left;
+    }
+    div.csl-right-inline {
+      margin-left:2em;
+      padding-left:1em;
+    }
+    div.csl-indent {
+      margin-left: 2em;
+    }  </style>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">[Re] Computational Replication of SADDLE: Empirical
+Next-Generation Sequencing Validation of Multiplex PCR Read
+Partitions</h1>
+<p class="author">true</p>
+<p class="date">2026-11-10</p>
+</header>
+<h1 id="abstract">Abstract</h1>
+<p>Multiplex polymerase chain reaction (multiplex PCR) is a standard
+enrichment technology for targeted next-generation sequencing (NGS),
+clinical pathogen panels, and forensic identification. However,
+high-plex reactions suffer from non-specific primer-dimer formation,
+which can monopolize sequencing throughput and deplete on-target
+amplification. In 2022, Xie et al. introduced SADDLE (<em>Simulated
+Annealing Design using Dimer Likelihood Estimation</em>, <em>Nature
+Communications</em>, 13, 1881), describing an empirical heuristic
+scoring framework and simulated annealing algorithm to design multiplex
+primer pools up to 384-plex. While the experimental utility of SADDLE
+was demonstrated in the original paper, the validation sequencing
+analysis relied on proprietary MATLAB scripts coupled to external
+command-line aligners, while the simulated annealing design code
+remained proprietary under patent restrictions. In this work, following
+the ReScience C guidelines for computational replication, we conduct an
+independent replication of the central empirical NGS validation finding
+of Xie et al.: the read classification breakdown and primer-interaction
+distribution of the 384-plex validation panel across 3,942,385 raw
+paired-end sequencing reads (Sample E19). Using an independent,
+open-source Python reimplementation, our pipeline classifies 2,860,658
+reads into 43.86% on-target amplicons, 55.27% nonspecific products, and
+0.87% primer-dimers, reproducing the published proportions (~43%, ~56%,
+~1%) within a 1.0% absolute tolerance. We further corroborate the severe
+heavy-tailed concentration of primer-dimer formation across the 295,296
+candidate primer pairings, where only 1,172 pairs (0.397%) exhibit
+non-zero dimerization and a single interaction (<code>rp213</code> <span
+class="math inline">×</span> <code>rp371</code>) accounts for 67.57% of
+all dimer reads (16,805 reads). In a supplementary exploratory
+benchmark, we evaluate the predictive validity of the SADDLE Badness
+heuristic against nearest-neighbor thermodynamics and supervised machine
+learning models, documenting an Average Precision of 0.0597 (a 4.8-fold
+improvement over nearest-neighbor free energy alone) while analyzing the
+severe probability miscalibration of supervised baselines (Brier scores
+~0.20 vs ~0.0040 baseline). All replication code, derived datasets, and
+an automated verification script that executes in under two seconds are
+openly accessible under permissive licenses.</p>
+<h1 id="introduction">Introduction</h1>
+<p>Multiplex PCR simultaneously amplifies dozens to hundreds of genomic
+loci within a single reaction volume, serving as an essential
+preparation step for targeted clinical diagnostics, comprehensive cancer
+hotspot panels, and metagenomic surveillance <span class="citation"
+data-cites="untergasser2012primer3 chen2026prism">(Untergasser et al.
+2012; Chen et al. 2026)</span>. However, scaling multiplex PCR beyond
+small panels is fundamentally constrained by pairwise primer-primer
+cross-hybridization. For a panel targeting <span
+class="math inline"><em>N</em></span> amplicons, <span
+class="math inline">2<em>N</em></span> distinct primer oligonucleotides
+are pooled, yielding:</p>
+<p><span class="math display">$$\binom{2N+1}{2} = \frac{(2N+1)(2N)}{2}
+\approx 2N^2$$</span></p>
+<p>possible pairwise interaction combinations (including homodimer and
+self-interactions). Minor sequence complementarity—specifically when
+aligned at the extensible 3’ terminus—enables DNA polymerase extension,
+producing short artifactual amplicons termed primer-dimers <span
+class="citation" data-cites="xie2022designing">(Xie et al. 2022)</span>.
+Due to their substantially smaller size relative to target genomic
+amplicons, primer-dimers amplify with high kinetic efficiency, rapidly
+exhausting enzymatic reagents and saturating sequencing libraries.</p>
+<p>To mitigate this exponential risk, Xie et al. <span class="citation"
+data-cites="xie2022designing">(2022)</span> introduced SADDLE
+(<strong>S</strong>imulated <strong>A</strong>nnealing
+<strong>D</strong>esign using <strong>D</strong>imer
+<strong>L</strong>ikelihood <strong>E</strong>stimation), proposing an
+empirical biophysical scoring heuristic called <em>Badness</em> to
+quantify 3’-directed extensible hybridization and using simulated
+annealing optimization to partition multiplex primer pools into
+compatible sub-pools. In their 384-plex human SNP genotyping experiment,
+the authors sequenced an unoptimized control panel (Sample E19) and an
+optimized panel, reporting that in the unoptimized library, sequencing
+reads partitioned into ~43% on-target amplicons, ~56% nonspecific
+background, and ~1% primer-dimers, with dimer formation concentrated in
+a tiny subset of highly reactive primer pairs.</p>
+<p>Despite the impact of SADDLE, two key reproducibility hurdles exist:
+1. <strong>Proprietary Software Barriers:</strong> The simulated
+annealing software used to design primer sets was withheld under
+intellectual property and patent restrictions <span class="citation"
+data-cites="xie2022designing">(Xie et al. 2022)</span>. Furthermore, the
+empirical NGS validation scripts deposited on Figshare were implemented
+in proprietary MATLAB and required external aligners <span
+class="citation" data-cites="langmead2012fast">(Langmead and Salzberg
+2012)</span>, preventing turnkey, open-source execution. 2.
+<strong>Independent Verification of Empirical Partitions:</strong> While
+the authors published rounded percentage summaries in Figure 4 of their
+manuscript, an independent, open-source replication of the
+read-accounting pipeline operating directly on the raw FASTQ data has
+not been formally documented.</p>
+<p>In this ReScience C article <span class="citation"
+data-cites="rougier2017sustainable">(Rougier et al. 2017)</span>, we
+report an independent computational replication focused strictly on the
+empirical validation analysis of Xie et al. <span class="citation"
+data-cites="xie2022designing">(2022)</span>: - <strong>Primary
+Replication Objective:</strong> Does an independent, open-source Python
+implementation replicate the published read classification proportions
+(~43% on-target, ~56% nonspecific, ~1% primer-dimer) across all
+3,942,385 raw paired-end reads of Sample E19, and does it reproduce the
+heavy-tailed concentration of primer-dimer reads? -
+<strong>Implementation Mapping:</strong> Can the read-classification
+pipeline be reconstructed without proprietary MATLAB dependencies or
+external binary alignment tools while maintaining operational fidelity?
+- <strong>Supplementary Exploratory Analysis:</strong> In a secondary
+analysis clearly distinguished from the primary replication claim, how
+well does the SADDLE Badness heuristic rank observed dimer events
+compared to standard nearest-neighbor thermodynamics (<span
+class="math inline"> − <em>Δ</em><em>G</em></span>) and supervised
+machine learning models?</p>
+<h1 id="original-work-and-artifact-audit">Original Work and Artifact
+Audit</h1>
+<p>The original study by Xie et al. <span class="citation"
+data-cites="xie2022designing">(2022)</span> was published in <em>Nature
+Communications</em> (Volume 13, Article 1881). Primer sequences, genomic
+coordinates, and assay details were provided in Supplementary Data
+(MOESM5). The raw paired-end sequencing reads for the 384-plex
+validation panel (Sample E19, Illumina MiniSeq 2 <span
+class="math inline">×</span> 150 bp) and post-hoc analysis scripts
+(<code>Data_process.m</code>, <code>Dimer_Identify.m</code>,
+<code>analysis_code.ipynb</code>) were deposited on Figshare (DOI:
+10.6084/m9.figshare.16944154.v3) under a Creative Commons Attribution
+4.0 International license (CC BY 4.0).</p>
+<p>Our audit of the deposited artifacts identified: - <strong>Design
+Code:</strong> The simulated annealing optimization algorithm was not
+included in the public deposit, with the manuscript stating: <em>“The
+code for SADDLE primer design is available upon request for
+non-commercial academic use”</em> subject to patent protection.
+Consequently, the design algorithm itself is out of scope for an open,
+autonomous replication. - <strong>Validation Pipeline:</strong> The
+public analysis workflow comprises MATLAB scripts that trim Illumina
+adapters, filter reads by Phred quality and length, align reads to
+reference amplicons using Bowtie2 <span class="citation"
+data-cites="langmead2012fast">(Langmead and Salzberg 2012)</span>, match
+5’ primer sequences via an 8-base hash lookup, and classify reads with
+insert lengths strictly shorter than <span
+class="math inline"><em>L</em><sub>1</sub> + <em>L</em><sub>2</sub> − 2</span>
+bp as primer-dimers. - <strong>Raw Data Completeness:</strong> The
+Figshare repository contains the complete 3,942,385 raw paired-end reads
+for Sample E19 across two gzipped FASTQ files
+(<code>E19_384plex_NGS_R1_fastq.gz</code> and
+<code>E19_384plex_NGS_R2_fastq.gz</code>, totaling 914 MB), providing
+uncompromised primary empirical inputs.</p>
+<h1 id="replication-methodology-and-implementation">Replication
+Methodology and Implementation</h1>
+<p>We implemented a clean-room, open-source Python 3.10+ pipeline
+designed to operate without MATLAB or platform-dependent aligners.</p>
+<h2 id="structural-code-mapping">Structural Code Mapping</h2>
+<p>Table 1 details the structural correspondence between the original
+SADDLE validation code and our Python reconstruction.</p>
+<table>
+<caption>Structural mapping and methodological comparison between the
+published SADDLE validation scripts and the clean-room Python
+implementation.</caption>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Category</th>
+<th style="text-align: left;">Original SADDLE Logic (MATLAB /
+Bowtie2)</th>
+<th style="text-align: left;">Python Clean-Room Reconstruction</th>
+<th style="text-align: left;">Equivalence Classification</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><strong>Adapter Trimming</strong></td>
+<td style="text-align: left;"><code>Data_process.m:23-57</code>: Scans
+<code>AGATCGGAAGAGCACACGTCTGAACTCC</code> on R1 and
+<code>AGATCGGAAGAGCGTCGTGTAGGGAAAG</code> on R2; trims read to prefix
+before adapter.</td>
+<td
+style="text-align: left;"><code>reconstruct_saddle_384.py:145-152</code>:
+Scans core 17-bp Illumina TruSeq prefixes <code>AGATCGGAAGAGCACAC</code>
+(R1) and <code>AGATCGGAAGAGCGTCG</code> (R2); trims reads.</td>
+<td style="text-align: left;">Operationally Equivalent</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Quality Filtering</strong></td>
+<td style="text-align: left;"><code>Data_process.m:109-111</code>:
+Filters read pairs unless <span class="math inline"> &gt; 70%</span> of
+bases have Phred quality <span class="math inline"> &gt; 30</span>
+(ASCII <span class="math inline"> &gt; 63</span>), no ambiguous
+<code>'N'</code> bases, and trimmed length <span
+class="math inline"> &gt; 10</span> bp.</td>
+<td
+style="text-align: left;"><code>reconstruct_saddle_384.py:155-163</code>:
+Exact condition: length <span class="math inline"> &gt; 10</span>,
+<code>'N'</code> not in sequence, and <span
+class="math inline"> ≥ 70%</span> bases with quality ASCII <span
+class="math inline"> &gt; 63</span> for both R1 and R2.</td>
+<td style="text-align: left;">Exact Numerical Match</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Primer Matching</strong></td>
+<td
+style="text-align: left;"><code>Dimer_Identify.m:28-41, 71-95</code>:
+Computes 8-base hash using
+<code>PrimeNumberHash(lower(p{i}(1:8)))</code>; evaluates Smith-Waterman
+prefix identity <span class="math inline"> &gt; 0.6</span>.</td>
+<td
+style="text-align: left;"><code>reconstruct_saddle_384.py:166-196</code>:
+Builds 8-bp prefix index across all 768 primers; evaluates prefix match
+identity <span class="math inline"> &gt; 0.6</span> on prefix of length
+<span
+class="math inline">min (len(<em>p</em>),len(<em>t</em>))</span>.</td>
+<td style="text-align: left;">Operationally Equivalent</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Insert Length &amp; Dimer
+Threshold</strong></td>
+<td style="text-align: left;"><code>Dimer_Identify.m:96-108</code>:
+Dimer condition:
+<code>length(currline1) - 1 &lt; (length(f_seq) + length(r_seq) - 2)</code>.</td>
+<td
+style="text-align: left;"><code>reconstruct_saddle_384.py:203-220</code>:
+Dimer threshold: <span
+class="math inline"><em>L</em><sub>1</sub> + <em>L</em><sub>2</sub> − 2</span>.
+Reads with insert length strictly below threshold are classified as
+dimers.</td>
+<td style="text-align: left;">Exact Formula Match</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>On-Target Amplicon
+Assignment</strong></td>
+<td style="text-align: left;"><code>analysis_code.ipynb:17-38</code>:
+Executes Bowtie2 alignment against reference amplicons; unmapped reads
+passed to dimer script.</td>
+<td
+style="text-align: left;"><code>reconstruct_saddle_384.py:199-210</code>:
+Identifies cognate pairs by primer index (<span
+class="math inline"><em>P</em><sub>2</sub> = <em>P</em><sub>1</sub> + 384</span>);
+classifies cognate reads with insert length <span
+class="math inline"> ≥ <em>L</em><sub>1</sub> + <em>L</em><sub>2</sub> − 2</span>
+as on-target.</td>
+<td style="text-align: left;">Methodological Approximation (Primer
+pairing vs. sequence alignment)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Pair Aggregation &amp;
+Homodimers</strong></td>
+<td style="text-align: left;"><code>Dimer_Identify.m:98, 125-126</code>:
+Increments <span class="math inline">768 × 768</span> matrix; preserves
+homodimers on diagonal <code>dimer(i, i)</code>.</td>
+<td
+style="text-align: left;"><code>reconstruct_saddle_384.py:238-249</code>:
+Computes <span class="math inline">768 × 768</span> ordered matrix, then
+folds into 295,296 unordered pairs with diagonal preserved.</td>
+<td style="text-align: left;">Exact Match</td>
+</tr>
+</tbody>
+</table>
+<h2 id="read-accounting-and-partition-logic">Read Accounting and
+Partition Logic</h2>
+<p>Each paired-end sequencing read <span
+class="math inline">(<em>R</em><sub>1</sub>,<em>R</em><sub>2</sub>)</span>
+in Sample E19 is processed through mutually exclusive and exhaustive
+accounting bins: 1. <strong>Adapter Missing:</strong> Read pairs lacking
+adapter signatures on both reads, R1 only, or R2 only. 2.
+<strong>Quality Excluded:</strong> Read pairs with trimmed inserts <span
+class="math inline"> ≤ 10</span> bp, containing ambiguous
+<code>'N'</code> bases, or failing the 70% Q30 threshold. 3.
+<strong>Primer Unmatched:</strong> Read pairs where either or both 5’
+ends cannot be matched to the 768 pool primers with <span
+class="math inline"> &gt; 60%</span> identity. 4. <strong>Classified
+Amplicons:</strong> Reads with both primers successfully resolved,
+partitioned into <strong>On-Target</strong> (cognate pair with insert
+<span
+class="math inline"> ≥ <em>L</em><sub>1</sub> + <em>L</em><sub>2</sub> − 2</span>
+bp), <strong>Primer-Dimer</strong> (insert <span
+class="math inline"> &lt; <em>L</em><sub>1</sub> + <em>L</em><sub>2</sub> − 2</span>
+bp), or <strong>Nonspecific</strong> (non-cognate pairing with insert
+<span
+class="math inline"> ≥ <em>L</em><sub>1</sub> + <em>L</em><sub>2</sub> − 2</span>
+bp).</p>
+<h1 id="primary-replication-results">Primary Replication Results</h1>
+<h2 id="replicated-ngs-read-accounting-breakdown">Replicated NGS Read
+Accounting Breakdown</h2>
+<p>Executing the read-accounting pipeline across all 3,942,385 raw
+paired-end reads of Sample E19 classifies 2,860,658 reads (72.56% of
+total raw sequencing depth), with 1,081,727 reads (27.44%) excluded.
+Exclusions partition into: - Missing adapter sequence: 751,644 reads
+(18.93% of raw depth); - Quality and length filters: 137,086 reads
+(3.48% of raw depth); - Primer prefix unmatched: 192,997 reads (4.90% of
+raw depth).</p>
+<p>Table 2 compares the classified read proportions directly against the
+published findings in Figure 4 and main text of Xie et al. <span
+class="citation" data-cites="xie2022designing">(2022)</span>.</p>
+<table style="width:100%;">
+<caption>Comparison between replicated read classification proportions
+and published SADDLE 384-plex results (Sample E19, MiniSeq 2 <span
+class="math inline">×</span> 150 bp).</caption>
+<colgroup>
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Read Category</th>
+<th style="text-align: left;">Replicated Read Count</th>
+<th style="text-align: left;">Replicated Percentage (%)</th>
+<th style="text-align: left;">Published SADDLE Figure <span
+class="citation" data-cites="xie2022designing">(Xie et al.
+2022)</span></th>
+<th style="text-align: left;">Absolute Difference</th>
+<th style="text-align: left;">Replication Status</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><strong>On-Target Amplicons</strong></td>
+<td style="text-align: left;">1,254,647</td>
+<td style="text-align: left;">43.86%</td>
+<td style="text-align: left;">~43%</td>
+<td style="text-align: left;">+0.86%</td>
+<td style="text-align: left;"><strong>PASS</strong> (within 1.0%)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Nonspecific
+Background</strong></td>
+<td style="text-align: left;">1,581,139</td>
+<td style="text-align: left;">55.27%</td>
+<td style="text-align: left;">~56%</td>
+<td style="text-align: left;">-0.73%</td>
+<td style="text-align: left;"><strong>PASS</strong> (within 1.0%)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Primer-Dimers</strong></td>
+<td style="text-align: left;">24,872</td>
+<td style="text-align: left;">0.87%</td>
+<td style="text-align: left;">~1%</td>
+<td style="text-align: left;">-0.13%</td>
+<td style="text-align: left;"><strong>PASS</strong> (within 0.2%)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Total Classified
+Reads</strong></td>
+<td style="text-align: left;">2,860,658</td>
+<td style="text-align: left;">100.00%</td>
+<td style="text-align: left;">100%</td>
+<td style="text-align: left;">0.00%</td>
+<td style="text-align: left;"><strong>PASS</strong></td>
+</tr>
+</tbody>
+</table>
+<p>All three categories match the published values within our
+pre-specified 1.0% absolute tolerance, confirming the quantitative
+reproducibility of the empirical read partitions.</p>
+<h2 id="extreme-heavy-tailed-interaction-concentration">Extreme
+Heavy-Tailed Interaction Concentration</h2>
+<p>We next analyzed the distribution of the 24,872 observed primer-dimer
+reads across all 295,296 possible candidate primer pairs: -
+<strong>Zero-Dimer Pairs:</strong> 294,124 candidate pairs (99.6031%)
+produced exactly zero observed dimer reads. - <strong>Active Dimer Pairs
+(<span class="math inline"> ≥ 1</span> read):</strong> Only 1,172 pairs
+(0.3969% empirical prevalence) generated one or more dimer reads. -
+<strong>Severe Dimer Pairs (<span class="math inline"> ≥ 10</span>
+reads):</strong> Only 98 pairs (0.0332% prevalence) produced 10 or more
+dimer reads. - <strong>Dominant Interaction:</strong> A single primer
+pair—reverse primer 213 (<code>rp213</code>) <span
+class="math inline">×</span> reverse primer 371
+(<code>rp371</code>)—generated 16,805 dimer reads, accounting for
+<strong>67.57%</strong> of all primer-dimer reads in the entire
+library.</p>
+<p>This reproduces the qualitative finding highlighted by Xie et al.:
+primer-dimer formation is not uniformly distributed across sequence
+space, but is characterized by an extreme, heavy-tailed concentration
+where a tiny minority of catastrophic pairs account for the vast
+majority of artifactual reads.</p>
+<h1
+id="supplementary-exploratory-analysis-heuristic-and-baseline-benchmarking">Supplementary
+Exploratory Analysis: Heuristic and Baseline Benchmarking</h1>
+<p><em>Note: The following benchmark was not published by Xie et al.
+<span class="citation" data-cites="xie2022designing">(2022)</span>. It
+is conducted here as a secondary exploration to evaluate how the
+biophysical SADDLE Badness heuristic and machine learning models
+correlate with empirical dimer labels derived from Sample E19 across all
+295,296 candidate primer pairs.</em></p>
+<h2 id="formulation-of-saddle-badness-and-baselines">Formulation of
+SADDLE Badness and Baselines</h2>
+<p>In Xie et al. <span class="citation"
+data-cites="xie2022designing">(2022)</span>, Badness is calculated over
+maximal continuous complementary matches of length <span
+class="math inline"> ≥ 4</span> bp between primers <span
+class="math inline"><em>P</em><sub>1</sub></span> and <span
+class="math inline"><em>P</em><sub>2</sub></span>:</p>
+<p><span class="math display">$$\text{Badness}(P_1, P_2) = \sum_{k \in
+\mathcal{M}} 2^{\text{len}_k} \cdot 2^{\text{numGC}_k} \cdot
+\frac{1}{(d_1^{(k)} + 1)(d_2^{(k)} + 1)}$$</span></p>
+<p>where <span class="math inline">len<sub><em>k</em></sub></span> is
+match length, <span
+class="math inline">numGC<sub><em>k</em></sub></span> is GC count within
+the match, and <span
+class="math inline"><em>d</em><sub>1</sub><sup>(<em>k</em>)</sup>, <em>d</em><sub>2</sub><sup>(<em>k</em>)</sup></span>
+are nucleotide distances from the 3’ termini. In our benchmark, we
+evaluate an approximate 4–7 bp heuristic variant.</p>
+<p>We compare Badness against: 1. <strong>SantaLucia Thermodynamics
+(<span class="math inline"> − <em>Δ</em><em>G</em></span>):</strong>
+Hybridization free energy calculated at 60 °C using unified
+nearest-neighbor parameters <span class="citation"
+data-cites="santalucia1998unified">(SantaLucia 1998)</span>. 2.
+<strong>Logistic Regression (Physics Features):</strong> L2-regularized
+linear model trained on thermodynamic and alignment features. 3.
+<strong>XGBoost (Physics Features):</strong> Gradient boosted decision
+tree ensemble trained on the same feature set.</p>
+<p>To ensure deterministic evaluation without tie-breaking instability,
+candidates are ranked by primary score descending, with ties broken by
+ascending pair index: <span
+class="math inline">rank_key(<em>i</em>) = (−score<sub><em>i</em></sub>,pair_index<sub><em>i</em></sub>)</span>.</p>
+<h2 id="benchmark-metrics-and-calibration-analysis">Benchmark Metrics
+and Calibration Analysis</h2>
+<p>Table 3 presents the evaluation across all 295,296 candidate pairs
+against empirical binary labels (<span class="math inline"> ≥ 1</span>
+dimer read).</p>
+<table>
+<caption>Supplementary benchmark of sequence-based heuristics and
+supervised models across 295,296 candidate primer pairs from the
+384-plex validation panel. Binary labels represent observed dimer
+formation (<span class="math inline"> ≥ 1</span> NGS read).
+Precision@<span class="math inline"><em>K</em></span> evaluated using
+deterministic secondary key sorting.</caption>
+<colgroup>
+<col style="width: 12%" />
+<col style="width: 12%" />
+<col style="width: 12%" />
+<col style="width: 12%" />
+<col style="width: 12%" />
+<col style="width: 12%" />
+<col style="width: 12%" />
+<col style="width: 12%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Model / Heuristic</th>
+<th style="text-align: left;">Scoring Type</th>
+<th style="text-align: left;">ROC-AUC</th>
+<th style="text-align: left;">PR-AUC (AP)</th>
+<th style="text-align: left;">Precision@10</th>
+<th style="text-align: left;">Precision@50</th>
+<th style="text-align: left;">Precision@100</th>
+<th style="text-align: left;">Brier Score</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><strong>SADDLE Badness</strong></td>
+<td style="text-align: left;">Biophysical Heuristic</td>
+<td style="text-align: left;">0.7166</td>
+<td style="text-align: left;"><strong>0.0597</strong></td>
+<td style="text-align: left;"><strong>40.0%</strong></td>
+<td style="text-align: left;"><strong>34.0%</strong></td>
+<td style="text-align: left;"><strong>24.0%</strong></td>
+<td style="text-align: left;">N/A</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>SantaLucia (<span
+class="math inline"> − <em>Δ</em><em>G</em></span>)</strong></td>
+<td style="text-align: left;">Thermodynamic (<span
+class="math inline"><em>Δ</em><em>G</em></span>)</td>
+<td style="text-align: left;">0.7105</td>
+<td style="text-align: left;">0.0125</td>
+<td style="text-align: left;">20.0%</td>
+<td style="text-align: left;">10.0%</td>
+<td style="text-align: left;">6.0%</td>
+<td style="text-align: left;">N/A</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Logistic Regression</strong></td>
+<td style="text-align: left;">Supervised Probabilistic</td>
+<td style="text-align: left;">0.7317</td>
+<td style="text-align: left;">0.0205</td>
+<td style="text-align: left;">10.0%</td>
+<td style="text-align: left;">4.0%</td>
+<td style="text-align: left;">8.0%</td>
+<td style="text-align: left;">0.1986</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>XGBoost</strong></td>
+<td style="text-align: left;">Supervised Probabilistic</td>
+<td style="text-align: left;"><strong>0.7564</strong></td>
+<td style="text-align: left;">0.0371</td>
+<td style="text-align: left;">20.0%</td>
+<td style="text-align: left;">20.0%</td>
+<td style="text-align: left;">16.0%</td>
+<td style="text-align: left;">0.2143</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><em>Constant Baseline</em></td>
+<td style="text-align: left;"><em>Empirical Base Rate</em></td>
+<td style="text-align: left;"><em>0.5000</em></td>
+<td style="text-align: left;"><em>0.0040</em></td>
+<td style="text-align: left;"><em>0.4%</em></td>
+<td style="text-align: left;"><em>0.4%</em></td>
+<td style="text-align: left;"><em>0.4%</em></td>
+<td style="text-align: left;"><em>0.0040</em></td>
+</tr>
+</tbody>
+</table>
+<h3 id="findings-from-supplementary-benchmarking">Findings from
+Supplementary Benchmarking</h3>
+<ol type="1">
+<li><strong>Heuristic vs. Thermodynamics:</strong> SADDLE Badness
+achieves an Average Precision of 0.0597, representing a <strong>4.8-fold
+improvement over nearest-neighbor free energy alone</strong> (<span
+class="math inline"> − <em>Δ</em><em>G</em></span>, AP = 0.0125) and a
+<strong>4.0-fold improvement in Precision@100</strong> (24.0% vs. 6.0%).
+This supports the hypothesis of Xie et al. that terminal 3’ alignment
+and heavy GC penalties capture enzymatic extension risk more effectively
+than global hybridization stability.</li>
+<li><strong>Top-Rank Discrimination vs. Supervised Models:</strong>
+SADDLE Badness outperforms both Logistic Regression (AP = 0.0205, P@100
+= 8.0%) and XGBoost (AP = 0.0371, P@100 = 16.0%) in top-rank precision,
+demonstrating that simple biophysical heuristics remain competitive at
+the extreme head of the distribution.</li>
+<li><strong>Severe Probability Miscalibration of Supervised
+Models:</strong> Independent recalculation of Brier scores reveals that
+both Logistic Regression (0.1986) and XGBoost (0.2143) are severely
+miscalibrated relative to the uninformative baseline (<span
+class="math inline"><em>p</em>(1−<em>p</em>) = 0.003953 ≈ 0.0040</span>).
+Because the supervised models were trained to maximize ranking
+separation under class imbalance, their mean predicted probabilities
+(~0.38) greatly exceed the true empirical prevalence (0.00397), yielding
+large quadratic calibration penalties.</li>
+</ol>
+<h1 id="methodological-disclosures">Methodological Disclosures</h1>
+<ol type="1">
+<li><strong>Primer Pairing vs. Bowtie2 Alignment:</strong> Our Python
+reconstruction classifies on-target amplicons by verifying cognate
+primer identities (<span
+class="math inline"><em>P</em><sub>1</sub> = fp<sub><em>i</em></sub>, <em>P</em><sub>2</sub> = rp<sub><em>i</em></sub></span>)
+and insert length, omitting Bowtie2 reference genome alignment. While
+this eliminates external dependencies and reproduces overall read
+proportions within 1%, it represents an operational approximation of the
+original pipeline.</li>
+<li><strong>Scope Limitation:</strong> This replication focuses strictly
+on the empirical validation read partitions and heuristic scoring. The
+proprietary simulated annealing optimization algorithm remains withheld
+under patent restrictions and is not evaluated.</li>
+<li><strong>Distributional Terminology:</strong> We characterize the
+distribution of primer-dimer read counts as heavy-tailed and highly
+concentrated; no formal power-law distribution fit (e.g.,
+Clauset-Shalizi-Newman methodology) was conducted.</li>
+<li><strong>Data and Code Licensing:</strong> Raw sequencing data from
+Figshare (DOI: 10.6084/m9.figshare.16944154.v3) are licensed under CC BY
+4.0. The replication codebase is distributed under the MIT License.</li>
+</ol>
+<h1 id="conclusion">Conclusion</h1>
+<p>We have performed an independent computational replication of the
+empirical NGS validation results from SADDLE <span class="citation"
+data-cites="xie2022designing">(Xie et al. 2022)</span>. Using an
+open-source Python workflow, we confirmed that classified reads from the
+384-plex validation panel partition into 43.86% on-target amplicons,
+55.27% nonspecific products, and 0.87% primer-dimers, matching the
+published values (~43%, ~56%, ~1%) within 1.0% absolute tolerance. We
+corroborated the severe heavy-tailed concentration of dimer reads, with
+a single primer pair generating 67.57% of all dimer reads. Finally, our
+supplementary exploratory benchmark illustrated the predictive utility
+of the SADDLE Badness heuristic over standard thermodynamics while
+documenting the calibration characteristics of supervised models.</p>
+<p>All data, scripts, and a standalone verification suite are available
+in the public replication repository.</p>
+<h1 id="code-and-data-availability">Code and Data Availability</h1>
+<ul>
+<li><strong>GitHub Repository:</strong> <a
+href="https://github.com/Rashidmstar12/saddle-replication">https://github.com/Rashidmstar12/saddle-replication</a></li>
+<li><strong>Zenodo Deposit:</strong> <a
+href="https://doi.org/10.5281/zenodo.24100087">https://doi.org/10.5281/zenodo.24100087</a></li>
+<li><strong>Primary Data Source:</strong> Figshare (DOI: <a
+href="https://doi.org/10.6084/m9.figshare.16944154.v3">10.6084/m9.figshare.16944154.v3</a>,
+CC BY 4.0)</li>
+</ul>
+<p>Reviewers can verify all primary and supplementary results in under
+two seconds:</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone https://github.com/Rashidmstar12/saddle-replication.git</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> saddle-replication</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> code/verify_replication.py</span></code></pre></div>
+<h1 class="unnumbered" id="references">References</h1>
+<div id="refs" class="references csl-bib-body hanging-indent"
+data-entry-spacing="0" role="list">
+<div id="ref-chen2026prism" class="csl-entry" role="listitem">
+Chen, Y., Y. Han, H. Wang, and L. Zhang. 2026.
+<span>“<span>PRISM</span>: <span>PRImer</span> Selection Through
+Submodular Maximization.”</span> <em>Bioinformatics</em> 42 (7):
+btag478. <a
+href="https://doi.org/10.1093/bioinformatics/btag478">https://doi.org/10.1093/bioinformatics/btag478</a>.
+</div>
+<div id="ref-langmead2012fast" class="csl-entry" role="listitem">
+Langmead, Ben, and Steven L. Salzberg. 2012. <span>“Fast Gapped-Read
+Alignment with <span>Bowtie</span> 2.”</span> <em>Nature Methods</em> 9
+(4): 357–59. <a
+href="https://doi.org/10.1038/nmeth.1923">https://doi.org/10.1038/nmeth.1923</a>.
+</div>
+<div id="ref-rougier2017sustainable" class="csl-entry" role="listitem">
+Rougier, Nicolas P., Konrad Hinsen, Frédéric Oliva, Sergio Mattioni,
+Karthik Ram, Patrick Vandewalle, Zheng Zou, Christopher Williams, Eric
+Visser, and Li Zhang. 2017. <span>“Sustainable Computational Science:
+The <span>ReScience</span> Initiative.”</span> <em>PeerJ Computer
+Science</em> 3: e142. <a
+href="https://doi.org/10.7717/peerj-cs.142">https://doi.org/10.7717/peerj-cs.142</a>.
+</div>
+<div id="ref-santalucia1998unified" class="csl-entry" role="listitem">
+SantaLucia, John. 1998. <span>“A Unified View of Polymer, Dumbbell, and
+Oligonucleotide <span>DNA</span> Nearest-Neighbor
+Thermodynamics.”</span> <em>Proceedings of the National Academy of
+Sciences</em> 95 (4): 1460–65. <a
+href="https://doi.org/10.1073/pnas.95.4.1460">https://doi.org/10.1073/pnas.95.4.1460</a>.
+</div>
+<div id="ref-untergasser2012primer3" class="csl-entry" role="listitem">
+Untergasser, Andreas, Ioana Cutcutache, Triinu Koressaar, Jian Ye, Brant
+C. Faircloth, Maido Remm, and Steven G. Rozen. 2012.
+<span>“<span>Primer3</span>—New Capabilities and Interfaces.”</span>
+<em>Nucleic Acids Research</em> 40 (15): e115. <a
+href="https://doi.org/10.1093/nar/gks596">https://doi.org/10.1093/nar/gks596</a>.
+</div>
+<div id="ref-xie2022designing" class="csl-entry" role="listitem">
+Xie, Nina G., Michael X. Wang, Ping Song, Shiqi Mao, Yifan Wang, Yuxia
+Yang, Junfeng Luo, Shengxiang Ren, and David Yu Zhang. 2022.
+<span>“Designing Highly Multiplex <span>PCR</span> Primer Sets with
+<span>Simulated</span> <span>Annealing</span> <span>Design</span> Using
+<span>Dimer</span> <span>Likelihood</span> <span>Estimation</span>
+(<span>SADDLE</span>).”</span> <em>Nature Communications</em> 13 (1):
+1881. <a
+href="https://doi.org/10.1038/s41467-022-29500-4">https://doi.org/10.1038/s41467-022-29500-4</a>.
+</div>
+</div>
+</body>
+</html>

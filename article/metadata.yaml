@@ -1,0 +1,52 @@
+# ReScience C Metadata File
+# Conforms to ReScience C template specification: https://github.com/ReScience/template
+
+title: "[Re] Computational Replication of SADDLE: Empirical Next-Generation Sequencing Validation of Multiplex PCR Read Partitions"
+
+authors:
+  - name: Rashid Kadayil
+    orcid: 0009-0009-6398-4557
+    email: rashidkadayil@gmail.com
+    affiliations: 1,*
+
+affiliations:
+  - code: 1
+    name: Independent Researcher, Kerala, India
+
+replication:
+  - cite: "Xie, N. G., Wang, M. X., Song, P., Mao, S., Wang, Y., Yang, Y., Luo, J., Ren, S., & Zhang, D. Y. (2022). Designing highly multiplex PCR primer sets with Simulated Annealing Design using Dimer Likelihood Estimation (SADDLE). Nature Communications, 13, 1881."
+    bib: "xie2022designing"
+    url: "https://doi.org/10.1038/s41467-022-29500-4"
+    doi: "10.1038/s41467-022-29500-4"
+
+code:
+  - url: "https://github.com/Rashidmstar12/saddle-replication"
+  - doi: "10.5281/zenodo.24100087"
+  - swh: ""
+
+data:
+  - url: "https://doi.org/10.6084/m9.figshare.16944154.v3"
+  - doi: "10.6084/m9.figshare.16944154.v3"
+
+article:
+  - type: Replication
+  - domain: Computational Biology / Bioinformatics
+  - keywords: multiplex PCR, primer-dimer, SADDLE, computational replication, next-generation sequencing, amplicon sequencing
+
+contributors:
+  - editor: ""
+  - reviewer: ""
+  - reviewer: ""
+
+dates:
+  - received: November 10, 2026
+  - accepted: ""
+  - published: ""
+
+journal:
+  name: "ReScience C"
+  issn: 2430-3658
+  volume: ""
+  issue: ""
+  article: ""
+  doi: ""

@@ -1,0 +1,38 @@
+{
+  "total_raw_pairs": 3942385,
+  "total_classified_pairs": 2860658,
+  "total_excluded_pairs": 1081727,
+  "categories": {
+    "no_adapter_both": 475468,
+    "no_adapter_r1_only": 116735,
+    "no_adapter_r2_only": 159441,
+    "qc_short_len": 43,
+    "qc_ambiguous_n": 10,
+    "qc_low_quality": 137033,
+    "primer_unmatched_both": 5572,
+    "primer_unmatched_r1_only": 88889,
+    "primer_unmatched_r2_only": 98536,
+    "classified_on_target": 1254647,
+    "classified_dimer": 24872,
+    "classified_nonspecific": 1581139
+  },
+  "percentages_of_raw": {
+    "no_adapter_both": 12.0604,
+    "no_adapter_r1_only": 2.961,
+    "no_adapter_r2_only": 4.0443,
+    "qc_short_len": 0.0011,
+    "qc_ambiguous_n": 0.0003,
+    "qc_low_quality": 3.4759,
+    "primer_unmatched_both": 0.1413,
+    "primer_unmatched_r1_only": 2.2547,
+    "primer_unmatched_r2_only": 2.4994,
+    "classified_on_target": 31.8246,
+    "classified_dimer": 0.6309,
+    "classified_nonspecific": 40.1062
+  },
+  "percentages_of_classified": {
+    "on_target_pct": 43.8587,
+    "nonspecific_pct": 55.2719,
+    "dimer_pct": 0.8695
+  }
+}

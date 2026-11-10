@@ -1,0 +1,58 @@
+{
+  "dataset_id": "SADDLE_384PLEX_RECONSTRUCTED",
+  "study_citation": "Xie et al., Nat Commun 13, 1881 (2022), DOI: 10.1038/s41467-022-29500-4",
+  "library_id": "E19_384plex",
+  "source_figshare_doi": "10.6084/m9.figshare.16944154.v3",
+  "source_files": [
+    {
+      "filename": "E19_384plex_NGS_R1_fastq.gz",
+      "figshare_file_id": 31352458,
+      "bytes": 436721324,
+      "sha256": "7ebbe758dbeaa62b91dbea5c0e9e3bd4c35806a2e8f7c82c59729475d5652c92"
+    },
+    {
+      "filename": "E19_384plex_NGS_R2_fastq.gz",
+      "figshare_file_id": 31352461,
+      "bytes": 478010555,
+      "sha256": "d2e4a5facf1ccc9188a190e4b9384df3cedbd2cfc56659f8f5928531dda0396e"
+    }
+  ],
+  "read_counts": {
+    "total_paired_reads": 3942385,
+    "no_adapter_reads": 751644,
+    "qc_failed_reads": 137086,
+    "primer_unmatched_reads": 192997,
+    "total_classified_reads": 2860658,
+    "on_target_reads": 1254647,
+    "nonspecific_reads": 1581139,
+    "dimer_reads": 24872
+  },
+  "percentages_of_classified": {
+    "on_target_pct": 43.86,
+    "nonspecific_pct": 55.27,
+    "dimer_pct": 0.87
+  },
+  "published_reference_comparison": {
+    "published_on_target_pct": "~43%",
+    "reconstructed_on_target_pct": "43.86%",
+    "published_nonspecific_pct": "~56%",
+    "reconstructed_nonspecific_pct": "55.27%",
+    "published_dimer_pct": "~1%",
+    "reconstructed_dimer_pct": "0.87%",
+    "replication_status": "PASS_CLOSE_AGREEMENT"
+  },
+  "matrix_dimensions": {
+    "num_primers": 768,
+    "num_amplicons": 384,
+    "ordered_matrix_cells": 589824,
+    "ordered_nonzero_cells": 1499,
+    "ordered_zero_cells": 588325,
+    "ordered_zero_fraction": 0.997459,
+    "unordered_total_pairs_with_self": 295296,
+    "unordered_distinct_pairs_without_self": 294528,
+    "unordered_nonzero_pairs": 1172,
+    "unordered_zero_pairs": 294124,
+    "unordered_zero_fraction": 0.996031,
+    "max_dimer_reads_pair": 16805
+  }
+}
