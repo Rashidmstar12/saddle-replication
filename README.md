@@ -87,8 +87,8 @@ python code/reproduce_from_fastq.py --full
 
 ### Supplementary Exploratory Benchmark: Heuristics vs. Baselines
 *Note: This benchmark was not published in Xie et al. (2022); it is presented as a supplementary exploratory analysis.*
-- SADDLE Badness provides a **4.8-fold improvement in Average Precision** (0.0597 vs. 0.0125) and a **4.0-fold improvement in Precision@100** (24.0% vs. 6.0%) over nearest-neighbor free energy alone ($-\Delta G$).
-- Supervised models (Logistic Regression, XGBoost) were optimized for ranking discrimination under severe class imbalance (0.397% prevalence), resulting in high Brier scores (0.1986, 0.2143) due to probability miscalibration (mean prediction ~0.38 vs. base rate 0.0040).
+- SADDLE Badness provides a **4.8-fold improvement in Average Precision** (0.0597 vs. 0.0125) and a **4.0-fold improvement in Precision@100** (24.0% vs. 6.0%) over nearest-neighbor free energy alone ($-\Delta G_{37}^\circ$).
+- Supervised models (Logistic Regression, XGBoost, trained on an augmented feature set combining $\Delta G_{37}^\circ$, alignment properties, and approximate SADDLE Badness) were optimized for ranking discrimination under severe class imbalance (0.397% prevalence), resulting in high Brier scores (0.1986, 0.2143) due to probability miscalibration (mean prediction ~0.38 vs. base rate 0.0040).
 
 ---
 

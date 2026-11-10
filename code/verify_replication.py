@@ -24,7 +24,7 @@ This script verifies:
 2. Interaction Concentration: Heavy-tailed concentration of 24,872 primer-dimer
    reads across 295,296 candidate primer pairs, where 1 pair accounts for 67.57% of dimer reads.
 3. Supplementary Exploratory Benchmark: Empirical evaluation of SADDLE Badness heuristic
-   vs. SantaLucia nearest-neighbor thermodynamics (-dG) and machine learning models,
+   vs. SantaLucia nearest-neighbor thermodynamics (-dG37) and augmented machine learning models,
    including exact ROC-AUC, Average Precision, Precision@K, and Brier score calibration.
 4. Package Integrity: Verification of member file SHA-256 checksums from CHECKSUMS.tsv.
 5. Live FASTQ Verification: When invoked with --check-fastq, tests live read parsing

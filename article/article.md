@@ -153,9 +153,9 @@ $$\text{Badness}(P_1, P_2) = \sum_{k \in \mathcal{M}} 2^{\text{len}_k} \cdot 2^{
 where $\text{len}_k$ is match length, $\text{numGC}_k$ is GC count within the match, and $d_1^{(k)}, d_2^{(k)}$ are nucleotide distances from the 3' termini. In our benchmark, we evaluate an approximate 4–7 bp heuristic variant.
 
 We compare Badness against:
-1. **SantaLucia Thermodynamics ($-\Delta G$):** Hybridization free energy calculated at 60 °C using unified nearest-neighbor parameters [@santalucia1998unified].
-2. **Logistic Regression (Physics Features):** L2-regularized linear model trained on thermodynamic and alignment features.
-3. **XGBoost (Physics Features):** Gradient boosted decision tree ensemble trained on the same feature set.
+1. **SantaLucia Thermodynamics ($-\Delta G$):** Approximate nearest-neighbor hybridization free-energy score based on standard 37 °C parameters ($\Delta G_{37}^\circ$) [@santalucia1998unified].
+2. **Logistic Regression (Augmented Features):** L2-regularized linear model trained on thermodynamic free energy ($\Delta G_{37}^\circ$), terminal 3' hybridization, match lengths, GC content, and the approximate SADDLE-style Badness heuristic score.
+3. **XGBoost (Augmented Features):** Gradient boosted decision tree ensemble trained on the exact same augmented feature set (thermodynamics, alignment features, and approximate SADDLE-style Badness).
 
 To ensure deterministic evaluation without tie-breaking instability, candidates are ranked by primary score descending, with ties broken by ascending pair index: $\text{rank\_key}(i) = (-\text{score}_i, \text{pair\_index}_i)$.
 
@@ -166,17 +166,17 @@ Table 3 presents the evaluation across all 295,296 candidate pairs against empir
 | Model / Heuristic | Scoring Type | ROC-AUC | PR-AUC (AP) | Precision@10 | Precision@50 | Precision@100 | Brier Score |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | **SADDLE Badness** | Biophysical Heuristic | 0.7166 | **0.0597** | **40.0%** | **34.0%** | **24.0%** | N/A |
-| **SantaLucia ($-\Delta G$)** | Thermodynamic ($\Delta G$) | 0.7105 | 0.0125 | 20.0% | 10.0% | 6.0% | N/A |
-| **Logistic Regression** | Supervised Probabilistic | 0.7317 | 0.0205 | 10.0% | 4.0% | 8.0% | 0.1986 |
-| **XGBoost** | Supervised Probabilistic | **0.7564** | 0.0371 | 20.0% | 20.0% | 16.0% | 0.2143 |
+| **SantaLucia ($-\Delta G$)** | Thermodynamic ($\Delta G_{37}^\circ$) | 0.7105 | 0.0125 | 20.0% | 10.0% | 6.0% | N/A |
+| **Logistic Regression (Augmented)** | Supervised Probabilistic | 0.7317 | 0.0205 | 10.0% | 4.0% | 8.0% | 0.1986 |
+| **XGBoost (Augmented)** | Supervised Probabilistic | **0.7564** | 0.0371 | 20.0% | 20.0% | 16.0% | 0.2143 |
 | *Constant Baseline* | *Empirical Base Rate* | *0.5000* | *0.0040* | *0.4%* | *0.4%* | *0.4%* | *0.0040* |
 
-: Supplementary benchmark of sequence-based heuristics and supervised models across 295,296 candidate primer pairs from the 384-plex validation panel. Binary labels represent observed dimer formation ($\ge 1$ NGS read). Precision@$K$ evaluated using deterministic secondary key sorting.
+: Supplementary benchmark of sequence-based heuristics and supervised models across 295,296 candidate primer pairs from the 384-plex validation panel. Supervised models were trained on 96-plex panels using thermodynamic, sequence-alignment, and approximate SADDLE-style Badness features. Binary labels represent observed dimer formation ($\ge 1$ NGS read). Precision@$K$ evaluated using deterministic secondary key sorting.
 
 ### Findings from Supplementary Benchmarking
 
-1. **Heuristic vs. Thermodynamics:** SADDLE Badness achieves an Average Precision of 0.0597, representing a **4.8-fold improvement over nearest-neighbor free energy alone** ($-\Delta G$, AP = 0.0125) and a **4.0-fold improvement in Precision@100** (24.0% vs. 6.0%). This supports the hypothesis of Xie et al. that terminal 3' alignment and heavy GC penalties capture enzymatic extension risk more effectively than global hybridization stability.
-2. **Top-Rank Discrimination vs. Supervised Models:** SADDLE Badness outperforms both Logistic Regression (AP = 0.0205, P@100 = 8.0%) and XGBoost (AP = 0.0371, P@100 = 16.0%) in top-rank precision, demonstrating that simple biophysical heuristics remain competitive at the extreme head of the distribution.
+1. **Heuristic vs. Thermodynamics:** SADDLE Badness achieves an Average Precision of 0.0597, representing a **4.8-fold improvement over nearest-neighbor free energy alone** ($-\Delta G_{37}^\circ$, AP = 0.0125) and a **4.0-fold improvement in Precision@100** (24.0% vs. 6.0%). This supports the hypothesis of Xie et al. that terminal 3' alignment and heavy GC penalties capture enzymatic extension risk more effectively than global hybridization stability.
+2. **Top-Rank Discrimination vs. Supervised Models:** SADDLE Badness outperforms both Logistic Regression (AP = 0.0205, P@100 = 8.0%) and XGBoost (AP = 0.0371, P@100 = 16.0%) in top-rank precision, demonstrating that simple biophysical heuristics remain competitive at the extreme head of the distribution even when compared against supervised models incorporating Badness alongside thermodynamic parameters.
 3. **Severe Probability Miscalibration of Supervised Models:** Independent recalculation of Brier scores reveals that both Logistic Regression (0.1986) and XGBoost (0.2143) are severely miscalibrated relative to the uninformative baseline ($p(1-p) = 0.003953 \approx 0.0040$). Because the supervised models were trained to maximize ranking separation under class imbalance, their mean predicted probabilities (~0.38) greatly exceed the true empirical prevalence (0.00397), yielding large quadratic calibration penalties.
 
 # Methodological Disclosures
