@@ -14,7 +14,7 @@ This script performs two dedicated empirical audits directly from raw FASTQ data
    orientations (768 target alignments per read) to measure:
    - Cross-target false positive alignment rate among cognate reads across both strands.
    - Target sequence capture rate among non-cognate reads across both strands.
-   - Operational concordance between cognate-anchored alignment and exhaustive dual-strand all-target search.
+   - Operational binary concordance between cognate-anchored alignment and exhaustive dual-strand all-target search.
 
 2. Comprehensive Quantitative Indel Analysis (20,000 raw reads):
    Extracts full CIGAR alignment paths (Myers' exact bit-vector semi-global alignment via edlib)
@@ -214,7 +214,10 @@ def run_audits():
 
     total_cognate = cognate_match_own + cognate_fail_own
     total_noncognate = noncognate_match_any + noncognate_fail_all
-    concordance = 100.0 - (noncognate_match_any / tested_count * 100.0)
+    agreeing_reads = cognate_match_own + noncognate_fail_all
+    discordant_reads = cognate_fail_own + noncognate_match_any
+    concordance = (agreeing_reads / tested_count) * 100.0
+    discordance = (discordant_reads / tested_count) * 100.0
 
     elapsed_1 = time.time() - t0
     print(f"  Processed {tested_count:,} reads in {elapsed_1:.1f}s.")
@@ -228,7 +231,7 @@ def run_audits():
     print(f"  Arithmetic Check: {cognate_match_own} + {cognate_fail_own} + {noncognate_match_any} + {noncognate_fail_all} = {cognate_match_own + cognate_fail_own + noncognate_match_any + noncognate_fail_all} (expected {tested_count})")
     print(f"  Cognate-Anchored On-Target Rate: {cognate_match_own/tested_count*100:.2f}%")
     print(f"  All-384-Target Dual-Strand On-Target Rate: {(cognate_match_own + noncognate_match_any)/tested_count*100:.2f}%")
-    print(f"  Operational Concordance:         {concordance:.2f}%")
+    print(f"  Operational Binary Concordance:  {concordance:.2f}% (agreeing: {agreeing_reads:,} / {tested_count:,} | discordant: {discordant_reads:,} [{discordance:.2f}%])")
 
     # -------------------------------------------------------------------------
     # Audit 2: Comprehensive Quantitative Indel & CIGAR Analysis (20,000 raw reads)
@@ -378,7 +381,10 @@ def run_audits():
             },
             "cognate_anchored_ontarget_pct": round(cognate_match_own / tested_count * 100, 2),
             "all_384_target_dual_strand_ontarget_pct": round((cognate_match_own + noncognate_match_any) / tested_count * 100, 2),
+            "binary_agreement_reads": agreeing_reads,
+            "binary_discordant_reads": discordant_reads,
             "concordance_pct": round(concordance, 2),
+            "discordance_pct": round(discordance, 2),
         },
         "quantitative_indel_analysis": {
             "reads_scanned": n_reads_indel,

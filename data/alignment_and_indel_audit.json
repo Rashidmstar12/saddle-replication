@@ -27,7 +27,10 @@
     },
     "cognate_anchored_ontarget_pct": 43.86,
     "all_384_target_dual_strand_ontarget_pct": 46.38,
-    "concordance_pct": 97.48
+    "binary_agreement_reads": 4864,
+    "binary_discordant_reads": 136,
+    "concordance_pct": 97.28,
+    "discordance_pct": 2.72
   },
   "quantitative_indel_analysis": {
     "reads_scanned": 20000,

@@ -360,17 +360,58 @@ def run_pipeline(raw_dir: Path, max_reads: int = None):
     print(f"    - On-Target Amplicons:       {categories['method2_ontarget_80']:,} ({m2_80_on:.2f}%)  | Published Fig 3f: ~43% [{m2_80_status}]")
     print(f"    - Nonspecific Products:      {categories['method2_nonspecific_80']:,} ({m2_80_non:.2f}%)  | Published Fig 3f: ~56%")
 
-    # Dynamic pass/fail verification
-    all_matched = (dimer_diff <= 0.5) and (m1_diff <= 1.0) and (m2_75_diff <= 1.0 or m2_80_diff <= 1.0)
-    print("\n" + "=" * 78)
-    if all_matched:
-        print("STATUS: FASTQ CLASSIFICATION SUCCESSFULLY COMPLETED AND REPLICATED")
-        print("=" * 78)
-        return True
+    # Pass/fail verification
+    if max_reads is None:
+        # Full library run across all 3,942,385 reads: enforce exact integer agreement with canonical record
+        expected = {
+            "total_reads": 3942385,
+            "total_classified": 2860664,
+            "total_excluded": 1081721,
+            "no_adapter": 751644,
+            "qc_failed": 137086,
+            "primer_unmatched": 192991,
+            "dimers": 24878,
+            "method1_ontarget": 1254647,
+            "method1_nonspecific": 1581139,
+            "method2_ontarget_75": 1247496,
+            "method2_nonspecific_75": 1588290,
+            "method2_ontarget_80": 1223216,
+            "method2_nonspecific_80": 1612570,
+        }
+        mismatches = []
+        if total_reads != expected["total_reads"]:
+            mismatches.append(f"total_reads: observed {total_reads:,}, expected {expected['total_reads']:,}")
+        if total_classified != expected["total_classified"]:
+            mismatches.append(f"total_classified: observed {total_classified:,}, expected {expected['total_classified']:,}")
+        if total_excluded != expected["total_excluded"]:
+            mismatches.append(f"total_excluded: observed {total_excluded:,}, expected {expected['total_excluded']:,}")
+        for k in ["no_adapter", "qc_failed", "primer_unmatched", "dimers", "method1_ontarget", "method1_nonspecific", "method2_ontarget_75", "method2_nonspecific_75", "method2_ontarget_80", "method2_nonspecific_80"]:
+            if categories[k] != expected[k]:
+                mismatches.append(f"{k}: observed {categories[k]:,}, expected {expected[k]:,}")
+
+        print("\n" + "=" * 78)
+        if mismatches:
+            print("STATUS: FULL-RUN FASTQ CLASSIFICATION FAILED - EXACT COUNT MISMATCH DETECTED:", file=sys.stderr)
+            for m in mismatches:
+                print(f"  - {m}", file=sys.stderr)
+            print("=" * 78, file=sys.stderr)
+            return False
+        else:
+            print("STATUS: FULL-RUN FASTQ CLASSIFICATION ACHIEVED 100% EXACT INTEGER AGREEMENT WITH ARCHIVE")
+            print("=" * 78)
+            return True
     else:
-        print("STATUS: FASTQ CLASSIFICATION COMPLETED - REPLICATION TOLERANCE NOT MET", file=sys.stderr)
-        print("=" * 78, file=sys.stderr)
-        return False
+        # Sample mode (e.g. 50,000 reads): check statistical bounds
+        all_matched = (dimer_diff <= 0.5) and (m1_diff <= 1.0) and (m2_75_diff <= 1.0 or m2_80_diff <= 1.0)
+        print("\n" + "=" * 78)
+        if all_matched:
+            print("STATUS: SAMPLE FASTQ CLASSIFICATION SUCCESSFULLY COMPLETED AND REPLICATED")
+            print("=" * 78)
+            return True
+        else:
+            print("STATUS: SAMPLE FASTQ CLASSIFICATION COMPLETED - REPLICATION TOLERANCE NOT MET", file=sys.stderr)
+            print("=" * 78, file=sys.stderr)
+            return False
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Reproduce SADDLE Read Classification Directly from Raw FASTQ")

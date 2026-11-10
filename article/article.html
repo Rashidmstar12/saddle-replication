@@ -809,14 +809,18 @@ reconciles 100% of the tested reads without unexplained records.</li>
 deterministic 5,000-read audit sample, cognate-anchored classification
 yields 43.86% on-target (2,193 / 5,000), while exhaustive dual-strand
 all-384-target alignment yields 46.38% on-target ((2,193 + 126) /
-5,000), representing <strong>97.48% operational concordance</strong>
-(<span class="math inline">100% − 126/5, 000 × 100%</span>). Crucially,
-this concordance metric measures agreement specifically within this
-5,000-read sample between cognate-anchored and all-target semi-global
-gapped alignment; it is not derived from a full-dataset confusion
-matrix, should not be extrapolated as proof of identical classification
-across all 3.94 million reads, and does not establish mathematical
-equivalence to the original Bowtie2 amplicon mapping workflow.</li>
+5,000), representing <strong>97.28% operational binary
+concordance</strong> (<span
+class="math inline">[2,193+2,671]/5, 000 × 100% = 4, 864/5, 000</span>,
+with 136 discordant reads: 10 cognate reads failing quality and 126
+non-cognate reads achieving target alignment, representing 2.72%
+discordance). Crucially, this concordance metric measures agreement
+specifically within this 5,000-read sample between cognate-anchored and
+all-target semi-global gapped alignment; it is not derived from a
+full-dataset confusion matrix, should not be extrapolated as proof of
+identical classification across all 3.94 million reads, and does not
+establish mathematical equivalence to the original Bowtie2 amplicon
+mapping workflow.</li>
 </ul></li>
 <li><strong>Replication Scope and Framework Framing:</strong> This study
 is an independent, open-source <strong>qualified partial
@@ -1058,13 +1062,14 @@ amplicon from MOESM5. A separate dual-strand all-target audit across an
 initial deterministic sample of 5,000 classified reads (768 targets per
 read) confirmed 0.00% cross-target false positive alignment among
 cognate reads and a minor 2.52% target capture among non-cognate reads,
-establishing 97.48% operational concordance between cognate-anchored and
-all-target alignment. Crucially, this concordance metric measures
-agreement specifically within this 5,000-read sample; it is not derived
-from a full-dataset confusion matrix, should not be extrapolated as
-proof of identical classification across all 3.94 million reads, and
-does not establish mathematical equivalence to the original Bowtie2
-amplicon mapping workflow.</li>
+establishing 97.28% operational binary concordance between
+cognate-anchored and all-target alignment (<span
+class="math inline">[2,193+2,671]/5, 000</span>). Crucially, this
+concordance metric measures agreement specifically within this
+5,000-read sample; it is not derived from a full-dataset confusion
+matrix, should not be extrapolated as proof of identical classification
+across all 3.94 million reads, and does not establish mathematical
+equivalence to the original Bowtie2 amplicon mapping workflow.</li>
 </ul></li>
 <li><strong>Preprocessing Denominators:</strong> As detailed in Section
 3, published Figure 3f proportions (~43% / ~56% / ~1%) sum to 100%,
