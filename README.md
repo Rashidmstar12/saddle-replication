@@ -29,7 +29,7 @@ Verifies the complete 295,296-row candidate prediction table, read partitions, l
 ```bash
 git clone https://github.com/Rashidmstar12/saddle-replication.git
 cd saddle-replication
-pip install numpy scikit-learn
+pip install numpy scikit-learn openpyxl
 
 python code/verify_replication.py
 ```
@@ -53,10 +53,16 @@ python code/reproduce_from_fastq.py --full
 ### Primary Replicated Result: SADDLE 384-plex NGS Read Classification
 - **Target:** Figure 3f and main text of Xie et al. (2022).
 - **Dataset:** SADDLE-designed 384-plex panel (Sample E19, Illumina MiniSeq 2 $\times$ 150 bp, 3,942,385 raw reads; Figshare: `10.6084/m9.figshare.16944154.v3`, CC BY 4.0).
-- **Replication Outcome:**
-  - On-target amplicons: Published Figure 3f ~43% $\rightarrow$ **Replicated 43.86%** ($\Delta = +0.86\%$, PASS).
-  - Nonspecific background: Published Figure 3f ~56% $\rightarrow$ **Replicated 55.27%** ($\Delta = -0.73\%$, PASS).
-  - Primer-dimers: Published Figure 3f ~1% $\rightarrow$ **Replicated 0.87%** ($\Delta = -0.13\%$, PASS).
+- **Replication Outcomes Across Both Methodologies:**
+  - **Method 1 (Primer Pairing):**
+    - On-target amplicons: Published Figure 3f ~43% $\rightarrow$ **Replicated 43.86%** ($\Delta = +0.86\%$, PASS).
+    - Nonspecific background: Published Figure 3f ~56% $\rightarrow$ **Replicated 55.27%** ($\Delta = -0.73\%$, PASS).
+    - Primer-dimers: Published Figure 3f ~1% $\rightarrow$ **Replicated 0.87%** ($\Delta = -0.13\%$, PASS).
+  - **Method 2 (Reference Sequence Alignment $\ge 75\%$ Identity):**
+    - On-target amplicons: **39.49%** ($1,129,696$ reads).
+    - Nonspecific background: **59.64%** ($1,706,090$ reads).
+    - Primer-dimers: **0.87%** ($24,878$ reads, invariant across both methods!).
+    - **Reclassified Category Shift:** Exactly $124,951$ reads (4.37% of classified reads) shift from on-target to nonspecific when reference sequence alignment is enforced, quantifying off-target genomic mispriming.
 - **Interaction Concentration:** 24,872 observed primer-dimer reads across 295,296 candidate primer pairings. Dimer formation is strongly heavy-tailed: only 1,172 pairs form dimers, and a single dominant interaction (`rp213` $\times$ `rp371`) accounts for 16,805 reads (**67.57%** of all primer-dimer reads).
 
 ### Supplementary Exploratory Benchmark: Heuristics vs. Baselines
@@ -87,18 +93,20 @@ saddle-replication/
 │   ├── verify_read_accounting.py  # Mutually exclusive read partition audit
 │   └── verify_replication.py      # Standalone replication verifier (~1.5s runtime)
 └── data/
-    ├── baseline_predictions_384.tsv      # 295,296 rows of candidate pairs & predictions
-    ├── phase0e_recalculated_metrics.json # Full benchmark metric dictionary
-    ├── saddle_384_dimer_pairs.tsv        # Empirical read counts for all 1,172 dimer pairs
-    ├── saddle_384_read_accounting.json   # Exhaustive read partition counts
-    └── saddle_384_summary_metrics.json   # Summary metrics and comparison tolerances
+    ├── baseline_predictions_384.tsv        # 295,296 rows of candidate pairs & predictions
+    ├── phase0e_recalculated_metrics.json   # Full benchmark metric dictionary
+    ├── reference_384_amplicons.fasta       # Sequences of all 384 intended target amplicons
+    ├── reference_alignment_comparison.json  # Read counts comparing Method 1 vs Method 2
+    ├── saddle_384_dimer_pairs.tsv          # Empirical read counts for all 1,172 dimer pairs
+    ├── saddle_384_read_accounting.json     # Exhaustive read partition counts
+    └── saddle_384_summary_metrics.json     # Summary metrics and comparison tolerances
 ```
 
 ---
 
 ## 4. Methodological Disclosures
 
-1. **Clean-Room Python Implementation:** This pipeline is an independent Python reconstruction based on the methods described by Xie et al. [-@xie2022designing]. It does not execute the authors' original MATLAB or Bowtie2 scripts.
+1. **Dual Evaluation: Primer Pairing vs. Reference Alignment:** This replication provides both a turnkey primer-pairing heuristic (Method 1) and full reference amplicon sequence alignment (Method 2), transparently measuring the 4.37% category shift resulting from internal off-target sequences while confirming that primer-dimer suppression (0.87% vs ~1%) is invariant under both methods.
 2. **Proprietary Algorithm Status:** SADDLE's simulated annealing primer selection software remains withheld under patent protection. Only the empirical NGS validation and heuristic scoring components are publicly replicable.
 3. **Distributional Characterization:** Primer-dimer formation is described as heavy-tailed and highly concentrated; no formal power-law distribution fit was conducted.
 4. **Deterministic Tie-Breaking:** All rankings enforce secondary key sorting by `pair_index` to guarantee exact numerical reproducibility across environments.

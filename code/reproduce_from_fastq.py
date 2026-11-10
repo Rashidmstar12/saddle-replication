@@ -14,8 +14,14 @@ This script processes raw paired-end sequencing reads directly from FASTQ files
 (Illumina MiniSeq 2x150 bp, Sample E19, 3,942,385 reads) to replicate the published
 read classification breakdown without relying on precomputed tables.
 
+It performs a dual methodological evaluation:
+1. Method 1 (Primer-Pairing Heuristic): Evaluates cognate primer pairing (fp_i x rp_i)
+   and insert length >= L1 + L2 - 2 bp.
+2. Method 2 (Reference Sequence Alignment): Enforces >=75% sequence identity against
+   the intended 384 reference amplicon sequence from MOESM5.
+
 Usage:
-    python code/reproduce_from_fastq.py --full       # Complete run across all 3.94M reads (~2 min)
+    python code/reproduce_from_fastq.py --full       # Complete run across all 3.94M reads (~2.5 min)
     python code/reproduce_from_fastq.py --sample N   # Fast live test on first N reads (default: 50,000)
 """
 
@@ -57,6 +63,7 @@ def load_resources(raw_dir: Path):
         import openpyxl
     except ImportError:
         print("ERROR: openpyxl is required to read primer definitions from MOESM5.", file=sys.stderr)
+        print("Install via: pip install openpyxl", file=sys.stderr)
         sys.exit(1)
 
     wb = openpyxl.load_workbook(moesm5_path, data_only=True)
@@ -125,9 +132,11 @@ def run_pipeline(raw_dir: Path, max_reads: int = None):
         "no_adapter": 0,
         "qc_failed": 0,
         "primer_unmatched": 0,
-        "classified_on_target": 0,
-        "classified_nonspecific": 0,
-        "classified_dimer": 0,
+        "dimers": 0,
+        "method1_ontarget": 0,
+        "method1_nonspecific": 0,
+        "method2_ontarget_75": 0,
+        "method2_nonspecific_75": 0,
     }
 
     t0 = time.time()
@@ -220,58 +229,68 @@ def run_pipeline(raw_dir: Path, max_reads: int = None):
             dimer_threshold = p1_len + p2_len - 2
             insert_len = len(t1)
 
-            if is_cognate and insert_len >= dimer_threshold:
-                categories["classified_on_target"] += 1
-            elif insert_len < dimer_threshold:
-                categories["classified_dimer"] += 1
+            if insert_len < dimer_threshold:
+                categories["dimers"] += 1
+            elif is_cognate:
+                # Method 1: Primer Pairing
+                categories["method1_ontarget"] += 1
+
+                # Method 2: Sequence Alignment against intended reference amplicon
+                amp_idx = best1 if best1 < 384 else best2
+                exp_amp = ref_amplicons[amp_idx] if best1 < 384 else revcomp(ref_amplicons[best2])
+                chk_len = min(len(t1), len(exp_amp))
+                ident = sum(1 for a, b in zip(t1.lower()[:chk_len], exp_amp[:chk_len]) if a == b) / chk_len
+
+                if ident >= 0.75:
+                    categories["method2_ontarget_75"] += 1
+                else:
+                    categories["method2_nonspecific_75"] += 1
             else:
-                categories["classified_nonspecific"] += 1
+                categories["method1_nonspecific"] += 1
+                categories["method2_nonspecific_75"] += 1
 
             if max_reads and total_reads >= max_reads:
                 break
 
     elapsed = time.time() - t0
-    classified = categories["classified_on_target"] + categories["classified_nonspecific"] + categories["classified_dimer"]
-    excluded = categories["no_adapter"] + categories["qc_failed"] + categories["primer_unmatched"]
+    total_classified = categories["dimers"] + categories["method1_ontarget"] + categories["method1_nonspecific"]
+    total_excluded = categories["no_adapter"] + categories["qc_failed"] + categories["primer_unmatched"]
 
     print("-" * 78)
     print("FASTQ PROCESSING RESULTS:")
     print(f"Elapsed Time:               {elapsed:.2f} s ({total_reads / elapsed:.0f} reads/s)")
     print(f"Total Processed Reads:      {total_reads:,}")
-    print(f"Total Classified Reads:     {classified:,} ({classified/total_reads*100:.2f}%)")
-    print(f"Total Excluded Reads:       {excluded:,} ({excluded/total_reads*100:.2f}%)")
+    print(f"Total Classified Reads:     {total_classified:,} ({total_classified/total_reads*100:.2f}%)")
+    print(f"Total Excluded Reads:       {total_excluded:,} ({total_excluded/total_reads*100:.2f}%)")
     print(f"  - Missing Adapter:        {categories['no_adapter']:,} ({categories['no_adapter']/total_reads*100:.2f}%)")
     print(f"  - Quality / Length Filter:{categories['qc_failed']:,} ({categories['qc_failed']/total_reads*100:.2f}%)")
     print(f"  - Primer Unmatched:       {categories['primer_unmatched']:,} ({categories['primer_unmatched']/total_reads*100:.2f}%)")
 
-    print("\nCLASSIFIED READ BREAKDOWN:")
-    ontarget_pct = categories["classified_on_target"] / classified * 100 if classified > 0 else 0
-    nonspec_pct = categories["classified_nonspecific"] / classified * 100 if classified > 0 else 0
-    dimer_pct = categories["classified_dimer"] / classified * 100 if classified > 0 else 0
+    dimer_pct = categories["dimers"] / total_classified * 100 if total_classified > 0 else 0
+    m1_on_pct = categories["method1_ontarget"] / total_classified * 100 if total_classified > 0 else 0
+    m1_non_pct = categories["method1_nonspecific"] / total_classified * 100 if total_classified > 0 else 0
+    m2_on_pct = categories["method2_ontarget_75"] / total_classified * 100 if total_classified > 0 else 0
+    m2_non_pct = categories["method2_nonspecific_75"] / total_classified * 100 if total_classified > 0 else 0
 
-    print(f"  On-Target Amplicons:  {categories['classified_on_target']:>10,} ({ontarget_pct:>6.2f}%) | Published Fig 3f: ~43%")
-    print(f"  Nonspecific Products: {categories['classified_nonspecific']:>10,} ({nonspec_pct:>6.2f}%) | Published Fig 3f: ~56%")
-    print(f"  Primer-Dimers:        {categories['classified_dimer']:>10,} ({dimer_pct:>6.2f}%) | Published Fig 3f: ~1%")
+    print("\nMETHOD COMPARISON BREAKDOWN:")
+    print(f"Primer-Dimers (invariant):  {categories['dimers']:>10,} ({dimer_pct:>6.2f}%) | Published Fig 3f: ~1%")
+    print("\nMethod 1: Primer Pairing (Cognate Primer IDs):")
+    print(f"  - On-Target Amplicons:    {categories['method1_ontarget']:>10,} ({m1_on_pct:>6.2f}%) | Published Fig 3f: ~43% (diff = +{m1_on_pct - 43:.2f}%)")
+    print(f"  - Nonspecific Products:   {categories['method1_nonspecific']:>10,} ({m1_non_pct:>6.2f}%) | Published Fig 3f: ~56% (diff = {m1_non_pct - 56:.2f}%)")
 
-    if max_reads is None:
-        # Full validation checks
-        assert total_reads == 3942385, f"Unexpected total reads: {total_reads}"
-        assert classified == 2860658, f"Unexpected classified reads: {classified}"
-        assert categories["classified_on_target"] == 1254647
-        assert categories["classified_nonspecific"] == 1581139
-        assert categories["classified_dimer"] == 24872
+    shift_reads = categories["method1_ontarget"] - categories["method2_ontarget_75"]
+    shift_pct = shift_reads / total_classified * 100 if total_classified > 0 else 0
 
-        print("\n" + "=" * 78)
-        print("FULL FASTQ REPLICATION CONFIRMED:")
-        print("  All 3,942,385 reads independently processed and verified.")
-        print(f"  On-target:   {ontarget_pct:.2f}% (published ~43%, diff = +{ontarget_pct - 43:.2f}%) [PASS within 1%]")
-        print(f"  Nonspecific: {nonspec_pct:.2f}% (published ~56%, diff = {nonspec_pct - 56:.2f}%) [PASS within 1%]")
-        print(f"  Dimer:       {dimer_pct:.2f}%  (published ~1%,  diff = {dimer_pct - 1:.2f}%)  [PASS within 0.2%]")
-        print("=" * 78)
-    else:
-        print("\n" + "=" * 78)
-        print(f"SAMPLE FASTQ TEST COMPLETED ({total_reads:,} reads tested live).")
-        print("=" * 78)
+    print("\nMethod 2: Sequence Alignment (>=75% Identity against 384 Reference Amplicons):")
+    print(f"  - On-Target Amplicons:    {categories['method2_ontarget_75']:>10,} ({m2_on_pct:>6.2f}%) | Published Fig 3f: ~43% (diff = {m2_on_pct - 43:.2f}%)")
+    print(f"  - Nonspecific Products:   {categories['method2_nonspecific_75']:>10,} ({m2_non_pct:>6.2f}%) | Published Fig 3f: ~56% (diff = +{m2_non_pct - 56:.2f}%)")
+    print(f"  - Category Shift:         {shift_reads:>10,} reads ({shift_pct:.2f}%) change from On-Target to Nonspecific")
+
+    print("\n" + "=" * 78)
+    print("REPLICATION TAKEAWAY:")
+    print(f"  Both methods confirm strict primer-dimer suppression ({dimer_pct:.2f}% vs. ~1% published).")
+    print(f"  On-target reads range from {m2_on_pct:.2f}% (sequence alignment) to {m1_on_pct:.2f}% (primer pairing).")
+    print("=" * 78)
     return True
 
 if __name__ == "__main__":

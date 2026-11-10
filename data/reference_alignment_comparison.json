@@ -1,0 +1,37 @@
+{
+  "total_raw_reads": 3942385,
+  "total_classified_reads": 2860664,
+  "total_excluded_reads": 1081721,
+  "exclusions": {
+    "missing_adapter": 751644,
+    "qc_failed": 137086,
+    "primer_unmatched": 192991
+  },
+  "primer_dimers": {
+    "count": 24878,
+    "pct_of_classified": 0.8697,
+    "published_fig3f": "~1%"
+  },
+  "method1_primer_pairing": {
+    "ontarget_count": 1254647,
+    "ontarget_pct": 43.8586,
+    "nonspecific_count": 1581139,
+    "nonspecific_pct": 55.2717
+  },
+  "method2_sequence_alignment_75": {
+    "ontarget_count": 1129696,
+    "ontarget_pct": 39.4907,
+    "nonspecific_count": 1706090,
+    "nonspecific_pct": 59.6397,
+    "shifted_to_nonspecific": 124951,
+    "shifted_pct": 4.3679
+  },
+  "method2_sequence_alignment_80": {
+    "ontarget_count": 1118456,
+    "ontarget_pct": 39.0978,
+    "nonspecific_count": 1717330,
+    "nonspecific_pct": 60.0326,
+    "shifted_to_nonspecific": 136191,
+    "shifted_pct": 4.7608
+  }
+}
