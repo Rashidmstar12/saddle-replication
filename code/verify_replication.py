@@ -295,11 +295,12 @@ def run_verification(check_fastq: bool = False, full_fastq: bool = False) -> boo
     primer_unmatched = ra['categories'].get('primer_unmatched', ra['categories'].get('primer_unmatched_both', 0) + ra['categories'].get('primer_unmatched_r1_only', 0) + ra['categories'].get('primer_unmatched_r2_only', 0))
 
     print(f"  Total raw paired-end reads: {raw_pairs:,} (expected 3,942,385)")
-    print(f"  Total classified reads:     {classified:,} ({classified/raw_pairs*100:.2f}% of raw depth)")
+    print(f"  Total classified reads:     {classified:,} ({classified/raw_pairs*100:.2f}% of raw depth) [derived post-filter denominator]")
     print(f"  Total excluded reads:       {excluded:,} ({excluded/raw_pairs*100:.2f}% of raw depth)")
     print(f"    - Adapter missing:        {no_adp:,} (19.07% of raw)")
     print(f"    - QC filtered (Q30/len):  {qc_filt:,} (3.48% of raw)")
     print(f"    - Primer unmatched:       {primer_unmatched:,} (4.90% of raw)")
+    print("  Note: Proportions are evaluated on derived post-filter classified reads; exact integer denominator was not reported in Figure 3f.")
 
     # Validate read partition integrity
     if raw_pairs != 3942385 or classified != 2860658 or excluded != 1081727:
