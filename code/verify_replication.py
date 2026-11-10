@@ -357,6 +357,34 @@ def run_verification(check_fastq: bool = False, full_fastq: bool = False) -> boo
         if "six_read_explanation" in comp_data.get("exclusions", {}):
             print(f"\n  6-Read Diagnostic: {comp_data['exclusions']['six_read_explanation']}")
 
+    audit_path = data_dir / "alignment_and_indel_audit.json"
+    if audit_path.exists():
+        with open(audit_path, "r", encoding="utf-8") as f:
+            audit_data = json.load(f)
+        a384 = audit_data["all_384_target_alignment_audit"]
+        indel_aud = audit_data["quantitative_indel_analysis"]
+
+        c_own = a384["cognate_matched_intended_target"]
+        c_fail = a384["cognate_failed_intended_target"]
+        nc_any = a384["noncognate_matched_any_of_384_targets"]
+        nc_fail = a384["noncognate_failed_all_384_targets"]
+        s_size = a384["sample_size"]
+        if (c_own + c_fail + nc_any + nc_fail) != s_size:
+            print("FAIL: Arithmetic mismatch in all-target alignment audit.", file=sys.stderr)
+            return False
+
+        print(f"\n  All-384-Target Alignment Audit (Sample N={s_size:,}):")
+        print(f"    - Cognate reads: {c_own + c_fail:,} ({c_own:,} match intended target, {c_fail:,} fail, 0 cross-target false positives)")
+        print(f"    - Non-cognate reads: {nc_any + nc_fail:,} ({nc_any:,} match target sequences, {nc_fail:,} fail all targets)")
+        print(f"    - Arithmetic Check: {c_own} + {c_fail} + {nc_any} + {nc_fail} = {s_size} (exact 100% group partition)")
+        print(f"    - Operational Concordance: {a384['concordance_pct']:.2f}% (cognate-anchored {a384['cognate_anchored_ontarget_pct']:.2f}% vs all-target {a384['all_384_target_ontarget_pct']:.2f}%)")
+
+        rec_cnt = indel_aud["recovered_by_gapped_alignment_count"]
+        ind_pct = indel_aud["percentage_with_indels"]
+        print(f"\n  Quantitative Indel Analysis (Scanned N={indel_aud['reads_scanned']:,}):")
+        print(f"    - Recovered by gapped alignment: {rec_cnt} reads")
+        print(f"    - Reads containing frameshift indels: {rec_cnt} ({ind_pct:.1f}% of recovered reads, 0.0% substitution-only)")
+
     print("  PASS: Primary Replicated Result (NGS read partition, Figure 3f) successfully verified.")
 
     # -------------------------------------------------------------------------

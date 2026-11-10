@@ -541,44 +541,61 @@ Insights}\label{biological-and-methodological-insights}
   earlier exploratory audits, evaluating reference sequence matching via
   ungapped character-by-character string comparison artificially
   depressed on-target classification to 39.49\% (1,129,696 reads). To
-  determine the exact molecular cause, we conducted a quantitative CIGAR
-  analysis across 615 audit reads that passed gapped alignment
+  determine the exact molecular cause, our audit script
+  (\texttt{code/audit\_alignment\_and\_indels.py}) parsed full CIGAR
+  alignment paths across 615 audit reads that passed gapped alignment
   (\(\ge 75\%\) identity) but failed ungapped positional matching. Every
   single recovered read (\textbf{100.0\%, 615/615}) contained insertions
-  or deletions: 7.8\% (48/615) contained 1-bp deletions, 0.3\% (2/615)
-  contained 1-bp insertions, and 91.9\% (565/615) exhibited multiple
+  or deletions: 7.80\% (48/615) contained 1-bp deletions, 0.33\% (2/615)
+  contained 1-bp insertions, and 91.87\% (565/615) exhibited multiple
   indels or homopolymer stutters; \textbf{0.0\% had substitutions only}.
-  For example, in a 103-bp read matching target amplicon 210
-  (\texttt{CIGAR:\ 56=1D9=1X37=}), a single 1-bp deletion at position 56
-  caused unaligned positional identity to drop from 98.1\% to 64.1\% by
-  shifting the downstream reading frame. Gapped semi-global alignment
-  (\texttt{edlib}) resolves this frame shift, restoring on-target
-  classification to \textbf{43.61\%} (\(\ge 75\%\) identity,
-  \(\Delta = +0.61\%\)) and \textbf{42.76\%} (\(\ge 80\%\) identity,
-  \(\Delta = -0.24\%\)).
+  For example, in read
+  \texttt{@M04612:271:000000000-CWC2J:1:1101:16920:1534} matching
+  amplicon 351 (\texttt{CIGAR:\ 56=1D9=1X37=}), a single 1-bp deletion
+  at position 56 caused unaligned positional identity to drop from
+  98.06\% to 64.08\% by shifting the downstream reading frame. Gapped
+  semi-global alignment (\texttt{edlib}) resolves this frame shift,
+  restoring on-target classification to \textbf{43.61\%} (\(\ge 75\%\)
+  identity, \(\Delta = +0.61\%\)) and \textbf{42.76\%} (\(\ge 80\%\)
+  identity, \(\Delta = -0.24\%\)). Complete CIGAR strings, read
+  identifiers, and indel counts are recorded in
+  \texttt{data/alignment\_and\_indel\_audit.json}.
 \item
   \textbf{Empirical Concordance Between Cognate-Anchored Alignment and
   All-384-Target Search:} To test whether restricting sequence alignment
   to the cognate target amplicon introduces classification bias, we
-  aligned a representative audit sample of 5,000 classified non-dimer
-  reads against all 384 reference amplicons simultaneously:
+  developed an independent empirical audit script
+  (\texttt{code/audit\_alignment\_and\_indels.py}) and recorded full
+  per-read results in \texttt{data/alignment\_and\_indel\_audit.json}.
+  Aligning a representative audit sample of 5,000 classified non-dimer
+  reads against all 384 reference amplicons simultaneously partitions
+  the sample into:
 
   \begin{itemize}
   \tightlist
   \item
-    \emph{Cross-Target Specificity:} Out of 2,193 cognate on-target
-    reads, \textbf{0 reads (0.00\%)} aligned to a different amplicon
-    (\(\ge 75\%\) identity). Because the 384 amplicons represent
-    distinct genomic loci, cognate reads do not cross-align to
-    non-target amplicons.
+    \emph{Cognate Reads (2,203 reads, 44.06\% of sample):} Exactly 2,193
+    reads (99.55\% of cognates) aligned to their intended cognate target
+    (\(\ge 75\%\) identity) and 10 reads (0.45\%) failed due to low
+    sequence quality. Crucially, \textbf{0 reads (0.00\%)} aligned to a
+    different amplicon, demonstrating zero cross-target false positive
+    assignments across the 384 loci.
   \item
-    \emph{Non-Cognate Target Capture:} Out of 2,797 non-cognate reads,
-    only 61 reads (1.22\% of total reads) achieved \(\ge 75\%\)
-    alignment to any of the 384 target amplicons.
+    \emph{Non-Cognate Reads (2,797 reads, 55.94\% of sample):} Exactly
+    2,736 reads (97.82\% of non-cognates) failed alignment against all
+    384 amplicons, while 61 reads (2.18\% of non-cognates, 1.22\% of
+    total sample) achieved \(\ge 75\%\) sequence alignment to a target
+    sequence.
   \item
-    \emph{Concordance:} Cognate-anchored alignment yields 43.86\%
-    on-target; all-384-target alignment yields 45.08\% on-target (a
-    minor 1.22\% difference). Both confirm that multiplex PCR pools
+    \emph{Exact Arithmetic Reconciliation:} The sum of all four mutually
+    exclusive partitions (\(2,193 + 10 + 61 + 2,736 = 5,000\))
+    reconciles 100\% of the tested reads without unexplained records.
+  \item
+    \emph{Operational Concordance:} Cognate-anchored classification
+    yields 43.86\% on-target (2,193 / 5,000), while exhaustive
+    all-384-target alignment yields 45.08\% on-target ((2,193 + 61) /
+    5,000), confirming \textbf{98.78\% operational concordance}
+    (\(100\% - 1.22\%\)). Both demonstrate that multiplex PCR pools
     designed under SADDLE achieve \(\approx 43\%\) on-target specificity
     while rigorously suppressing primer-dimer amplification to under
     1\%.

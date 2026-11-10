@@ -68,9 +68,9 @@ python code/reproduce_from_fastq.py --full
     - Primer-dimers: 0.63% ($24,878$ reads)
     - Excluded reads: 27.44% ($1,081,721$ reads: 19.07% adapter missing, 3.48% low QC/short, 4.90% primer unmatched).
 - **Empirical Alignment Concordance:**
-  - Restricting gapped sequence alignment to cognate pairs achieves **98.8% operational concordance** with a full all-384-target search: 0.00% cross-target false positive alignment among cognate reads, and only 1.22% target sequence capture among non-cognate reads.
+  - Audited via `code/audit_alignment_and_indels.py` across 5,000 non-dimer reads against all 384 reference amplicons simultaneously. Sample reconciles into 2,203 cognate reads (2,193 match own target, 10 fail, 0 cross-target false positives) + 2,797 non-cognate reads (61 match target amplicons, 2,736 fail all targets), with exact arithmetic sum ($2,193 + 10 + 61 + 2,736 = 5,000$). Confirms **98.78% operational concordance** between cognate-anchored alignment (43.86%) and all-384-target alignment (45.08%).
 - **Quantitative Indel Analysis:**
-  - 100% of reads recovered by gapped alignment that failed ungapped positional matching contain indels (7.8% 1-bp deletion, 0.3% 1-bp insertion, 91.9% multi-indel/frameshifts; 0.0% substitution-only). Frameshift indels (e.g. `56=1D9=1X37=`) cause ungapped positional identity to drop artificially to 64.1%, whereas gapped alignment preserves 98.1% sequence identity.
+  - CIGAR inspection across 615 audit reads recovered by gapped alignment confirms that **100.0% (615/615) contain indels** (7.80% 1-bp deletion, 0.33% 1-bp insertion, 91.87% multi-indel/stutters; **0.0% substitution-only**). Frameshift indels (e.g. `56=1D9=1X37=`) cause unaligned positional identity to drop to 64.1%, whereas gapped alignment preserves 98.1% identity. Full CIGAR records are stored in `data/alignment_and_indel_audit.json`.
 - **Interaction Concentration:** 24,872 to 24,878 observed primer-dimer reads across 295,296 candidate primer pairings. Dimer formation is strongly heavy-tailed: only 1,172 pairs form dimers, and a single dominant interaction (`rp213` $\times$ `rp371`, 16,805 reads) accounts for **67.57%** of dimer reads under the 24,872 baseline partition ($16,805 / 24,872$) and **67.55%** under the 24,878 rerun partition ($16,805 / 24,878$).
 
 ### Supplementary Exploratory Benchmark: Heuristics vs. Baselines
@@ -94,6 +94,7 @@ saddle-replication/
 │   ├── bibliography.bib           # Verified BibTeX references with authentic DOIs/PMIDs
 │   └── metadata.yaml              # Official ReScience C metadata file
 ├── code/
+│   ├── audit_alignment_and_indels.py # Empirical 384-target concordance & CIGAR indel audit
 │   ├── audit_code_equivalence.py  # Structural comparison between MATLAB and Python logic
 │   ├── reconstruct_saddle_384.py  # Full read-classification pipeline from FASTQ
 │   ├── reproduce_from_fastq.py    # Turnkey FASTQ streaming pipeline (--sample or --full)
@@ -101,6 +102,7 @@ saddle-replication/
 │   ├── verify_read_accounting.py  # Mutually exclusive read partition audit
 │   └── verify_replication.py      # Standalone replication verifier (~1.5s runtime)
 └── data/
+    ├── alignment_and_indel_audit.json      # Empirical all-target concordance & CIGAR output
     ├── baseline_predictions_384.tsv        # 295,296 rows of candidate pairs & predictions
     ├── full_fastq_run_audit.log            # Execution audit log across all 3.94M raw FASTQ reads
     ├── phase0e_recalculated_metrics.json   # Full benchmark metric dictionary
