@@ -274,30 +274,30 @@ amplification. In 2022, Xie et al. introduced SADDLE (<em>Simulated
 Annealing Design using Dimer Likelihood Estimation</em>, <em>Nature
 Communications</em>, 13, 1881; PMID: 35410464), describing an empirical
 heuristic scoring framework and simulated annealing algorithm to design
-multiplex primer pools up to 384-plex. While the original authors openly
-deposited raw sequencing data and their post-sequencing analysis scripts
+multiplex primer pools up to 384-plex. While the original authors made
+their post-sequencing analysis scripts
 (<code>analysis_code.ipynb</code>, <code>Data_process.m</code>,
-<code>Dimer_Identify.m</code>) on Figshare and GitHub under a CC BY 4.0
-license, executing their workflow requires commercial MATLAB and
-external Bowtie2 installations, while the proprietary simulated
-annealing primer design algorithm was withheld under patent protection.
-In this work, following ReScience C guidelines, we present an
-independent <strong>qualified partial replication</strong> focused on
-the central empirical NGS validation finding of Xie et al.: the read
-classification breakdown and primer-interaction distribution of the
-SADDLE-designed 384-plex validation panel across 3,942,385 raw
-paired-end sequencing reads (Sample E19; Figure 3f). Using an
-independent, open-source Python reimplementation incorporating both
-primer-pairing classification (Method 1) and genuine gapped semi-global
-sequence alignment against assigned target amplicons (Method 2 via
-<code>edlib</code>), our pipeline classifies a derived post-filter
-denominator of 2,860,664 reads into 43.61% to 43.86% on-target
-amplicons, 55.27% to 55.52% nonspecific products, and 0.87%
-primer-dimers (24,878 reads), approximately reproducing the published
-Figure 3f proportions (~43%, ~56%, ~1%) within 0.86% for Method 1 and
-0.61% for Method 2 (within a 1.0 percentage point scientific tolerance).
-Evaluated over the full raw instrument library (<span
-class="math inline"><em>N</em> = 3, 942, 385</span>), on-target
+<code>Dimer_Identify.m</code>) publicly available through GitHub and
+deposited raw sequencing data on Figshare under a CC BY 4.0 license,
+executing their workflow requires commercial MATLAB and external Bowtie2
+installations, while the proprietary simulated annealing primer design
+algorithm was withheld under patent protection. In this work, following
+ReScience C guidelines, we present an independent <strong>qualified
+partial replication</strong> focused on the central empirical NGS
+validation finding of Xie et al.: the read classification breakdown and
+primer-interaction distribution of the SADDLE-designed 384-plex
+validation panel across 3,942,385 raw paired-end sequencing reads
+(Sample E19; Figure 3f). Using an independent, open-source Python
+reimplementation incorporating both primer-pairing classification
+(Method 1) and genuine gapped semi-global sequence alignment against
+assigned target amplicons (Method 2 via <code>edlib</code>), our
+pipeline classifies a derived post-filter denominator of 2,860,664 reads
+into 43.61% to 43.86% on-target amplicons, 55.27% to 55.52% nonspecific
+products, and 0.87% primer-dimers (24,878 reads), approximately
+reproducing the published Figure 3f proportions (~43%, ~56%, ~1%) within
+0.86% for Method 1 and 0.61% for Method 2 (within a 1.0 percentage point
+scientific tolerance). Evaluated over the full raw instrument library
+(<span class="math inline"><em>N</em> = 3, 942, 385</span>), on-target
 amplicons represent 31.64% of sequencer output. We further corroborate
 the severe heavy-tailed concentration of primer-dimer formation across
 the 295,296 candidate primer pairings, where only 1,172 pairs (0.397%)
@@ -357,16 +357,17 @@ remaining reads (~56%) representing nonspecific background products
 formed by non-cognate primer pairings.</p>
 <p>Despite the impact of SADDLE, computational reproducibility is
 constrained by two key factors: 1. <strong>Software Ecosystem and
-Proprietary Restrictions:</strong> While the original authors openly
-deposited their post-sequencing analysis workflow on Figshare and GitHub
-(comprising a Jupyter notebook <code>analysis_code.ipynb</code>, MATLAB
-scripts <code>Data_process.m</code> and <code>Dimer_Identify.m</code>,
-and Bowtie2 index files under CC BY 4.0), executing this workflow
-requires a commercial MATLAB license and an external Bowtie2
-installation configured on Linux/macOS. Furthermore, SADDLE’s simulated
-annealing primer pool design software was withheld under intellectual
-property and patent protection (“available upon request for
-non-commercial academic use” <span class="citation"
+Proprietary Restrictions:</strong> While the original authors made their
+post-sequencing analysis workflow publicly available on GitHub and
+Figshare (comprising a Jupyter notebook
+<code>analysis_code.ipynb</code>, MATLAB scripts
+<code>Data_process.m</code> and <code>Dimer_Identify.m</code>, and
+Bowtie2 index files), with raw sequencing data deposited under CC BY
+4.0, executing this workflow requires a commercial MATLAB license and an
+external Bowtie2 installation configured on Linux/macOS. Furthermore,
+SADDLE’s simulated annealing primer pool design software was withheld
+under intellectual property and patent protection (“available upon
+request for non-commercial academic use” <span class="citation"
 data-cites="xie2022designing">(Xie et al. 2022)</span>). 2.
 <strong>Independent Verification of Empirical Partitions:</strong> While
 the authors published rounded percentage summaries in Figure 3f of their
@@ -402,11 +403,12 @@ Communications</em> (Volume 13, Article 1881; PMID: 35410464). Primer
 sequences, genomic coordinates, and assay details were provided in
 Supplementary Data (MOESM5). The raw paired-end sequencing reads for the
 384-plex validation panel (Sample E19, Illumina MiniSeq 2 <span
-class="math inline">×</span> 150 bp) and post-hoc analysis scripts
-(<code>Data_process.m</code>, <code>Dimer_Identify.m</code>,
-<code>analysis_code.ipynb</code>) were deposited on Figshare (DOI:
+class="math inline">×</span> 150 bp) were deposited on Figshare (DOI:
 10.6084/m9.figshare.16944154.v3) under a Creative Commons Attribution
-4.0 International license (CC BY 4.0).</p>
+4.0 International license (CC BY 4.0), while analysis scripts
+(<code>Data_process.m</code>, <code>Dimer_Identify.m</code>,
+<code>analysis_code.ipynb</code>) were made publicly available through
+GitHub and Figshare.</p>
 <p>Our audit of the deposited artifacts identified: - <strong>Design
 Code:</strong> The simulated annealing optimization algorithm was not
 included in the public deposit, with the manuscript stating: <em>“The
@@ -414,10 +416,10 @@ code for SADDLE primer design is available upon request for
 non-commercial academic use”</em> subject to patent protection.
 Consequently, the design algorithm itself is out of scope for an open,
 autonomous replication. - <strong>Validation Pipeline:</strong> The
-authors openly deposited post-hoc analysis scripts
+authors made their post-hoc analysis scripts
 (<code>analysis_code.ipynb</code>, <code>Data_process.m</code>,
-<code>Dimer_Identify.m</code>) and Bowtie2 reference indices on Figshare
-and GitHub under CC BY 4.0. The pipeline trims Illumina adapters,
+<code>Dimer_Identify.m</code>) and Bowtie2 reference indices publicly
+available on GitHub and Figshare. The pipeline trims Illumina adapters,
 filters reads by Phred quality and length, aligns reads to intended
 reference amplicons using Bowtie2 <span class="citation"
 data-cites="langmead2012fast">(Langmead and Salzberg 2012)</span>,
@@ -575,8 +577,9 @@ In addition to cognate primer matching, the insert sequence is aligned
 directly against the intended full-length reference amplicon sequence
 extracted from Supplementary Data MOESM5 <span class="citation"
 data-cites="xie2022designing">(Xie et al. 2022)</span> using the
-open-source <code>edlib</code> C/Python library (Myers’ exact bit-vector
-semi-global alignment with indels and substitutions,
+open-source <code>edlib</code> C/Python library <span class="citation"
+data-cites="sosic2017edlib">(Šošić and Šikić 2017)</span> (Myers’ exact
+bit-vector semi-global alignment with indels and substitutions,
 <code>mode='SHW'</code>). Reads achieving <span
 class="math inline"> ≥ 75%</span> or <span
 class="math inline"> ≥ 80%</span> sequence identity against the intended
@@ -1122,9 +1125,9 @@ concentrated; no formal power-law distribution fit (e.g.,
 Clauset-Shalizi-Newman methodology) was conducted.</li>
 <li><strong>Data and Code Licensing:</strong> Raw sequencing data from
 Figshare (DOI: 10.6084/m9.figshare.16944154.v3) are licensed under CC BY
-4.0. The original analysis scripts deposited on Figshare/GitHub are
-under CC BY 4.0. The replication codebase is distributed under the MIT
-License.</li>
+4.0. The original analysis scripts were made publicly available through
+GitHub and Figshare without an explicit license header. The replication
+codebase is distributed under the MIT License.</li>
 </ol>
 <h1 id="conclusion">Conclusion</h1>
 <p>We have performed an independent <strong>qualified partial
@@ -1162,8 +1165,9 @@ in the public replication repository.</p>
 <ul>
 <li><strong>GitHub Repository:</strong> <a
 href="https://github.com/Rashidmstar12/saddle-replication">https://github.com/Rashidmstar12/saddle-replication</a></li>
-<li><strong>Zenodo Deposit:</strong> <a
-href="https://doi.org/10.5281/zenodo.24100087">https://doi.org/10.5281/zenodo.24100087</a></li>
+<li><strong>Zenodo Deposit:</strong> <span class="citation"
+data-cites="kadayil2026saddle">(Kadayil 2026,
+https://doi.org/10.5281/zenodo.24100087)</span></li>
 <li><strong>Primary Data Source:</strong> Figshare (DOI: <a
 href="https://doi.org/10.6084/m9.figshare.16944154.v3">10.6084/m9.figshare.16944154.v3</a>,
 CC BY 4.0)</li>
@@ -1188,6 +1192,13 @@ Submodular Function Estimation.”</span> <em>Bioinformatics</em> 42 (7):
 btag478. <a
 href="https://doi.org/10.1093/bioinformatics/btag478">https://doi.org/10.1093/bioinformatics/btag478</a>.
 </div>
+<div id="ref-kadayil2026saddle" class="csl-entry" role="listitem">
+Kadayil, Rashid. 2026. <span>“<span>[Re]</span> Computational
+Replication of <span>SADDLE</span>: Empirical Next-Generation Sequencing
+Read Partitions and Primer Interaction Distribution in a 384-Plex
+<span>PCR</span> Panel.”</span> Zenodo. <a
+href="https://doi.org/10.5281/zenodo.24100087">https://doi.org/10.5281/zenodo.24100087</a>.
+</div>
 <div id="ref-langmead2012fast" class="csl-entry" role="listitem">
 Langmead, Ben, and Steven L. Salzberg. 2012. <span>“Fast Gapped-Read
 Alignment with <span>Bowtie</span> 2.”</span> <em>Nature Methods</em> 9
@@ -1195,19 +1206,25 @@ Alignment with <span>Bowtie</span> 2.”</span> <em>Nature Methods</em> 9
 href="https://doi.org/10.1038/nmeth.1923">https://doi.org/10.1038/nmeth.1923</a>.
 </div>
 <div id="ref-rougier2017sustainable" class="csl-entry" role="listitem">
-Rougier, Nicolas P., Konrad Hinsen, Frédéric Oliva, Sergio Mattioni,
-Karthik Ram, Patrick Vandewalle, Zheng Zou, Christopher Williams, Eric
-Visser, and Li Zhang. 2017. <span>“Sustainable Computational Science:
-The <span>ReScience</span> Initiative.”</span> <em>PeerJ Computer
-Science</em> 3: e142. <a
+Rougier, Nicolas P., Konrad Hinsen, Frédéric Alexandre, Thomas Arildsen,
+Lorena A. Barba, Fabien C. Y. Benureau, et al. 2017. <span>“Sustainable
+Computational Science: The <span>ReScience</span> Initiative.”</span>
+<em>PeerJ Computer Science</em> 3: e142. <a
 href="https://doi.org/10.7717/peerj-cs.142">https://doi.org/10.7717/peerj-cs.142</a>.
 </div>
 <div id="ref-santalucia1998unified" class="csl-entry" role="listitem">
-SantaLucia, John. 1998. <span>“A Unified View of Polymer, Dumbbell, and
-Oligonucleotide <span>DNA</span> Nearest-Neighbor
+SantaLucia, John, Jr. 1998. <span>“A Unified View of Polymer, Dumbbell,
+and Oligonucleotide <span>DNA</span> Nearest-Neighbor
 Thermodynamics.”</span> <em>Proceedings of the National Academy of
 Sciences</em> 95 (4): 1460–65. <a
 href="https://doi.org/10.1073/pnas.95.4.1460">https://doi.org/10.1073/pnas.95.4.1460</a>.
+</div>
+<div id="ref-sosic2017edlib" class="csl-entry" role="listitem">
+Šošić, Martin, and Mile Šikić. 2017. <span>“Edlib: A
+<span>C</span>/<span>C</span>++ Library for Fast, Exact Sequence
+Alignment Using Edit Distance.”</span> <em>Bioinformatics</em> 33 (9):
+1394–95. <a
+href="https://doi.org/10.1093/bioinformatics/btw753">https://doi.org/10.1093/bioinformatics/btw753</a>.
 </div>
 <div id="ref-untergasser2012primer3" class="csl-entry" role="listitem">
 Untergasser, Andreas, Ioana Cutcutache, Triinu Koressaar, Jian Ye, Brant
