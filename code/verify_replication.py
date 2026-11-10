@@ -18,8 +18,9 @@ This script verifies:
 1. Primary Replicated Result: Mutually exclusive and exhaustive read accounting
    across 3,942,385 NGS reads (Sample E19) comparing:
    - Method 1 (Primer Pairing): 43.86% on-target, 55.27% nonspecific, 0.87% primer-dimer.
-   - Method 2 (Reference Sequence Alignment >=75%): 39.49% on-target, 59.64% nonspecific, 0.87% primer-dimer.
-   Both reproduce published Figure 3f (~43%, ~56%, ~1%) within scientific tolerance.
+   - Method 2 (edlib Gapped Sequence Alignment >=75%): 43.61% on-target, 55.52% nonspecific, 0.87% primer-dimer (42.76% at >=80%).
+   - Historical ungapped string comparison: 39.49% on-target (depressed by small alignment gaps).
+   Both primary methods approximately reproduce published Figure 3f (~43%, ~56%, ~1%) within 0.86% absolute difference.
 2. Interaction Concentration: Heavy-tailed concentration of 24,872 primer-dimer
    reads across 295,296 candidate primer pairs, where 1 pair accounts for 67.57% of dimer reads.
 3. Supplementary Exploratory Benchmark: Empirical evaluation of SADDLE Badness heuristic

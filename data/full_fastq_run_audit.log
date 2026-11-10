@@ -5,7 +5,7 @@ Platform:        Windows-11-10.0.26300-SP0
 Python:          3.12.4 (C:\Users\rashi\AppData\Local\Programs\Python\Python312\python.exe)
 openpyxl:        3.1.2
 edlib:           Myers' exact bit-vector semi-global alignment (SHW)
-Dataset:         Sample E19 (384-plex, Illumina MiniSeq 2x150 bp)
+Dataset:         Sample E19 (384-plex, Illumina MiSeq, paired-end, MiSeq Reagent Kit v2)
 Mode:            Full run (all 3,942,385 reads)
 Input File Checksums (SHA-256):
   41467_2022_29500_MOESM5_ESM.xlsx: 78aea89c0ed83e03383b7ae810b3c4be247c231227175bce526d5b1b21e0fc78

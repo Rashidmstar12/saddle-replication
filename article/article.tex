@@ -277,12 +277,13 @@ The original study by Xie et al. (2022) was published in \emph{Nature
 Communications} (Volume 13, Article 1881; PMID: 35410464). Primer
 sequences, genomic coordinates, and assay details were provided in
 Supplementary Data (MOESM5). The raw paired-end sequencing reads for the
-384-plex validation panel (Sample E19, Illumina MiniSeq 2 \(\times\) 150
-bp) were deposited on Figshare (DOI: 10.6084/m9.figshare.16944154.v3)
-under a Creative Commons Attribution 4.0 International license (CC BY
-4.0), while analysis scripts (\texttt{Data\_process.m},
-\texttt{Dimer\_Identify.m}, \texttt{analysis\_code.ipynb}) were made
-publicly available through GitHub and Figshare.
+384-plex validation panel (Sample E19, Illumina MiSeq paired-end
+sequencing using MiSeq Reagent Kit v2) were deposited on Figshare (DOI:
+10.6084/m9.figshare.16944154.v3) under a Creative Commons Attribution
+4.0 International license (CC BY 4.0), while analysis scripts
+(\texttt{Data\_process.m}, \texttt{Dimer\_Identify.m},
+\texttt{analysis\_code.ipynb}) were made publicly available through
+GitHub and Figshare.
 
 Our audit of the deposited artifacts identified: - \textbf{Design Code:}
 The simulated annealing optimization algorithm was not included in the
@@ -412,16 +413,18 @@ products are assessed under two distinct methodological criteria: -
 \emph{On-Target} if both primers form a cognate target pair
 (\(P_2 = P_1 + 384\)) and insert length \(\ge L_1 + L_2 - 2\) bp; all
 non-cognate pairings are classified as \emph{Nonspecific}. This turnkey
-method avoids external aligner dependencies. - \textbf{Method 2 (Genuine
-Gapped Sequence Alignment via edlib):} In addition to cognate primer
-matching, the insert sequence is aligned directly against the intended
-full-length reference amplicon sequence extracted from Supplementary
-Data MOESM5 (Xie et al. 2022) using the open-source \texttt{edlib}
-C/Python library (Šošić and Šikić 2017) (Myers' exact bit-vector
-semi-global alignment with indels and substitutions,
+method avoids external aligner dependencies. - \textbf{Method 2
+(Cognate-Anchored Gapped Sequence Alignment via edlib):} In addition to
+cognate primer matching, the insert sequence is aligned directly against
+the intended full-length reference amplicon sequence extracted from
+Supplementary Data MOESM5 (Xie et al. 2022) using the open-source
+\texttt{edlib} C/Python library (Šošić and Šikić 2017) (Myers' exact
+bit-vector semi-global alignment with indels and substitutions,
 \texttt{mode=\textquotesingle{}SHW\textquotesingle{}}). Reads achieving
-\(\ge 75\%\) or \(\ge 80\%\) sequence identity against the intended
-amplicon are classified as \emph{On-Target}; reads failing this identity
+semi-global edit distance similarity \(\ge 75\%\) or \(\ge 80\%\)
+(defined as \(1 - d_E / L \ge 0.75\), where \(d_E\) is the edit distance
+and \(L\) is the reference amplicon length) against their assigned
+cognate amplicon are classified as \emph{On-Target}; reads failing this
 threshold are classified as \emph{Nonspecific}.
 
 \section{Primary Replication Results}\label{primary-replication-results}
@@ -462,15 +465,15 @@ across all evaluation methodologies and denominators.
   >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1429}}@{}}
 \caption{Methodological comparison of replicated read classification
 proportions against published SADDLE 384-plex results (Sample E19,
-MiniSeq 2 \(\times\) 150 bp, Figure 3f). Method 1 evaluates cognate
-primer pairing; Method 2 evaluates genuine gapped semi-global sequence
-alignment via \texttt{edlib} against assigned cognate reference
-amplicons. Percentages are presented on both the derived post-filter
-classified-read basis (\(N = 2,860,664\), which yields proportions
-approximately reconciling with published Figure 3f) and the total raw
-sequencer output basis (\(N = 3,942,385\)). The exact integer
-denominator was not published in Figure 3f and remains
-unverified.}\tabularnewline
+Illumina MiSeq paired-end sequencing with MiSeq Reagent Kit v2, Figure
+3f). Method 1 evaluates cognate primer pairing; Method 2 evaluates
+cognate-anchored gapped semi-global sequence alignment via
+\texttt{edlib} against assigned cognate reference amplicons. Percentages
+are presented on both the derived post-filter classified-read basis
+(\(N = 2,860,664\), which yields proportions approximately reconciling
+with published Figure 3f) and the total raw sequencer output basis
+(\(N = 3,942,385\)). The exact integer denominator was not published in
+Figure 3f and remains unverified.}\tabularnewline
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 Read Category
@@ -1012,8 +1015,11 @@ the public replication repository.
   CC BY 4.0)
 \end{itemize}
 
-Reviewers can verify all primary and supplementary results in under two
-seconds:
+Reviewers can verify all archived primary and supplementary results,
+benchmark tables, and member file checksums in under two seconds using
+the standalone verifier (full raw FASTQ processing requires running
+\texttt{reproduce\_from\_fastq.py\ -\/-full} with external raw
+sequencing inputs):
 
 \begin{Shaded}
 \begin{Highlighting}[]

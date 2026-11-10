@@ -11,7 +11,7 @@ Original Publication: Xie et al., Nature Communications 13, 1881 (2022), Figure 
                       DOI: 10.1038/s41467-022-29500-4 | PMID: 35410464
 
 This script processes raw paired-end sequencing reads directly from FASTQ files
-(Illumina MiniSeq 2x150 bp, Sample E19, 3,942,385 reads) to replicate the published
+(Illumina MiSeq paired-end sequencing with MiSeq Reagent Kit v2, Sample E19, 3,942,385 reads) to replicate the published
 read classification breakdown without relying on precomputed tables.
 
 It performs a dual methodological evaluation:
@@ -159,7 +159,7 @@ def run_pipeline(raw_dir: Path, max_reads: int = None):
     print(f"Python:          {sys.version.split()[0]} ({sys.executable})")
     print(f"openpyxl:        {openpyxl.__version__}")
     print(f"edlib:           Myers' exact bit-vector semi-global alignment (SHW)")
-    print(f"Dataset:         Sample E19 (384-plex, Illumina MiniSeq 2x150 bp)")
+    print(f"Dataset:         Sample E19 (384-plex, Illumina MiSeq, paired-end, MiSeq Reagent Kit v2)")
     print(f"Mode:            {mode_str}")
     print("Input File Checksums (SHA-256):")
     print(f"  {moesm5_path.name}: {sha256_file(moesm5_path)}")

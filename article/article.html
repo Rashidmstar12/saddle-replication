@@ -402,8 +402,8 @@ data-cites="xie2022designing">(2022)</span> was published in <em>Nature
 Communications</em> (Volume 13, Article 1881; PMID: 35410464). Primer
 sequences, genomic coordinates, and assay details were provided in
 Supplementary Data (MOESM5). The raw paired-end sequencing reads for the
-384-plex validation panel (Sample E19, Illumina MiniSeq 2 <span
-class="math inline">×</span> 150 bp) were deposited on Figshare (DOI:
+384-plex validation panel (Sample E19, Illumina MiSeq paired-end
+sequencing using MiSeq Reagent Kit v2) were deposited on Figshare (DOI:
 10.6084/m9.figshare.16944154.v3) under a Creative Commons Attribution
 4.0 International license (CC BY 4.0), while analysis scripts
 (<code>Data_process.m</code>, <code>Dimer_Identify.m</code>,
@@ -572,19 +572,23 @@ and insert length <span
 class="math inline"> ≥ <em>L</em><sub>1</sub> + <em>L</em><sub>2</sub> − 2</span>
 bp; all non-cognate pairings are classified as <em>Nonspecific</em>.
 This turnkey method avoids external aligner dependencies. -
-<strong>Method 2 (Genuine Gapped Sequence Alignment via edlib):</strong>
-In addition to cognate primer matching, the insert sequence is aligned
-directly against the intended full-length reference amplicon sequence
-extracted from Supplementary Data MOESM5 <span class="citation"
-data-cites="xie2022designing">(Xie et al. 2022)</span> using the
-open-source <code>edlib</code> C/Python library <span class="citation"
-data-cites="sosic2017edlib">(Šošić and Šikić 2017)</span> (Myers’ exact
-bit-vector semi-global alignment with indels and substitutions,
-<code>mode='SHW'</code>). Reads achieving <span
-class="math inline"> ≥ 75%</span> or <span
-class="math inline"> ≥ 80%</span> sequence identity against the intended
-amplicon are classified as <em>On-Target</em>; reads failing this
-identity threshold are classified as <em>Nonspecific</em>.</p>
+<strong>Method 2 (Cognate-Anchored Gapped Sequence Alignment via
+edlib):</strong> In addition to cognate primer matching, the insert
+sequence is aligned directly against the intended full-length reference
+amplicon sequence extracted from Supplementary Data MOESM5 <span
+class="citation" data-cites="xie2022designing">(Xie et al. 2022)</span>
+using the open-source <code>edlib</code> C/Python library <span
+class="citation" data-cites="sosic2017edlib">(Šošić and Šikić
+2017)</span> (Myers’ exact bit-vector semi-global alignment with indels
+and substitutions, <code>mode='SHW'</code>). Reads achieving semi-global
+edit distance similarity <span class="math inline"> ≥ 75%</span> or
+<span class="math inline"> ≥ 80%</span> (defined as <span
+class="math inline">1 − <em>d</em><sub><em>E</em></sub>/<em>L</em> ≥ 0.75</span>,
+where <span class="math inline"><em>d</em><sub><em>E</em></sub></span>
+is the edit distance and <span class="math inline"><em>L</em></span> is
+the reference amplicon length) against their assigned cognate amplicon
+are classified as <em>On-Target</em>; reads failing this threshold are
+classified as <em>Nonspecific</em>.</p>
 <h1 id="primary-replication-results">Primary Replication Results</h1>
 <h2 id="replicated-ngs-read-accounting-breakdown">Replicated NGS Read
 Accounting Breakdown</h2>
@@ -613,11 +617,12 @@ evaluation methodologies and denominators.</p>
 <table style="width:100%;">
 <caption>Methodological comparison of replicated read classification
 proportions against published SADDLE 384-plex results (Sample E19,
-MiniSeq 2 <span class="math inline">×</span> 150 bp, Figure 3f). Method
-1 evaluates cognate primer pairing; Method 2 evaluates genuine gapped
-semi-global sequence alignment via <code>edlib</code> against assigned
-cognate reference amplicons. Percentages are presented on both the
-derived post-filter classified-read basis (<span
+Illumina MiSeq paired-end sequencing with MiSeq Reagent Kit v2, Figure
+3f). Method 1 evaluates cognate primer pairing; Method 2 evaluates
+cognate-anchored gapped semi-global sequence alignment via
+<code>edlib</code> against assigned cognate reference amplicons.
+Percentages are presented on both the derived post-filter
+classified-read basis (<span
 class="math inline"><em>N</em> = 2, 860, 664</span>, which yields
 proportions approximately reconciling with published Figure 3f) and the
 total raw sequencer output basis (<span
@@ -1172,8 +1177,11 @@ https://doi.org/10.5281/zenodo.24100087)</span></li>
 href="https://doi.org/10.6084/m9.figshare.16944154.v3">10.6084/m9.figshare.16944154.v3</a>,
 CC BY 4.0)</li>
 </ul>
-<p>Reviewers can verify all primary and supplementary results in under
-two seconds:</p>
+<p>Reviewers can verify all archived primary and supplementary results,
+benchmark tables, and member file checksums in under two seconds using
+the standalone verifier (full raw FASTQ processing requires running
+<code>reproduce_from_fastq.py --full</code> with external raw sequencing
+inputs):</p>
 <div class="sourceCode" id="cb1"><pre
 class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone https://github.com/Rashidmstar12/saddle-replication.git</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> saddle-replication</span>

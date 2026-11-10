@@ -54,7 +54,7 @@ In this ReScience C article [@rougier2017sustainable], we report an independent 
 
 # Original Work and Artifact Audit
 
-The original study by Xie et al. [-@xie2022designing] was published in *Nature Communications* (Volume 13, Article 1881; PMID: 35410464). Primer sequences, genomic coordinates, and assay details were provided in Supplementary Data (MOESM5). The raw paired-end sequencing reads for the 384-plex validation panel (Sample E19, Illumina MiniSeq 2 $\times$ 150 bp) were deposited on Figshare (DOI: 10.6084/m9.figshare.16944154.v3) under a Creative Commons Attribution 4.0 International license (CC BY 4.0), while analysis scripts (`Data_process.m`, `Dimer_Identify.m`, `analysis_code.ipynb`) were made publicly available through GitHub and Figshare.
+The original study by Xie et al. [-@xie2022designing] was published in *Nature Communications* (Volume 13, Article 1881; PMID: 35410464). Primer sequences, genomic coordinates, and assay details were provided in Supplementary Data (MOESM5). The raw paired-end sequencing reads for the 384-plex validation panel (Sample E19, Illumina MiSeq paired-end sequencing using MiSeq Reagent Kit v2) were deposited on Figshare (DOI: 10.6084/m9.figshare.16944154.v3) under a Creative Commons Attribution 4.0 International license (CC BY 4.0), while analysis scripts (`Data_process.m`, `Dimer_Identify.m`, `analysis_code.ipynb`) were made publicly available through GitHub and Figshare.
 
 Our audit of the deposited artifacts identified:
 - **Design Code:** The simulated annealing optimization algorithm was not included in the public deposit, with the manuscript stating: *"The code for SADDLE primer design is available upon request for non-commercial academic use"* subject to patent protection. Consequently, the design algorithm itself is out of scope for an open, autonomous replication.
@@ -88,7 +88,7 @@ Each paired-end sequencing read $(R_1, R_2)$ in Sample E19 is processed through 
 3. **Primer Unmatched:** Read pairs where either or both 5' ends cannot be matched to the 768 pool primers with $>60\%$ identity.
 4. **Classified Amplicons:** Reads with both primers successfully resolved. These are partitioned into **Primer-Dimers** (insert $< L_1 + L_2 - 2$ bp), and non-dimer products. To evaluate on-target specificity rigorously, non-dimer products are assessed under two distinct methodological criteria:
    - **Method 1 (Primer Pairing Heuristic):** A read is classified as *On-Target* if both primers form a cognate target pair ($P_2 = P_1 + 384$) and insert length $\ge L_1 + L_2 - 2$ bp; all non-cognate pairings are classified as *Nonspecific*. This turnkey method avoids external aligner dependencies.
-   - **Method 2 (Genuine Gapped Sequence Alignment via edlib):** In addition to cognate primer matching, the insert sequence is aligned directly against the intended full-length reference amplicon sequence extracted from Supplementary Data MOESM5 [@xie2022designing] using the open-source `edlib` C/Python library [@sosic2017edlib] (Myers' exact bit-vector semi-global alignment with indels and substitutions, `mode='SHW'`). Reads achieving $\ge 75\%$ or $\ge 80\%$ sequence identity against the intended amplicon are classified as *On-Target*; reads failing this identity threshold are classified as *Nonspecific*.
+   - **Method 2 (Cognate-Anchored Gapped Sequence Alignment via edlib):** In addition to cognate primer matching, the insert sequence is aligned directly against the intended full-length reference amplicon sequence extracted from Supplementary Data MOESM5 [@xie2022designing] using the open-source `edlib` C/Python library [@sosic2017edlib] (Myers' exact bit-vector semi-global alignment with indels and substitutions, `mode='SHW'`). Reads achieving semi-global edit distance similarity $\ge 75\%$ or $\ge 80\%$ (defined as $1 - d_E / L \ge 0.75$, where $d_E$ is the edit distance and $L$ is the reference amplicon length) against their assigned cognate amplicon are classified as *On-Target*; reads failing this threshold are classified as *Nonspecific*.
 
 # Primary Replication Results
 
@@ -111,7 +111,7 @@ Table 2 compares the classified read proportions directly against the published 
 | **Total Classified Reads** | 2,860,658–2,860,664 (**100%**) | 2,860,664 (**100.00%**) | 2,860,664 (**100.00%**) | 72.56% | 100% | **PASS** |
 | *Excluded / Filtered Reads* | — | — | — | 27.44% (1,081,721) | — | Excluded by QC / adapter |
 
-: Methodological comparison of replicated read classification proportions against published SADDLE 384-plex results (Sample E19, MiniSeq 2 $\times$ 150 bp, Figure 3f). Method 1 evaluates cognate primer pairing; Method 2 evaluates genuine gapped semi-global sequence alignment via `edlib` against assigned cognate reference amplicons. Percentages are presented on both the derived post-filter classified-read basis ($N = 2,860,664$, which yields proportions approximately reconciling with published Figure 3f) and the total raw sequencer output basis ($N = 3,942,385$). The exact integer denominator was not published in Figure 3f and remains unverified.
+: Methodological comparison of replicated read classification proportions against published SADDLE 384-plex results (Sample E19, Illumina MiSeq paired-end sequencing with MiSeq Reagent Kit v2, Figure 3f). Method 1 evaluates cognate primer pairing; Method 2 evaluates cognate-anchored gapped semi-global sequence alignment via `edlib` against assigned cognate reference amplicons. Percentages are presented on both the derived post-filter classified-read basis ($N = 2,860,664$, which yields proportions approximately reconciling with published Figure 3f) and the total raw sequencer output basis ($N = 3,942,385$). The exact integer denominator was not published in Figure 3f and remains unverified.
 
 ### Biological and Methodological Insights
 
@@ -203,7 +203,7 @@ All data, scripts, and a standalone verification suite are available in the publ
 - **Zenodo Deposit:** [@kadayil2026saddle, https://doi.org/10.5281/zenodo.24100087]
 - **Primary Data Source:** Figshare (DOI: [10.6084/m9.figshare.16944154.v3](https://doi.org/10.6084/m9.figshare.16944154.v3), CC BY 4.0)
 
-Reviewers can verify all primary and supplementary results in under two seconds:
+Reviewers can verify all archived primary and supplementary results, benchmark tables, and member file checksums in under two seconds using the standalone verifier (full raw FASTQ processing requires running `reproduce_from_fastq.py --full` with external raw sequencing inputs):
 
 ```bash
 git clone https://github.com/Rashidmstar12/saddle-replication.git
