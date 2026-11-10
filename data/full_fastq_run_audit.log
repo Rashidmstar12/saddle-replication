@@ -1,0 +1,49 @@
+==============================================================================
+RESCIENCE C SADDLE FASTQ REPLICATION PIPELINE - EXECUTION AUDIT
+Timestamp:       2026-11-10T09:47:41.742662+00:00
+Platform:        Windows-11-10.0.26300-SP0
+Python:          3.12.4 (C:\Users\rashi\AppData\Local\Programs\Python\Python312\python.exe)
+openpyxl:        3.1.2
+edlib:           Myers' exact bit-vector semi-global alignment (SHW)
+Dataset:         Sample E19 (384-plex, Illumina MiniSeq 2x150 bp)
+Mode:            Full run (all 3,942,385 reads)
+Input File Checksums (SHA-256):
+  41467_2022_29500_MOESM5_ESM.xlsx: 78aea89c0ed83e03383b7ae810b3c4be247c231227175bce526d5b1b21e0fc78
+  E19_384plex_NGS_R1_fastq.gz: 7ebbe758dbeaa62b91dbea5c0e9e3bd4c35806a2e8f7c82c59729475d5652c92
+  E19_384plex_NGS_R2_fastq.gz: d2e4a5facf1ccc9188a190e4b9384df3cedbd2cfc56659f8f5928531dda0396e
+==============================================================================
+  Processed 500,000 reads (38240 reads/s)...
+  Processed 1,000,000 reads (28058 reads/s)...
+  Processed 1,500,000 reads (30038 reads/s)...
+  Processed 2,000,000 reads (42224 reads/s)...
+  Processed 2,500,000 reads (39755 reads/s)...
+  Processed 3,000,000 reads (50889 reads/s)...
+  Processed 3,500,000 reads (39543 reads/s)...
+------------------------------------------------------------------------------
+FASTQ PROCESSING RESULTS:
+Elapsed Time:               105.58 s (37342 reads/s)
+Total Processed Reads:      3,942,385
+Total Classified Reads:     2,860,664 (72.56%)
+Total Excluded Reads:       1,081,721 (27.44%)
+  - Missing Adapter:        751,644 (19.07%)
+  - Quality / Length Filter:137,086 (3.48%)
+  - Primer Unmatched:       192,991 (4.90%)
+
+[Read Category Breakdown]:
+  Primer-Dimers (invariant):     24,878 (0.87%)  | Published Fig 3f: ~1% [MATCH (diff = -0.13%)]
+
+  Method 1 (Primer Pairing):
+    - On-Target Amplicons:       1,254,647 (43.86%)  | Published Fig 3f: ~43% [MATCH (diff = +0.86%)]
+    - Nonspecific Products:      1,581,139 (55.27%)  | Published Fig 3f: ~56%
+
+  Method 2 (Cognate-Anchored Gapped Alignment via edlib >= 75% Identity):
+    - On-Target Amplicons:       1,247,496 (43.61%)  | Published Fig 3f: ~43% [MATCH (diff = +0.61%)]
+    - Nonspecific Products:      1,588,290 (55.52%)  | Published Fig 3f: ~56%
+
+  Method 2 (Cognate-Anchored Gapped Alignment via edlib >= 80% Identity):
+    - On-Target Amplicons:       1,223,216 (42.76%)  | Published Fig 3f: ~43% [MATCH (diff = -0.24%)]
+    - Nonspecific Products:      1,612,570 (56.37%)  | Published Fig 3f: ~56%
+
+==============================================================================
+STATUS: FASTQ CLASSIFICATION SUCCESSFULLY COMPLETED AND REPLICATED
+==============================================================================

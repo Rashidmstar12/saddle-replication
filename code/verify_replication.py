@@ -41,10 +41,13 @@ from pathlib import Path
 import numpy as np
 from sklearn.metrics import roc_auc_score, average_precision_score, brier_score_loss
 
+# Strict requirement: edlib is required for Method 2 gapped alignment
 try:
     import edlib
 except ImportError:
-    edlib = None
+    print("ERROR: 'edlib' is required for genuine gapped sequence alignment (Method 2).", file=sys.stderr)
+    print("Please install via: pip install edlib", file=sys.stderr)
+    sys.exit(1)
 
 def sha256_file(path: Path) -> str:
     h = hashlib.sha256()
@@ -82,7 +85,7 @@ def test_fastq_pipeline(base_dir: Path, n_reads: int = 50000) -> bool:
     missing = [p.name for p in required if not p.exists()]
     if missing:
         print("\n" + "=" * 78, file=sys.stderr)
-        print("FAIL: --check-fastq was requested, but external raw input files are missing:", file=sys.stderr)
+        print("FAIL: Live FASTQ check was requested, but external raw input files are missing:", file=sys.stderr)
         print(f"  Directory checked: {raw_dir}", file=sys.stderr)
         print(f"  Missing files:     {missing}", file=sys.stderr)
         print("\nTo execute live FASTQ verification, download the raw data from Figshare:", file=sys.stderr)
@@ -93,7 +96,8 @@ def test_fastq_pipeline(base_dir: Path, n_reads: int = 50000) -> bool:
         print("=" * 78, file=sys.stderr)
         return False
 
-    print(f"\n[FASTQ Live Verification]: Streaming first {n_reads:,} raw paired reads from {r1_path.name}...")
+    mode_label = f"first {n_reads:,} reads" if n_reads is not None else "all 3,942,385 reads"
+    print(f"\n[FASTQ Live Verification]: Streaming {mode_label} from {r1_path.name}...")
     try:
         import openpyxl
     except ImportError:
@@ -139,9 +143,27 @@ def test_fastq_pipeline(base_dir: Path, n_reads: int = 50000) -> bool:
     m2_nonspec = 0
 
     with gzip.open(r1_path, "rt") as f1, gzip.open(r2_path, "rt") as f2:
-        for _ in range(n_reads):
-            f1.readline(); r1 = f1.readline().strip(); f1.readline(); q1 = f1.readline().strip()
-            f2.readline(); r2 = f2.readline().strip(); f2.readline(); q2 = f2.readline().strip()
+        read_idx = 0
+        while True:
+            if n_reads is not None and read_idx >= n_reads:
+                break
+            r1_id = f1.readline()
+            if not r1_id:
+                break
+            r1 = f1.readline().strip(); f1.readline(); q1 = f1.readline().strip()
+            read_idx += 1
+
+            r2_id = f2.readline()
+            if not r2_id:
+                raise ValueError(f"FASTQ pair truncation: R1 has more reads than R2 at read {read_idx+1}")
+            r2 = f2.readline().strip(); f2.readline(); q2 = f2.readline().strip()
+
+            # Enforce paired-end FASTQ read identifier synchronization
+            id1 = r1_id.strip().split()[0].removesuffix("/1")
+            id2 = r2_id.strip().split()[0].removesuffix("/2")
+            if id1 != id2:
+                raise ValueError(f"FASTQ pair desynchronization detected at read {read_idx}: R1 '{id1}' != R2 '{id2}'")
+
             p1, p2 = r1.find(f_adp), r2.find(r_adp)
             if p1 == -1 or p2 == -1:
                 excluded += 1
@@ -183,37 +205,48 @@ def test_fastq_pipeline(base_dir: Path, n_reads: int = 50000) -> bool:
                 m1_ontarget += 1
                 amp_idx = best1 if best1 < 384 else best2
                 exp_amp = ref_amplicons.get(amp_idx, "")
-                if best1 >= 384:
+                if best1 >= 384 and exp_amp:
                     exp_amp = revcomp(exp_amp)
                 if exp_amp:
-                    if edlib:
-                        res = edlib.align(t1.lower(), exp_amp, mode="SHW", task="distance")
-                        ident = 1.0 - (res["editDistance"] / len(t1))
-                    else:
-                        chk_len = min(len(t1), len(exp_amp))
-                        ident = sum(1 for a, b in zip(t1.lower()[:chk_len], exp_amp[:chk_len]) if a == b) / chk_len
+                    res = edlib.align(t1.lower(), exp_amp, mode="SHW", task="distance")
+                    ident = 1.0 - (res["editDistance"] / len(t1))
                     if ident >= 0.75:
                         m2_ontarget += 1
                     else:
                         m2_nonspec += 1
                 else:
-                    m2_ontarget += 1
+                    # Fail-closed on missing reference amplicon
+                    m2_nonspec += 1
             else:
                 m1_nonspec += 1
                 m2_nonspec += 1
 
     elapsed = time.time() - t0
-    rate = n_reads / elapsed if elapsed > 0 else 0
-    aligner_name = "edlib gapped alignment" if edlib else "positional"
-    print(f"  Processed {n_reads:,} raw FASTQ reads in {elapsed:.2f}s ({rate:.0f} reads/s) using {aligner_name}.")
-    print(f"  Classified: {classified:,} ({classified/n_reads*100:.2f}%) | Excluded: {excluded:,} ({excluded/n_reads*100:.2f}%)")
-    print(f"  Primer-Dimers (invariant):      {dimers:,} ({dimers/classified*100:.2f}%)  | Published Fig 3f: ~1%")
+    total_processed = classified + excluded
+    rate = total_processed / elapsed if elapsed > 0 else 0
+    print(f"  Processed {total_processed:,} raw FASTQ reads in {elapsed:.2f}s ({rate:.0f} reads/s) using edlib gapped alignment.")
+    print(f"  Classified: {classified:,} ({classified/total_processed*100:.2f}%) | Excluded: {excluded:,} ({excluded/total_processed*100:.2f}%)")
+    
+    ontarget_pct = m2_ontarget / classified * 100 if classified > 0 else 0
+    dimer_pct = dimers / classified * 100 if classified > 0 else 0
+    ontarget_match = abs(ontarget_pct - 43.0) <= 1.5
+    dimer_match = abs(dimer_pct - 1.0) <= 0.5
+    
+    status_on = "MATCH" if ontarget_match else "MISMATCH"
+    status_dimer = "MATCH" if dimer_match else "MISMATCH"
+    
+    print(f"  Primer-Dimers (invariant):      {dimers:,} ({dimer_pct:.2f}%)  | Published Fig 3f: ~1% [{status_dimer}]")
     print(f"  Method 1 (Primer Pairing):     On-Target = {m1_ontarget:,} ({m1_ontarget/classified*100:.2f}%) | Nonspecific = {m1_nonspec:,} ({m1_nonspec/classified*100:.2f}%)")
-    print(f"  Method 2 (Gapped Alignment):   On-Target = {m2_ontarget:,} ({m2_ontarget/classified*100:.2f}%) | Nonspecific = {m2_nonspec:,} ({m2_nonspec/classified*100:.2f}%)")
+    print(f"  Method 2 (Gapped Alignment):   On-Target = {m2_ontarget:,} ({ontarget_pct:.2f}%) | Nonspecific = {m2_nonspec:,} ({m2_nonspec/classified*100:.2f}%) [{status_on}]")
+    
+    if not (ontarget_match and dimer_match):
+        print("FAIL: Live FASTQ classification deviates from expected bounds.", file=sys.stderr)
+        return False
+        
     print("  PASS: Live FASTQ execution verified directly on raw sequencing data.")
     return True
 
-def run_verification(check_fastq: bool = False) -> bool:
+def run_verification(check_fastq: bool = False, full_fastq: bool = False) -> bool:
     start_time = time.time()
     base_dir = Path(__file__).resolve().parent.parent
     data_dir = base_dir / "data"
@@ -231,9 +264,11 @@ def run_verification(check_fastq: bool = False) -> bool:
     print(f"Data Directory:  {data_dir}")
 
     # Optional live FASTQ check
-    if check_fastq:
-        print("\n[FASTQ Mode]: Executing Live FASTQ Pipeline Verification...")
-        if not test_fastq_pipeline(base_dir):
+    if check_fastq or full_fastq:
+        n_reads = None if full_fastq else 50000
+        mode_str = "all 3,942,385 reads" if full_fastq else "50,000 read sample"
+        print(f"\n[FASTQ Mode]: Executing Live FASTQ Pipeline Verification ({mode_str})...")
+        if not test_fastq_pipeline(base_dir, n_reads=n_reads):
             sys.exit(2)
 
     # -------------------------------------------------------------------------
@@ -499,8 +534,9 @@ def run_verification(check_fastq: bool = False) -> bool:
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="ReScience C SADDLE Replication Verifier")
-    parser.add_argument("--check-fastq", action="store_true", help="Run live pipeline test on raw FASTQ files")
+    parser.add_argument("--check-fastq", action="store_true", help="Run live pipeline test on raw FASTQ files (50,000 read sample)")
+    parser.add_argument("--full", action="store_true", help="Run live pipeline test across all 3,942,385 raw FASTQ reads")
     args = parser.parse_args()
 
-    success = run_verification(check_fastq=args.check_fastq)
+    success = run_verification(check_fastq=args.check_fastq, full_fastq=args.full)
     sys.exit(0 if success else 1)

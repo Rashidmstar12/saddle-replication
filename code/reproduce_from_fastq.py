@@ -17,8 +17,15 @@ read classification breakdown without relying on precomputed tables.
 It performs a dual methodological evaluation:
 1. Method 1 (Primer-Pairing Heuristic): Evaluates cognate primer pairing (fp_i x rp_i)
    and insert length >= L1 + L2 - 2 bp.
-2. Method 2 (Genuine Gapped Sequence Alignment via edlib): Executes Myers' exact bit-vector
-   semi-global alignment (mode='SHW') against the 384 intended reference amplicons from MOESM5.
+2. Method 2 (Cognate-Anchored Gapped Sequence Alignment via edlib): Executes Myers' exact
+   bit-vector semi-global alignment (mode='SHW') against the 384 intended reference
+   amplicons from Supplementary Data MOESM5.
+
+Strict Fail-Closed Validations:
+- Requires edlib for gapped alignment; fails with exit code 1 if missing.
+- Enforces paired-end FASTQ read identifier matching; raises ValueError on mismatch.
+- Rejects missing reference amplicons as non-target; requires all 384 reference amplicons.
+- Computes PASS/MATCH status dynamically based on quantitative tolerance.
 
 Usage:
     python code/reproduce_from_fastq.py --full       # Complete run across all 3.94M reads (~2 min)
@@ -29,12 +36,25 @@ import sys
 import gzip
 import time
 import argparse
+import hashlib
+import platform
+import datetime
 from pathlib import Path
 
+# Defect B Fix: Require edlib explicitly with no silent fallback
 try:
     import edlib
 except ImportError:
-    edlib = None
+    print("ERROR: 'edlib' is required for genuine gapped sequence alignment (Method 2).", file=sys.stderr)
+    print("Please install via: pip install edlib", file=sys.stderr)
+    sys.exit(1)
+
+def sha256_file(path: Path) -> str:
+    h = hashlib.sha256()
+    with open(path, "rb") as f:
+        while chunk := f.read(65536):
+            h.update(chunk)
+    return h.hexdigest()
 
 F_ADP = "AGATCGGAAGAGCACAC"
 R_ADP = "AGATCGGAAGAGCGTCG"
@@ -79,6 +99,9 @@ def load_resources(raw_dir: Path):
         rps.append((row[2], row[3].upper()))
     all_primers = fps + rps
 
+    if len(all_primers) != 768:
+        raise ValueError(f"Expected 768 primers in MOESM5 '384 Plex Primer', found {len(all_primers)}")
+
     prefix_map = {}
     for idx, (pid, pseq) in enumerate(all_primers):
         prefix_map.setdefault(pseq[:8], []).append(idx)
@@ -88,9 +111,7 @@ def load_resources(raw_dir: Path):
     if "384 Plex Info" in wb.sheetnames:
         ws_info = wb["384 Plex Info"]
         for i in range(2, ws_info.max_row + 1):
-            fp_id = ws_info[i][0].value
             fp_seq = ws_info[i][1].value.lower() if ws_info[i][1].value else ""
-            rp_id = ws_info[i][2].value
             rp_seq = ws_info[i][3].value.lower() if ws_info[i][3].value else ""
             full_seq = ws_info[i][9].value.lower() if ws_info[i][9].value else ""
             rc_rp = revcomp(rp_seq)
@@ -98,6 +119,9 @@ def load_resources(raw_dir: Path):
             pos_rc_rp = full_seq.find(rc_rp)
             if pos_fp != -1 and pos_rc_rp != -1:
                 ref_amplicons[i - 2] = full_seq[pos_fp : pos_rc_rp + len(rc_rp)]
+
+    if len(ref_amplicons) != 384:
+        raise ValueError(f"Expected 384 reference amplicons in MOESM5 '384 Plex Info', found {len(ref_amplicons)}")
 
     return all_primers, prefix_map, ref_amplicons
 
@@ -121,19 +145,26 @@ def run_pipeline(raw_dir: Path, max_reads: int = None):
         print("=" * 78, file=sys.stderr)
         sys.exit(2)
 
+    import openpyxl
     all_primers, prefix_map, ref_amplicons = load_resources(raw_dir)
     if all_primers is None:
         print("ERROR: Failed to load primer sequences.", file=sys.stderr)
         sys.exit(2)
 
     mode_str = f"Streaming first {max_reads:,} reads" if max_reads else "Full run (all 3,942,385 reads)"
-    aligner_str = "edlib (Myers gapped semi-global alignment)" if edlib else "fallback positional (install edlib for gapped alignment)"
     print("=" * 78)
-    print("RESCIENCE C SADDLE FASTQ REPLICATION PIPELINE")
-    print(f"Dataset: Sample E19 (384-plex, Illumina MiniSeq 2x150 bp)")
-    print(f"Mode:    {mode_str}")
-    print(f"Aligner: {aligner_str}")
-    print(f"Inputs:  {r1_path.name}, {r2_path.name}")
+    print("RESCIENCE C SADDLE FASTQ REPLICATION PIPELINE - EXECUTION AUDIT")
+    print(f"Timestamp:       {datetime.datetime.now(datetime.timezone.utc).isoformat()}")
+    print(f"Platform:        {platform.platform()}")
+    print(f"Python:          {sys.version.split()[0]} ({sys.executable})")
+    print(f"openpyxl:        {openpyxl.__version__}")
+    print(f"edlib:           Myers' exact bit-vector semi-global alignment (SHW)")
+    print(f"Dataset:         Sample E19 (384-plex, Illumina MiniSeq 2x150 bp)")
+    print(f"Mode:            {mode_str}")
+    print("Input File Checksums (SHA-256):")
+    print(f"  {moesm5_path.name}: {sha256_file(moesm5_path)}")
+    print(f"  {r1_path.name}: {sha256_file(r1_path)}")
+    print(f"  {r2_path.name}: {sha256_file(r2_path)}")
     print("=" * 78)
 
     t0 = time.time()
@@ -162,11 +193,20 @@ def run_pipeline(raw_dir: Path, max_reads: int = None):
             r1_qual = f1.readline().strip()
 
             r2_id = f2.readline()
+            if not r2_id:
+                raise ValueError(f"FASTQ pair truncation: R1 has more reads than R2 at read {total_reads+1}")
             r2_seq = f2.readline().strip()
             f2.readline()
             r2_qual = f2.readline().strip()
 
             total_reads += 1
+
+            # Validate FASTQ paired-end read identifier synchronization
+            id1 = r1_id.strip().split()[0].removesuffix("/1")
+            id2 = r2_id.strip().split()[0].removesuffix("/2")
+            if id1 != id2:
+                raise ValueError(f"FASTQ pair desynchronization detected at read {total_reads}: R1 '{id1}' != R2 '{id2}'")
+
             if total_reads % 500000 == 0:
                 cur_t = time.time()
                 rate = 500000 / (cur_t - last_time) if cur_t > last_time else 0
@@ -238,19 +278,17 @@ def run_pipeline(raw_dir: Path, max_reads: int = None):
                 # Method 1: Primer Pairing
                 categories["method1_ontarget"] += 1
 
-                # Method 2: Sequence Alignment against intended reference amplicon
+                # Method 2: Cognate-Anchored Gapped Sequence Alignment via edlib
                 amp_idx = best1 if best1 < 384 else best2
                 exp_amp = ref_amplicons.get(amp_idx, "")
-                if best1 >= 384:
+                if best1 >= 384 and exp_amp:
                     exp_amp = revcomp(exp_amp)
 
+                # Defect A Fix: Fail-closed on missing reference amplicon sequence
                 if exp_amp:
-                    if edlib:
-                        res = edlib.align(t1.lower(), exp_amp, mode="SHW", task="distance")
-                        ident = 1.0 - (res["editDistance"] / len(t1))
-                    else:
-                        chk_len = min(len(t1), len(exp_amp))
-                        ident = sum(1 for a, b in zip(t1.lower()[:chk_len], exp_amp[:chk_len]) if a == b) / chk_len
+                    res = edlib.align(t1.lower(), exp_amp, mode="SHW", task="distance")
+                    # Calculate edit similarity
+                    ident = 1.0 - (res["editDistance"] / len(t1))
 
                     if ident >= 0.75:
                         categories["method2_ontarget_75"] += 1
@@ -262,8 +300,9 @@ def run_pipeline(raw_dir: Path, max_reads: int = None):
                     else:
                         categories["method2_nonspecific_80"] += 1
                 else:
-                    categories["method2_ontarget_75"] += 1
-                    categories["method2_ontarget_80"] += 1
+                    # Missing reference amplicon CANNOT be verified as on-target
+                    categories["method2_nonspecific_75"] += 1
+                    categories["method2_nonspecific_80"] += 1
             else:
                 categories["method1_nonspecific"] += 1
                 categories["method2_nonspecific_75"] += 1
@@ -296,17 +335,30 @@ def run_pipeline(raw_dir: Path, max_reads: int = None):
     m2_80_on = categories["method2_ontarget_80"] / total_classified * 100 if total_classified > 0 else 0
     m2_80_non = categories["method2_nonspecific_80"] / total_classified * 100 if total_classified > 0 else 0
 
+    # Dynamic status calculation
+    dimer_diff = abs(dimer_pct - 1.0)
+    dimer_status = f"MATCH (diff = {dimer_pct - 1.0:+.2f}%)" if dimer_diff <= 0.5 else f"MISMATCH ({dimer_pct:.2f}% vs ~1%)"
+
+    m1_diff = abs(m1_on_pct - 43.0)
+    m1_status = f"MATCH (diff = {m1_on_pct - 43.0:+.2f}%)" if m1_diff <= 1.0 else f"MISMATCH ({m1_on_pct:.2f}% vs ~43%)"
+
+    m2_75_diff = abs(m2_75_on - 43.0)
+    m2_75_status = f"MATCH (diff = {m2_75_on - 43.0:+.2f}%)" if m2_75_diff <= 1.0 else f"MISMATCH ({m2_75_on:.2f}% vs ~43%)"
+
+    m2_80_diff = abs(m2_80_on - 43.0)
+    m2_80_status = f"MATCH (diff = {m2_80_on - 43.0:+.2f}%)" if m2_80_diff <= 1.0 else f"MISMATCH ({m2_80_on:.2f}% vs ~43%)"
+
     print("\n[Read Category Breakdown]:")
-    print(f"  Primer-Dimers (invariant):     {categories['dimers']:,} ({dimer_pct:.2f}%)  | Published Fig 3f: ~1% [MATCH within 0.2%]")
+    print(f"  Primer-Dimers (invariant):     {categories['dimers']:,} ({dimer_pct:.2f}%)  | Published Fig 3f: ~1% [{dimer_status}]")
     print(f"\n  Method 1 (Primer Pairing):")
-    print(f"    - On-Target Amplicons:       {categories['method1_ontarget']:,} ({m1_on_pct:.2f}%)  | Published Fig 3f: ~43% [MATCH within 1.0%]")
-    print(f"    - Nonspecific Products:      {categories['method1_nonspecific']:,} ({m1_non_pct:.2f}%)  | Published Fig 3f: ~56% [MATCH within 1.0%]")
-    print(f"\n  Method 2 (Genuine Gapped Alignment via edlib >= 75% Identity):")
-    print(f"    - On-Target Amplicons:       {categories['method2_ontarget_75']:,} ({m2_75_on:.2f}%)  | Published Fig 3f: ~43% [MATCH within 1.0%]")
-    print(f"    - Nonspecific Products:      {categories['method2_nonspecific_75']:,} ({m2_75_non:.2f}%)  | Published Fig 3f: ~56% [MATCH within 1.0%]")
-    print(f"\n  Method 2 (Genuine Gapped Alignment via edlib >= 80% Identity):")
-    print(f"    - On-Target Amplicons:       {categories['method2_ontarget_80']:,} ({m2_80_on:.2f}%)  | Published Fig 3f: ~43% [MATCH within 0.3%]")
-    print(f"    - Nonspecific Products:      {categories['method2_nonspecific_80']:,} ({m2_80_non:.2f}%)  | Published Fig 3f: ~56% [MATCH within 0.4%]")
+    print(f"    - On-Target Amplicons:       {categories['method1_ontarget']:,} ({m1_on_pct:.2f}%)  | Published Fig 3f: ~43% [{m1_status}]")
+    print(f"    - Nonspecific Products:      {categories['method1_nonspecific']:,} ({m1_non_pct:.2f}%)  | Published Fig 3f: ~56%")
+    print(f"\n  Method 2 (Cognate-Anchored Gapped Alignment via edlib >= 75% Identity):")
+    print(f"    - On-Target Amplicons:       {categories['method2_ontarget_75']:,} ({m2_75_on:.2f}%)  | Published Fig 3f: ~43% [{m2_75_status}]")
+    print(f"    - Nonspecific Products:      {categories['method2_nonspecific_75']:,} ({m2_75_non:.2f}%)  | Published Fig 3f: ~56%")
+    print(f"\n  Method 2 (Cognate-Anchored Gapped Alignment via edlib >= 80% Identity):")
+    print(f"    - On-Target Amplicons:       {categories['method2_ontarget_80']:,} ({m2_80_on:.2f}%)  | Published Fig 3f: ~43% [{m2_80_status}]")
+    print(f"    - Nonspecific Products:      {categories['method2_nonspecific_80']:,} ({m2_80_non:.2f}%)  | Published Fig 3f: ~56%")
 
     print("\n" + "=" * 78)
     print("STATUS: FASTQ CLASSIFICATION SUCCESSFULLY COMPLETED AND REPLICATED")

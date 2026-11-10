@@ -733,6 +733,15 @@ Benchmarking}\label{findings-from-supplementary-benchmarking}
     tolerates sequencing variations. Crucially, primer-dimer
     quantification (0.87\% vs \textasciitilde1\% published) is
     completely invariant across all methods.
+  \item
+    \emph{Alignment Scope Distinction:} In the original SADDLE
+    publication (Xie et al. 2022), reads were aligned genome-wide using
+    Bowtie2. In our lightweight, turnkey Python implementation, Method 2
+    executes cognate-anchored semi-global gapped alignment
+    (\texttt{edlib}, Myers' bit-vector algorithm) against the 384
+    intended target amplicons from MOESM5. Both approaches yield
+    concordant results (\textasciitilde43\% on-target,
+    \textasciitilde56\% nonspecific, \textasciitilde1\% primer-dimers).
   \end{itemize}
 \item
   \textbf{Scope Limitation:} This replication focuses strictly on the

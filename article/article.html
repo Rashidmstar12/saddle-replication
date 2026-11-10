@@ -900,6 +900,14 @@ string matching artificially depresses on-target reads to 39.49% due to
 tolerates sequencing variations. Crucially, primer-dimer quantification
 (0.87% vs ~1% published) is completely invariant across all
 methods.</li>
+<li><em>Alignment Scope Distinction:</em> In the original SADDLE
+publication <span class="citation" data-cites="xie2022designing">(Xie et
+al. 2022)</span>, reads were aligned genome-wide using Bowtie2. In our
+lightweight, turnkey Python implementation, Method 2 executes
+cognate-anchored semi-global gapped alignment (<code>edlib</code>,
+Myers’ bit-vector algorithm) against the 384 intended target amplicons
+from MOESM5. Both approaches yield concordant results (~43% on-target,
+~56% nonspecific, ~1% primer-dimers).</li>
 </ul></li>
 <li><strong>Scope Limitation:</strong> This replication focuses strictly
 on the empirical validation read partitions and heuristic scoring. The

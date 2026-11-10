@@ -96,6 +96,7 @@ saddle-replication/
 │   └── verify_replication.py      # Standalone replication verifier (~1.5s runtime)
 └── data/
     ├── baseline_predictions_384.tsv        # 295,296 rows of candidate pairs & predictions
+    ├── full_fastq_run_audit.log            # Execution audit log across all 3.94M raw FASTQ reads
     ├── phase0e_recalculated_metrics.json   # Full benchmark metric dictionary
     ├── reference_384_amplicons.fasta       # Sequences of all 384 intended target amplicons
     ├── reference_alignment_comparison.json  # Read counts comparing Method 1 vs Method 2
