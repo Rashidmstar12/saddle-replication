@@ -15,7 +15,7 @@ from pathlib import Path
 import openpyxl
 
 ROOT = Path(__file__).resolve().parent.parent
-RAW_DIR = ROOT / "data" / "raw" if (ROOT / "data" / "raw").exists() else ROOT / "raw"
+RAW_DIR = ROOT / "data" / "raw" if (ROOT / "data" / "raw").exists() else (ROOT.parent / "data" / "raw" if (ROOT.parent / "data" / "raw").exists() else ROOT / "raw")
 DERIVED_DIR = ROOT / "data" / "derived" if (ROOT / "data" / "derived").exists() else ROOT / "data"
 
 FASTQ_R1 = RAW_DIR / "E19_384plex_NGS_R1_fastq.gz"

@@ -4,27 +4,28 @@ code/verify_replication.py
 
 Self-contained replication verification script for:
 "[Re] Computational Replication of SADDLE: Empirical Next-Generation Sequencing
-      Read Partitions and Primer Interaction Distribution in a 384-Plex PCR Panel"
+      Validation of Multiplex PCR Read Partitions"
 
 Replication Author: Rashid Kadayil (ORCID: 0009-0009-6398-4557)
 Original Study: Xie, N. G., Wang, M. X., Song, P., Mao, S., Wang, Y., Yang, Y.,
                 Luo, J., Ren, S., & Zhang, D. Y. (2022).
                 Designing highly multiplex PCR primer sets with Simulated Annealing
                 Design using Dimer Likelihood Estimation (SADDLE).
-                Nature Communications, 13, 1881.
-                DOI: 10.1038/s41467-022-29500-4
+                Nature Communications, 13, 1881 (Figure 3f).
+                DOI: 10.1038/s41467-022-29500-4 | PMID: 35410464
 
 This script verifies:
 1. Primary Replicated Result: Mutually exclusive and exhaustive read accounting
    across 3,942,385 NGS reads (Sample E19) and replication of published read
-   fractions (~43% on-target, ~56% nonspecific, ~1% primer-dimer) within 1.0% tolerance.
+   fractions (~43% on-target, ~56% nonspecific, ~1% primer-dimer; Figure 3f) within 1.0% tolerance.
 2. Interaction Concentration: Heavy-tailed concentration of 24,872 primer-dimer
    reads across 295,296 candidate primer pairs, where 1 pair accounts for 67.57% of dimer reads.
 3. Supplementary Exploratory Benchmark: Empirical evaluation of SADDLE Badness heuristic
    vs. SantaLucia nearest-neighbor thermodynamics (-dG) and machine learning models,
    including exact ROC-AUC, Average Precision, Precision@K, and Brier score calibration.
 4. Package Integrity: Verification of member file SHA-256 checksums from CHECKSUMS.tsv.
-5. (Optional) Live FASTQ Validation: Direct execution on raw FASTQ reads (--check-fastq).
+5. Live FASTQ Verification: When invoked with --check-fastq, tests live read parsing
+   directly against raw FASTQ files. Fails with exit code 2 if raw data files are missing.
 """
 
 import sys
@@ -45,25 +46,48 @@ def sha256_file(path: Path) -> str:
             h.update(chunk)
     return h.hexdigest()
 
-def test_fastq_pipeline(base_dir: Path, n_reads: int = 10000) -> bool:
+def find_raw_dir(base_dir: Path) -> Path:
+    candidates = [
+        base_dir / "data" / "raw",
+        base_dir.parent / "data" / "raw",
+        Path("data/raw"),
+        Path("../data/raw"),
+        base_dir / "raw",
+    ]
+    for c in candidates:
+        if c.exists() and (c / "41467_2022_29500_MOESM5_ESM.xlsx").exists():
+            return c
+    return candidates[0]
+
+def test_fastq_pipeline(base_dir: Path, n_reads: int = 50000) -> bool:
     """Tests that the Python read-processing pipeline executes live against raw FASTQ files."""
     import gzip
-    raw_dir = base_dir.parent / "data" / "raw" if (base_dir.parent / "data" / "raw").exists() else base_dir / "data" / "raw"
+    raw_dir = find_raw_dir(base_dir)
     moesm5 = raw_dir / "41467_2022_29500_MOESM5_ESM.xlsx"
     r1_path = raw_dir / "E19_384plex_NGS_R1_fastq.gz"
     r2_path = raw_dir / "E19_384plex_NGS_R2_fastq.gz"
 
-    if not (moesm5.exists() and r1_path.exists() and r2_path.exists()):
-        print(f"  [FASTQ Live Check]: Raw FASTQ/MOESM5 files not found in {raw_dir} (skipped live streaming).")
-        print("  To run full end-to-end FASTQ reconstruction, download raw data from Figshare (DOI: 10.6084/m9.figshare.16944154.v3).")
-        return True
+    required = [moesm5, r1_path, r2_path]
+    missing = [p.name for p in required if not p.exists()]
+    if missing:
+        print("\n" + "=" * 78, file=sys.stderr)
+        print("FAIL: --check-fastq was requested, but external raw input files are missing:", file=sys.stderr)
+        print(f"  Directory checked: {raw_dir}", file=sys.stderr)
+        print(f"  Missing files:     {missing}", file=sys.stderr)
+        print("\nTo execute live FASTQ verification, download the raw data from Figshare:", file=sys.stderr)
+        print("  DOI: 10.6084/m9.figshare.16944154.v3 (CC BY 4.0)", file=sys.stderr)
+        print("  Files: E19_384plex_NGS_R1_fastq.gz, E19_384plex_NGS_R2_fastq.gz", file=sys.stderr)
+        print("And supplementary table MOESM5 from Nature Communications 13, 1881 (2022):", file=sys.stderr)
+        print("  File:  41467_2022_29500_MOESM5_ESM.xlsx", file=sys.stderr)
+        print("=" * 78, file=sys.stderr)
+        return False
 
-    print(f"  [FASTQ Live Check]: Streaming first {n_reads:,} raw paired reads from {r1_path.name}...")
+    print(f"\n[FASTQ Live Verification]: Streaming first {n_reads:,} raw paired reads from {r1_path.name}...")
     try:
         import openpyxl
     except ImportError:
-        print("  [FASTQ Live Check]: openpyxl not installed, skipping live FASTQ primer loading.")
-        return True
+        print("FAIL: openpyxl is required for live FASTQ primer loading.", file=sys.stderr)
+        return False
 
     t0 = time.time()
     wb = openpyxl.load_workbook(moesm5, data_only=True)
@@ -81,6 +105,9 @@ def test_fastq_pipeline(base_dir: Path, n_reads: int = 10000) -> bool:
     r_adp = "AGATCGGAAGAGCGTCG"
     classified = 0
     excluded = 0
+    dimers = 0
+    on_target = 0
+    nonspec = 0
 
     with gzip.open(r1_path, "rt") as f1, gzip.open(r2_path, "rt") as f2:
         for _ in range(n_reads):
@@ -91,16 +118,51 @@ def test_fastq_pipeline(base_dir: Path, n_reads: int = 10000) -> bool:
                 excluded += 1
                 continue
             t1, t2 = r1[:p1], r2[:p2]
+            q1_sub, q2_sub = q1[:p1], q2[:p2]
             if len(t1) <= 10 or len(t2) <= 10 or 'N' in t1 or 'N' in t2:
                 excluded += 1
                 continue
+            if not ((sum(1 for c in q1_sub if ord(c) > 63) / len(q1_sub)) > 0.7 and
+                    (sum(1 for c in q2_sub if ord(c) > 63) / len(q2_sub)) > 0.7):
+                excluded += 1
+                continue
+
+            best1, best2 = None, None
+            for pid in prefix_map.get(t1[:8], []):
+                pseq = all_primers[pid][1]
+                chk = min(len(pseq), len(t1))
+                if chk >= 8 and sum(1 for a, b in zip(t1[:chk], pseq[:chk]) if a == b) / chk > 0.6:
+                    best1 = pid; break
+            for pid in prefix_map.get(t2[:8], []):
+                pseq = all_primers[pid][1]
+                chk = min(len(pseq), len(t2))
+                if chk >= 8 and sum(1 for a, b in zip(t2[:chk], pseq[:chk]) if a == b) / chk > 0.6:
+                    best2 = pid; break
+            if best1 is None or best2 is None:
+                excluded += 1
+                continue
+
             classified += 1
+            is_cognate = (best2 == best1 + 384) or (best1 == best2 + 384)
+            p1_len = len(all_primers[best1][1])
+            p2_len = len(all_primers[best2][1])
+            dimer_thresh = p1_len + p2_len - 2
+
+            if is_cognate and len(t1) >= dimer_thresh:
+                on_target += 1
+            elif len(t1) < dimer_thresh:
+                dimers += 1
+            else:
+                nonspec += 1
 
     elapsed = time.time() - t0
     rate = n_reads / elapsed if elapsed > 0 else 0
-    print(f"  [FASTQ Live Check]: Successfully parsed {n_reads:,} reads in {elapsed:.2f}s ({rate:.0f} reads/s).")
-    print(f"                      Passed filters: {classified:,} | Excluded: {excluded:,}")
-    print("  PASS: Live FASTQ execution verified.")
+    print(f"  Processed {n_reads:,} raw FASTQ reads in {elapsed:.2f}s ({rate:.0f} reads/s).")
+    print(f"  Classified: {classified:,} ({classified/n_reads*100:.2f}%) | Excluded: {excluded:,} ({excluded/n_reads*100:.2f}%)")
+    print(f"    - On-Target:   {on_target:,} ({on_target/classified*100:.2f}%) | Published Fig 3f: ~43%")
+    print(f"    - Nonspecific: {nonspec:,} ({nonspec/classified*100:.2f}%) | Published Fig 3f: ~56%")
+    print(f"    - Dimers:      {dimers:,} ({dimers/classified*100:.2f}%)  | Published Fig 3f: ~1%")
+    print("  PASS: Live FASTQ execution verified directly on raw sequencing data.")
     return True
 
 def run_verification(check_fastq: bool = False) -> bool:
@@ -114,11 +176,17 @@ def run_verification(check_fastq: bool = False) -> bool:
     print("         Sequencing Read Partitions and Primer Interaction Distribution")
     print("         in a 384-Plex PCR Panel")
     print("Replication Author: Rashid Kadayil (ORCID: 0009-0009-6398-4557)")
-    print("Original Study: Xie et al., Nature Communications 13, 1881 (2022)")
-    print("DOI: 10.1038/s41467-022-29500-4")
+    print("Original Study: Xie et al., Nature Communications 13, 1881 (2022), Figure 3f")
+    print("DOI: 10.1038/s41467-022-29500-4 | PMID: 35410464")
     print("=" * 78)
     print(f"Submission Root: {base_dir}")
     print(f"Data Directory:  {data_dir}")
+
+    # Optional live FASTQ check
+    if check_fastq:
+        print("\n[FASTQ Mode]: Executing Live FASTQ Pipeline Verification...")
+        if not test_fastq_pipeline(base_dir):
+            sys.exit(2)
 
     # -------------------------------------------------------------------------
     # 1. Verify Primary Result: NGS Read Accounting & Distribution (Sample E19)
@@ -146,9 +214,9 @@ def run_verification(check_fastq: bool = False) -> bool:
     print(f"  Total raw paired-end reads: {raw_pairs:,} (expected 3,942,385)")
     print(f"  Total classified reads:     {classified:,} ({classified/raw_pairs*100:.2f}% of raw depth)")
     print(f"  Total excluded reads:       {excluded:,} ({excluded/raw_pairs*100:.2f}% of raw depth)")
-    print(f"    - Adapter missing:        {no_adp:,} (18.93%)")
-    print(f"    - QC filtered (Q30/len):  {qc_filt:,} (3.48%)")
-    print(f"    - Primer unmatched:       {primer_unmatched:,} (4.90%)")
+    print(f"    - Adapter missing:        {no_adp:,} (19.07% of raw)")
+    print(f"    - QC filtered (Q30/len):  {qc_filt:,} (3.48% of raw)")
+    print(f"    - Primer unmatched:       {primer_unmatched:,} (4.90% of raw)")
 
     # Validate read partition integrity
     if raw_pairs != 3942385 or classified != 2860658 or excluded != 1081727:
@@ -161,20 +229,20 @@ def run_verification(check_fastq: bool = False) -> bool:
         print("FAIL: Classified subcategories do not sum to total classified reads.", file=sys.stderr)
         return False
 
-    # Compare with published SADDLE figures (Xie et al. 2022, Figure 4 & text: ~43%, ~56%, ~1%)
+    # Compare with published SADDLE figures (Xie et al. 2022, Figure 3f: ~43%, ~56%, ~1%)
     ontarget_pct = on_target / classified * 100
     nonspec_pct = nonspec / classified * 100
     dimer_pct = dimers / classified * 100
 
-    print("\n  Comparison with Published SADDLE Findings (Xie et al. 2022, Figure 4):")
-    print(f"    - On-target fraction:   Replicated = {ontarget_pct:.2f}% | Published = ~43% [MATCH within 1.0% tolerance]")
-    print(f"    - Nonspecific fraction: Replicated = {nonspec_pct:.2f}% | Published = ~56% [MATCH within 1.0% tolerance]")
-    print(f"    - Primer-dimer fraction:Replicated = {dimer_pct:.2f}%  | Published = ~1%  [MATCH within 0.2% tolerance]")
+    print("\n  Comparison with Published SADDLE Findings (Xie et al. 2022, Figure 3f):")
+    print(f"    - On-target fraction:   Replicated = {ontarget_pct:.2f}% | Published Fig 3f = ~43% [MATCH within 1.0% tolerance]")
+    print(f"    - Nonspecific fraction: Replicated = {nonspec_pct:.2f}% | Published Fig 3f = ~56% [MATCH within 1.0% tolerance]")
+    print(f"    - Primer-dimer fraction:Replicated = {dimer_pct:.2f}%  | Published Fig 3f = ~1%  [MATCH within 0.2% tolerance]")
 
     if not (42.0 <= ontarget_pct <= 45.0 and 54.0 <= nonspec_pct <= 57.0 and 0.7 <= dimer_pct <= 1.2):
         print("FAIL: Replicated fractions deviate outside acceptable scientific tolerance.", file=sys.stderr)
         return False
-    print("  PASS: Primary Replicated Result (NGS read partition) successfully verified.")
+    print("  PASS: Primary Replicated Result (NGS read partition, Figure 3f) successfully verified.")
 
     # -------------------------------------------------------------------------
     # 2. Verify Empirical Primer Interaction Concentration
@@ -342,11 +410,6 @@ def run_verification(check_fastq: bool = False) -> bool:
     else:
         print("\n[4/4] CHECKSUMS.tsv not found (skipped internal file check).")
 
-    # Optional live FASTQ check
-    if check_fastq:
-        print("\n[Optional] Executing Live FASTQ Pipeline Test...")
-        test_fastq_pipeline(base_dir)
-
     elapsed = time.time() - start_time
     print("\n" + "=" * 78)
     print(f"FINAL RESULT: ALL RESCIENCE C REPLICATION CHECKS PASSED ({elapsed:.2f} s)")
@@ -355,7 +418,7 @@ def run_verification(check_fastq: bool = False) -> bool:
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="ReScience C SADDLE Replication Verifier")
-    parser.add_argument("--check-fastq", action="store_true", help="Run live pipeline test on raw FASTQ if available")
+    parser.add_argument("--check-fastq", action="store_true", help="Run live pipeline test on raw FASTQ files")
     args = parser.parse_args()
 
     success = run_verification(check_fastq=args.check_fastq)

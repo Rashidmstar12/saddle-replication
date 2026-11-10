@@ -265,32 +265,33 @@ Partitions</h1>
 <p class="date">2026-11-10</p>
 </header>
 <h1 id="abstract">Abstract</h1>
-<p>Multiplex polymerase chain reaction (multiplex PCR) is a standard
+<p>Multiplex polymerase chain reaction (multiplex PCR) is a foundational
 enrichment technology for targeted next-generation sequencing (NGS),
 clinical pathogen panels, and forensic identification. However,
 high-plex reactions suffer from non-specific primer-dimer formation,
 which can monopolize sequencing throughput and deplete on-target
 amplification. In 2022, Xie et al. introduced SADDLE (<em>Simulated
 Annealing Design using Dimer Likelihood Estimation</em>, <em>Nature
-Communications</em>, 13, 1881), describing an empirical heuristic
-scoring framework and simulated annealing algorithm to design multiplex
-primer pools up to 384-plex. While the experimental utility of SADDLE
-was demonstrated in the original paper, the validation sequencing
+Communications</em>, 13, 1881; PMID: 35410464), describing an empirical
+heuristic scoring framework and simulated annealing algorithm to design
+multiplex primer pools up to 384-plex. While the experimental utility of
+SADDLE was demonstrated in the original paper, the validation sequencing
 analysis relied on proprietary MATLAB scripts coupled to external
 command-line aligners, while the simulated annealing design code
 remained proprietary under patent restrictions. In this work, following
 the ReScience C guidelines for computational replication, we conduct an
 independent replication of the central empirical NGS validation finding
 of Xie et al.: the read classification breakdown and primer-interaction
-distribution of the 384-plex validation panel across 3,942,385 raw
-paired-end sequencing reads (Sample E19). Using an independent,
-open-source Python reimplementation, our pipeline classifies 2,860,658
-reads into 43.86% on-target amplicons, 55.27% nonspecific products, and
-0.87% primer-dimers, reproducing the published proportions (~43%, ~56%,
-~1%) within a 1.0% absolute tolerance. We further corroborate the severe
-heavy-tailed concentration of primer-dimer formation across the 295,296
-candidate primer pairings, where only 1,172 pairs (0.397%) exhibit
-non-zero dimerization and a single interaction (<code>rp213</code> <span
+distribution of the SADDLE-designed 384-plex validation panel across
+3,942,385 raw paired-end sequencing reads (Sample E19; Figure 3f). Using
+an independent, open-source Python reimplementation, our pipeline
+classifies 2,860,658 reads into 43.86% on-target amplicons, 55.27%
+nonspecific products, and 0.87% primer-dimers, reproducing the published
+proportions (~43%, ~56%, ~1%) within a 1.0% absolute tolerance. We
+further corroborate the severe heavy-tailed concentration of
+primer-dimer formation across the 295,296 candidate primer pairings,
+where only 1,172 pairs (0.397%) exhibit non-zero dimerization and a
+single interaction (<code>rp213</code> <span
 class="math inline">×</span> <code>rp371</code>) accounts for 67.57% of
 all dimer reads (16,805 reads). In a supplementary exploratory
 benchmark, we evaluate the predictive validity of the SADDLE Badness
@@ -331,12 +332,17 @@ data-cites="xie2022designing">(2022)</span> introduced SADDLE
 empirical biophysical scoring heuristic called <em>Badness</em> to
 quantify 3’-directed extensible hybridization and using simulated
 annealing optimization to partition multiplex primer pools into
-compatible sub-pools. In their 384-plex human SNP genotyping experiment,
-the authors sequenced an unoptimized control panel (Sample E19) and an
-optimized panel, reporting that in the unoptimized library, sequencing
-reads partitioned into ~43% on-target amplicons, ~56% nonspecific
-background, and ~1% primer-dimers, with dimer formation concentrated in
-a tiny subset of highly reactive primer pairs.</p>
+compatible sub-pools. In their 96-plex experimental optimization
+(Figures 3a–3c), the authors demonstrated that primer-dimer reads
+dropped from 90.7% in a naively designed pool (PS1) to 4.9% in an
+optimized pool (PS3). Scaling the technology to higher multiplexing, the
+authors designed and experimentally tested a <strong>384-plex primer set
+designed by SADDLE (768 primers; Sample E19)</strong>. In <strong>Figure
+3f</strong> and the accompanying text, the authors reported that the
+sequencing library of this 384-plex panel achieved high on-target
+specificity (~43%) and low primer-dimer formation (~1%), with the
+remaining reads (~56%) representing nonspecific background products
+aligning across the human genome via non-cognate primer pairs.</p>
 <p>Despite the impact of SADDLE, two key reproducibility hurdles exist:
 1. <strong>Proprietary Software Barriers:</strong> The simulated
 annealing software used to design primer sets was withheld under
@@ -347,7 +353,7 @@ in proprietary MATLAB and required external aligners <span
 class="citation" data-cites="langmead2012fast">(Langmead and Salzberg
 2012)</span>, preventing turnkey, open-source execution. 2.
 <strong>Independent Verification of Empirical Partitions:</strong> While
-the authors published rounded percentage summaries in Figure 4 of their
+the authors published rounded percentage summaries in Figure 3f of their
 manuscript, an independent, open-source replication of the
 read-accounting pipeline operating directly on the raw FASTQ data has
 not been formally documented.</p>
@@ -359,25 +365,26 @@ data-cites="xie2022designing">(2022)</span>: - <strong>Primary
 Replication Objective:</strong> Does an independent, open-source Python
 implementation replicate the published read classification proportions
 (~43% on-target, ~56% nonspecific, ~1% primer-dimer) across all
-3,942,385 raw paired-end reads of Sample E19, and does it reproduce the
-heavy-tailed concentration of primer-dimer reads? -
-<strong>Implementation Mapping:</strong> Can the read-classification
-pipeline be reconstructed without proprietary MATLAB dependencies or
-external binary alignment tools while maintaining operational fidelity?
-- <strong>Supplementary Exploratory Analysis:</strong> In a secondary
-analysis clearly distinguished from the primary replication claim, how
-well does the SADDLE Badness heuristic rank observed dimer events
-compared to standard nearest-neighbor thermodynamics (<span
+3,942,385 raw paired-end reads of the SADDLE 384-plex validation panel
+(Sample E19, Figure 3f), and does it reproduce the heavy-tailed
+concentration of primer-dimer reads? - <strong>Implementation
+Mapping:</strong> Can the read-classification pipeline be reconstructed
+without proprietary MATLAB dependencies or external binary alignment
+tools while maintaining operational fidelity? - <strong>Supplementary
+Exploratory Analysis:</strong> In a secondary analysis clearly
+distinguished from the primary replication claim, how well does the
+SADDLE Badness heuristic rank observed dimer events compared to standard
+nearest-neighbor thermodynamics (<span
 class="math inline"> − <em>Δ</em><em>G</em></span>) and supervised
 machine learning models?</p>
 <h1 id="original-work-and-artifact-audit">Original Work and Artifact
 Audit</h1>
 <p>The original study by Xie et al. <span class="citation"
 data-cites="xie2022designing">(2022)</span> was published in <em>Nature
-Communications</em> (Volume 13, Article 1881). Primer sequences, genomic
-coordinates, and assay details were provided in Supplementary Data
-(MOESM5). The raw paired-end sequencing reads for the 384-plex
-validation panel (Sample E19, Illumina MiniSeq 2 <span
+Communications</em> (Volume 13, Article 1881; PMID: 35410464). Primer
+sequences, genomic coordinates, and assay details were provided in
+Supplementary Data (MOESM5). The raw paired-end sequencing reads for the
+384-plex validation panel (Sample E19, Illumina MiniSeq 2 <span
 class="math inline">×</span> 150 bp) and post-hoc analysis scripts
 (<code>Data_process.m</code>, <code>Dimer_Identify.m</code>,
 <code>analysis_code.ipynb</code>) were deposited on Figshare (DOI:
@@ -547,16 +554,16 @@ Accounting Breakdown</h2>
 paired-end reads of Sample E19 classifies 2,860,658 reads (72.56% of
 total raw sequencing depth), with 1,081,727 reads (27.44%) excluded.
 Exclusions partition into: - Missing adapter sequence: 751,644 reads
-(18.93% of raw depth); - Quality and length filters: 137,086 reads
+(19.07% of raw depth); - Quality and length filters: 137,086 reads
 (3.48% of raw depth); - Primer prefix unmatched: 192,997 reads (4.90% of
 raw depth).</p>
 <p>Table 2 compares the classified read proportions directly against the
-published findings in Figure 4 and main text of Xie et al. <span
+published findings in Figure 3f and main text of Xie et al. <span
 class="citation" data-cites="xie2022designing">(2022)</span>.</p>
 <table style="width:100%;">
 <caption>Comparison between replicated read classification proportions
 and published SADDLE 384-plex results (Sample E19, MiniSeq 2 <span
-class="math inline">×</span> 150 bp).</caption>
+class="math inline">×</span> 150 bp, Figure 3f).</caption>
 <colgroup>
 <col style="width: 16%" />
 <col style="width: 16%" />
@@ -570,7 +577,7 @@ class="math inline">×</span> 150 bp).</caption>
 <th style="text-align: left;">Read Category</th>
 <th style="text-align: left;">Replicated Read Count</th>
 <th style="text-align: left;">Replicated Percentage (%)</th>
-<th style="text-align: left;">Published SADDLE Figure <span
+<th style="text-align: left;">Published SADDLE Figure 3f <span
 class="citation" data-cites="xie2022designing">(Xie et al.
 2022)</span></th>
 <th style="text-align: left;">Absolute Difference</th>
@@ -820,14 +827,15 @@ Figshare (DOI: 10.6084/m9.figshare.16944154.v3) are licensed under CC BY
 empirical NGS validation results from SADDLE <span class="citation"
 data-cites="xie2022designing">(Xie et al. 2022)</span>. Using an
 open-source Python workflow, we confirmed that classified reads from the
-384-plex validation panel partition into 43.86% on-target amplicons,
-55.27% nonspecific products, and 0.87% primer-dimers, matching the
-published values (~43%, ~56%, ~1%) within 1.0% absolute tolerance. We
-corroborated the severe heavy-tailed concentration of dimer reads, with
-a single primer pair generating 67.57% of all dimer reads. Finally, our
-supplementary exploratory benchmark illustrated the predictive utility
-of the SADDLE Badness heuristic over standard thermodynamics while
-documenting the calibration characteristics of supervised models.</p>
+SADDLE-designed 384-plex validation panel (Figure 3f) partition into
+43.86% on-target amplicons, 55.27% nonspecific products, and 0.87%
+primer-dimers, matching the published values (~43%, ~56%, ~1%) within
+1.0% absolute tolerance. We corroborated the severe heavy-tailed
+concentration of dimer reads, with a single primer pair generating
+67.57% of all dimer reads. Finally, our supplementary exploratory
+benchmark illustrated the predictive utility of the SADDLE Badness
+heuristic over standard thermodynamics while documenting the calibration
+characteristics of supervised models.</p>
 <p>All data, scripts, and a standalone verification suite are available
 in the public replication repository.</p>
 <h1 id="code-and-data-availability">Code and Data Availability</h1>
@@ -846,13 +854,17 @@ two seconds:</p>
 class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone https://github.com/Rashidmstar12/saddle-replication.git</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> saddle-replication</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> code/verify_replication.py</span></code></pre></div>
+<p>To run end-to-end classification directly from the raw FASTQ
+sequencing files:</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> code/reproduce_from_fastq.py <span class="at">--full</span></span></code></pre></div>
 <h1 class="unnumbered" id="references">References</h1>
 <div id="refs" class="references csl-bib-body hanging-indent"
 data-entry-spacing="0" role="list">
 <div id="ref-chen2026prism" class="csl-entry" role="listitem">
-Chen, Y., Y. Han, H. Wang, and L. Zhang. 2026.
-<span>“<span>PRISM</span>: <span>PRImer</span> Selection Through
-Submodular Maximization.”</span> <em>Bioinformatics</em> 42 (7):
+Chen, Yixin, Yunheng Han, Ao Wang, Aaron Hong, Adam R. Rivers, Alan
+Kuhnle, and Christina Boucher. 2026. <span>“Primer Design Through
+Submodular Function Estimation.”</span> <em>Bioinformatics</em> 42 (7):
 btag478. <a
 href="https://doi.org/10.1093/bioinformatics/btag478">https://doi.org/10.1093/bioinformatics/btag478</a>.
 </div>
