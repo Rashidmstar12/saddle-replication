@@ -734,17 +734,19 @@ class="math inline"> ≥ 75%</span> identity, <span
 class="math inline"><em>Δ</em> =  + 0.61%</span>) and
 <strong>42.76%</strong> (<span class="math inline"> ≥ 80%</span>
 identity, <span class="math inline"><em>Δ</em> =  − 0.24%</span>).
-Complete CIGAR strings, read identifiers, and indel counts are recorded
-in <code>data/alignment_and_indel_audit.json</code>.</li>
-<li><strong>Empirical Concordance Between Cognate-Anchored Alignment and
-All-384-Target Search:</strong> To test whether restricting sequence
-alignment to the cognate target amplicon introduces classification bias,
-we developed an independent empirical audit script
+Complete CIGAR strings, read identifiers, and indel counts for all 615
+recovered reads are recorded without truncation in
+<code>data/alignment_and_indel_audit.json</code>.</li>
+<li><strong>Dual-Strand All-384-Target Alignment Audit and
+Concordance:</strong> To test whether restricting sequence alignment to
+the cognate target amplicon introduces classification bias, we developed
+an independent empirical audit script
 (<code>code/audit_alignment_and_indels.py</code>) and recorded full
 per-read results in <code>data/alignment_and_indel_audit.json</code>.
-Aligning a representative audit sample of 5,000 classified non-dimer
-reads against all 384 reference amplicons simultaneously partitions the
-sample into:
+Testing an initial deterministic sample of the first 5,000 qualifying
+non-dimer reads from Sample E19 against all 384 reference amplicons in
+both forward and reverse-complement orientations (768 target alignments
+per read) partitions the sample into:
 <ul>
 <li><em>Cognate Reads (2,203 reads, 44.06% of sample):</em> Exactly
 2,193 reads (99.55% of cognates) aligned to their intended cognate
@@ -753,31 +755,34 @@ target (<span class="math inline"> ≥ 75%</span> identity) and 10 reads
 (0.00%)</strong> aligned to a different amplicon, demonstrating zero
 cross-target false positive assignments across the 384 loci.</li>
 <li><em>Non-Cognate Reads (2,797 reads, 55.94% of sample):</em> Exactly
-2,736 reads (97.82% of non-cognates) failed alignment against all 384
-amplicons, while 61 reads (2.18% of non-cognates, 1.22% of total sample)
-achieved <span class="math inline"> ≥ 75%</span> sequence alignment to a
-target sequence.</li>
+2,671 reads (95.50% of non-cognates) failed alignment against all 384
+amplicons on both strands, while 126 reads (4.50% of non-cognates, 2.52%
+of total sample) achieved <span class="math inline"> ≥ 75%</span>
+sequence alignment to a target amplicon on either strand.</li>
 <li><em>Exact Arithmetic Reconciliation:</em> The sum of all four
 mutually exclusive partitions (<span
-class="math inline">2, 193 + 10 + 61 + 2, 736 = 5, 000</span>)
+class="math inline">2, 193 + 10 + 126 + 2, 671 = 5, 000</span>)
 reconciles 100% of the tested reads without unexplained records.</li>
 <li><em>Operational Concordance:</em> Cognate-anchored classification
-yields 43.86% on-target (2,193 / 5,000), while exhaustive all-384-target
-alignment yields 45.08% on-target ((2,193 + 61) / 5,000), confirming
-<strong>98.78% operational concordance</strong> (<span
-class="math inline">100% − 1.22%</span>). Both demonstrate that
+yields 43.86% on-target (2,193 / 5,000), while exhaustive dual-strand
+all-384-target alignment yields 46.38% on-target ((2,193 + 126) /
+5,000), confirming <strong>97.48% operational concordance</strong>
+(<span class="math inline">100% − 2.52%</span>). Both demonstrate that
 multiplex PCR pools designed under SADDLE achieve <span
 class="math inline"> ≈ 43%</span> on-target specificity while rigorously
 suppressing primer-dimer amplification to under 1%.</li>
 </ul></li>
-<li><strong>Alignment Scope Clarification:</strong> The original study
-<span class="citation" data-cites="xie2022designing">(Xie et al.
-2022)</span> utilized Bowtie2 for genome-wide mapping. In our
-lightweight, turnkey Python pipeline, Method 2 executes cognate-anchored
-semi-global gapped alignment (<code>edlib</code>, Myers’ bit-vector
-algorithm) against the intended target amplicons from MOESM5. As shown
-above, this achieves high operational concordance without requiring
-external binary aligner installations.</li>
+<li><strong>Replication Scope and Framework Framing:</strong> This study
+is an independent, open-source clean-room reimplementation and
+approximate reanalysis. In the original publication <span
+class="citation" data-cites="xie2022designing">(Xie et al. 2022)</span>,
+reads were aligned genome-wide using Bowtie2. In our standalone Python
+implementation, Method 2 executes cognate-anchored semi-global gapped
+alignment (<code>edlib</code>, Myers’ bit-vector algorithm) against the
+384 intended target amplicons from MOESM5. As established by the
+dual-strand 384-target audit, cognate anchoring achieves 97.48%
+operational concordance with exhaustive search while requiring zero
+external C-binary aligner dependencies.</li>
 </ol>
 <h2 id="extreme-heavy-tailed-interaction-concentration">Extreme
 Heavy-Tailed Interaction Concentration</h2>
@@ -995,11 +1000,12 @@ al. 2022)</span>, reads were aligned genome-wide using Bowtie2. In our
 lightweight, turnkey Python implementation, Method 2 executes
 cognate-anchored semi-global gapped alignment (<code>edlib</code>,
 Myers’ bit-vector algorithm) against the 384 intended target amplicons
-from MOESM5. An all-target audit across 5,000 classified reads confirmed
-0.00% cross-target false positive alignment among cognate reads and a
-minor 1.22% target capture among non-cognate reads, establishing 98.8%
-operational concordance between cognate-anchored and all-target
-alignment without requiring external binary aligners.</li>
+from MOESM5. A dual-strand all-target audit across 5,000 classified
+reads (768 targets per read) confirmed 0.00% cross-target false positive
+alignment among cognate reads and a minor 2.52% target capture among
+non-cognate reads, establishing 97.48% operational concordance between
+cognate-anchored and all-target alignment without requiring external
+binary aligners.</li>
 </ul></li>
 <li><strong>Preprocessing Denominators:</strong> As detailed in Section
 3, published Figure 3f proportions (~43% / ~56% / ~1%) sum to 100% and

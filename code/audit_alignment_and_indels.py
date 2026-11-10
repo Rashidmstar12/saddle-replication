@@ -9,21 +9,22 @@ Empirical Alignment Concordance and Quantitative Indel Audit for:
 Author: Rashid Kadayil (ORCID: 0009-0009-6398-4557)
 
 This script performs two dedicated empirical audits directly from raw FASTQ data:
-1. All-384-Target Alignment Audit (Sample of 5,000 reads):
-   Aligns reads against ALL 384 reference target amplicons to measure:
-   - Cross-target false positive alignment rate among cognate reads.
-   - Target amplicon capture rate among non-cognate chimeric reads.
-   - Concordance between cognate-anchored alignment and exhaustive all-target alignment.
+1. Dual-Strand All-384-Target Alignment Audit (Deterministic sample of 5,000 non-dimer reads):
+   Aligns reads against ALL 384 reference amplicons across BOTH forward and reverse-complement
+   orientations (768 target alignments per read) to measure:
+   - Cross-target false positive alignment rate among cognate reads across both strands.
+   - Target sequence capture rate among non-cognate reads across both strands.
+   - Operational concordance between cognate-anchored alignment and exhaustive dual-strand all-target search.
 
-2. Quantitative Indel Analysis (Sample of 20,000 reads):
+2. Comprehensive Quantitative Indel Analysis (20,000 raw reads):
    Extracts full CIGAR alignment paths (Myers' exact bit-vector semi-global alignment via edlib)
-   for all reads that pass gapped alignment (>= 75% identity) but fail ungapped positional matching (< 75%).
-   Quantifies the proportion of frame-shift indels (1-bp deletions, 1-bp insertions, multi-indels)
-   versus substitution-only differences.
+   for ALL reads that pass gapped alignment (>= 75% identity) but fail ungapped positional matching (< 75%).
+   Preserves per-read identifiers, lengths, identities, CIGAR strings, and insertion/deletion counts
+   for all recovered reads without truncation.
 
 Outputs:
-   data/alignment_and_indel_audit.json: Machine-readable JSON recording per-category counts,
-   percentages, and representative CIGAR records.
+   data/alignment_and_indel_audit.json: Complete machine-readable JSON recording per-category counts,
+   reconciliation arithmetic, and all CIGAR records.
 """
 
 import sys
@@ -95,7 +96,8 @@ def load_resources(raw_dir: Path):
         else:
             amplicons.append("")
 
-    return all_primers, prefix_map, amplicons
+    amplicons_rc = [revcomp(a) if a else "" for a in amplicons]
+    return all_primers, prefix_map, amplicons, amplicons_rc
 
 def run_audits():
     base_dir = Path(__file__).resolve().parent.parent
@@ -107,19 +109,19 @@ def run_audits():
         print("ERROR: Raw FASTQ files missing.", file=sys.stderr)
         sys.exit(2)
 
-    all_primers, prefix_map, amplicons = load_resources(raw_dir)
+    all_primers, prefix_map, amplicons, amplicons_rc = load_resources(raw_dir)
     f_adp = "AGATCGGAAGAGCACAC"
     r_adp = "AGATCGGAAGAGCGTCG"
 
     print("=" * 78)
-    print("RESCIENCE C SADDLE REPLICATION: ALIGNMENT SCOPE & INDEL AUDIT")
+    print("RESCIENCE C SADDLE REPLICATION: DUAL-STRAND ALIGNMENT & INDEL AUDIT")
     print(f"Inputs: {r1_path.name}, {r2_path.name}")
     print("=" * 78)
 
     # -------------------------------------------------------------------------
-    # Audit 1: All-384-Target Alignment Audit (5,000 non-dimer reads)
+    # Audit 1: Dual-Strand All-384-Target Alignment Audit (5,000 non-dimer reads)
     # -------------------------------------------------------------------------
-    print("\n[Audit 1/2]: Testing alignment against ALL 384 amplicons (5,000 reads)...")
+    print("\n[Audit 1/2]: Testing alignment against ALL 384 amplicons on BOTH strands (5,000 reads)...")
     t0 = time.time()
     n_target = 5000
     tested_count = 0
@@ -173,9 +175,7 @@ def run_audits():
             t1_low = t1.lower()
 
             if is_cognate:
-                own_amp = amplicons[amp_idx]
-                if best1 >= 384 and own_amp:
-                    own_amp = revcomp(own_amp)
+                own_amp = amplicons[amp_idx] if best1 < 384 else amplicons_rc[amp_idx]
                 res_own = edlib.align(t1_low, own_amp, mode="SHW", task="distance")
                 ident_own = 1.0 - (res_own["editDistance"] / len(t1))
                 if ident_own >= 0.75:
@@ -183,17 +183,25 @@ def run_audits():
                 else:
                     cognate_fail_own += 1
 
-            # Test against ALL 384 amplicons
+            # Test alignment against BOTH strands (forward and reverse-complement) for all 384 amplicons
             best_ident = 0.0
             best_amp = None
-            for a_i, amp in enumerate(amplicons):
-                if not amp:
-                    continue
-                res = edlib.align(t1_low, amp, mode="SHW", task="distance")
-                ident = 1.0 - (res["editDistance"] / len(t1))
-                if ident > best_ident:
-                    best_ident = ident
-                    best_amp = a_i
+            for a_i in range(384):
+                fwd_seq = amplicons[a_i]
+                if fwd_seq:
+                    r_f = edlib.align(t1_low, fwd_seq, mode="SHW", task="distance")
+                    id_f = 1.0 - (r_f["editDistance"] / len(t1))
+                    if id_f > best_ident:
+                        best_ident = id_f
+                        best_amp = a_i
+
+                rev_seq = amplicons_rc[a_i]
+                if rev_seq:
+                    r_r = edlib.align(t1_low, rev_seq, mode="SHW", task="distance")
+                    id_r = 1.0 - (r_r["editDistance"] / len(t1))
+                    if id_r > best_ident:
+                        best_ident = id_r
+                        best_amp = a_i
 
             if is_cognate:
                 if best_amp != amp_idx and best_ident >= 0.75:
@@ -215,15 +223,15 @@ def run_audits():
     print(f"    - Failed intended target (<75%):    {cognate_fail_own:,} ({cognate_fail_own/total_cognate*100:.2f}%)")
     print(f"    - Matched a DIFFERENT target (>=75%): {cognate_match_different:,} (0.00% cross-target false positive rate)")
     print(f"  Total Non-Cognate Reads: {total_noncognate:,} ({total_noncognate/tested_count*100:.2f}%)")
-    print(f"    - Matched ANY of the 384 targets (>=75%): {noncognate_match_any:,} ({noncognate_match_any/total_noncognate*100:.2f}%)")
-    print(f"    - Failed ALL 384 targets (<75%):         {noncognate_fail_all:,} ({noncognate_fail_all/total_noncognate*100:.2f}%)")
+    print(f"    - Matched ANY target on either strand (>=75%): {noncognate_match_any:,} ({noncognate_match_any/total_noncognate*100:.2f}%)")
+    print(f"    - Failed ALL 384 targets on both strands (<75%): {noncognate_fail_all:,} ({noncognate_fail_all/total_noncognate*100:.2f}%)")
     print(f"  Arithmetic Check: {cognate_match_own} + {cognate_fail_own} + {noncognate_match_any} + {noncognate_fail_all} = {cognate_match_own + cognate_fail_own + noncognate_match_any + noncognate_fail_all} (expected {tested_count})")
     print(f"  Cognate-Anchored On-Target Rate: {cognate_match_own/tested_count*100:.2f}%")
-    print(f"  All-384-Target On-Target Rate:   {(cognate_match_own + noncognate_match_any)/tested_count*100:.2f}%")
+    print(f"  All-384-Target Dual-Strand On-Target Rate: {(cognate_match_own + noncognate_match_any)/tested_count*100:.2f}%")
     print(f"  Operational Concordance:         {concordance:.2f}%")
 
     # -------------------------------------------------------------------------
-    # Audit 2: Quantitative Indel & CIGAR Analysis (20,000 raw reads)
+    # Audit 2: Comprehensive Quantitative Indel & CIGAR Analysis (20,000 raw reads)
     # -------------------------------------------------------------------------
     print("\n[Audit 2/2]: Executing Quantitative Indel/CIGAR Analysis (20,000 reads)...")
     t1_time = time.time()
@@ -237,7 +245,7 @@ def run_audits():
         "multi_indel_or_frameshift": 0,
         "substitution_only": 0,
     }
-    sample_cigar_records = []
+    all_cigar_records = []
 
     with gzip.open(r1_path, "rt") as f1, gzip.open(r2_path, "rt") as f2:
         for _ in range(n_reads_indel):
@@ -282,9 +290,7 @@ def run_audits():
                 continue
 
             amp_idx = best1 if best1 < 384 else (best1 - 384)
-            exp_amp = amplicons[amp_idx]
-            if best1 >= 384 and exp_amp:
-                exp_amp = revcomp(exp_amp)
+            exp_amp = amplicons[amp_idx] if best1 < 384 else amplicons_rc[amp_idx]
             if not exp_amp:
                 continue
 
@@ -316,18 +322,19 @@ def run_audits():
                 else:
                     indel_breakdown["substitution_only"] += 1
 
-                if len(sample_cigar_records) < 10:
-                    sample_cigar_records.append({
-                        "read_id": r1_id.strip().split()[0],
-                        "amplicon_idx": amp_idx,
-                        "read_len": len(t1_seq),
-                        "amplicon_len": len(exp_amp),
-                        "gapped_identity": round(ident_gap, 4),
-                        "positional_identity": round(pos_ident, 4),
-                        "cigar": cigar,
-                        "num_insertions": num_ins,
-                        "num_deletions": num_del,
-                    })
+                # Save ALL CIGAR records (no artificial truncation)
+                all_cigar_records.append({
+                    "record_index": recovered_count,
+                    "read_id": r1_id.strip().split()[0],
+                    "amplicon_idx": amp_idx,
+                    "read_len": len(t1_seq),
+                    "amplicon_len": len(exp_amp),
+                    "gapped_identity": round(ident_gap, 4),
+                    "positional_identity": round(pos_ident, 4),
+                    "cigar": cigar,
+                    "num_insertions": num_ins,
+                    "num_deletions": num_del,
+                })
 
     elapsed_2 = time.time() - t1_time
     print(f"  Processed {n_reads_indel:,} reads in {elapsed_2:.1f}s.")
@@ -339,6 +346,7 @@ def run_audits():
     total_with_indels = recovered_count - indel_breakdown["substitution_only"]
     indel_rate = total_with_indels / recovered_count * 100 if recovered_count > 0 else 0
     print(f"  Reads containing indels: {total_with_indels}/{recovered_count} ({indel_rate:.2f}%)")
+    print(f"  Preserved all {len(all_cigar_records)} per-read CIGAR alignment records.")
 
     # Save to data/alignment_and_indel_audit.json
     out_dict = {
@@ -347,9 +355,11 @@ def run_audits():
             "r1_file": r1_path.name,
             "r2_file": r2_path.name,
             "moesm5_file": "41467_2022_29500_MOESM5_ESM.xlsx",
+            "audit_method": "Dual-strand exhaustive alignment (768 targets per read) & unconstrained CIGAR logging"
         },
         "all_384_target_alignment_audit": {
             "sample_size": tested_count,
+            "sampling_description": "Initial deterministic sample of first 5,000 qualifying non-dimer reads from Sample E19",
             "total_cognate_reads": total_cognate,
             "cognate_pct_of_sample": round(total_cognate / tested_count * 100, 2),
             "cognate_matched_intended_target": cognate_match_own,
@@ -367,7 +377,7 @@ def run_audits():
                 "matches_sample_size": (cognate_match_own + cognate_fail_own + noncognate_match_any + noncognate_fail_all) == tested_count,
             },
             "cognate_anchored_ontarget_pct": round(cognate_match_own / tested_count * 100, 2),
-            "all_384_target_ontarget_pct": round((cognate_match_own + noncognate_match_any) / tested_count * 100, 2),
+            "all_384_target_dual_strand_ontarget_pct": round((cognate_match_own + noncognate_match_any) / tested_count * 100, 2),
             "concordance_pct": round(concordance, 2),
         },
         "quantitative_indel_analysis": {
@@ -376,7 +386,8 @@ def run_audits():
             "breakdown": indel_breakdown,
             "percentage_with_indels": round(indel_rate, 2),
             "percentage_substitution_only": round(indel_breakdown["substitution_only"] / recovered_count * 100, 2),
-            "sample_cigar_records": sample_cigar_records,
+            "all_cigar_records_count": len(all_cigar_records),
+            "all_cigar_records": all_cigar_records,
         }
     }
 
@@ -384,9 +395,9 @@ def run_audits():
     with open(out_file, "w", encoding="utf-8") as f:
         json.dump(out_dict, f, indent=2)
 
-    print(f"\nSaved empirical audit records to: {out_file}")
+    print(f"\nSaved complete empirical audit records ({len(all_cigar_records)} CIGAR entries) to: {out_file}")
     print("=" * 78)
-    print("STATUS: ALIGNMENT SCOPE & INDEL AUDIT COMPLETED SUCCESSFULLY")
+    print("STATUS: DUAL-STRAND ALIGNMENT & INDEL AUDIT COMPLETED SUCCESSFULLY")
     print("=" * 78)
 
 if __name__ == "__main__":

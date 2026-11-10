@@ -377,13 +377,18 @@ def run_verification(check_fastq: bool = False, full_fastq: bool = False) -> boo
         print(f"    - Cognate reads: {c_own + c_fail:,} ({c_own:,} match intended target, {c_fail:,} fail, 0 cross-target false positives)")
         print(f"    - Non-cognate reads: {nc_any + nc_fail:,} ({nc_any:,} match target sequences, {nc_fail:,} fail all targets)")
         print(f"    - Arithmetic Check: {c_own} + {c_fail} + {nc_any} + {nc_fail} = {s_size} (exact 100% group partition)")
-        print(f"    - Operational Concordance: {a384['concordance_pct']:.2f}% (cognate-anchored {a384['cognate_anchored_ontarget_pct']:.2f}% vs all-target {a384['all_384_target_ontarget_pct']:.2f}%)")
+        all_tgt_pct = a384.get("all_384_target_dual_strand_ontarget_pct", a384.get("all_384_target_ontarget_pct", 0.0))
+        print(f"    - Operational Concordance: {a384['concordance_pct']:.2f}% (cognate-anchored {a384['cognate_anchored_ontarget_pct']:.2f}% vs dual-strand all-target {all_tgt_pct:.2f}%)")
 
         rec_cnt = indel_aud["recovered_by_gapped_alignment_count"]
         ind_pct = indel_aud["percentage_with_indels"]
+        cigar_recs = indel_aud.get("all_cigar_records_count", len(indel_aud.get("all_cigar_records", [])))
         print(f"\n  Quantitative Indel Analysis (Scanned N={indel_aud['reads_scanned']:,}):")
-        print(f"    - Recovered by gapped alignment: {rec_cnt} reads")
+        print(f"    - Recovered by gapped alignment: {rec_cnt} reads (all {cigar_recs} CIGAR records preserved)")
         print(f"    - Reads containing frameshift indels: {rec_cnt} ({ind_pct:.1f}% of recovered reads, 0.0% substitution-only)")
+        if cigar_recs != rec_cnt:
+            print(f"FAIL: Preserved CIGAR records ({cigar_recs}) do not match recovered reads ({rec_cnt}).", file=sys.stderr)
+            return False
 
     print("  PASS: Primary Replicated Result (NGS read partition, Figure 3f) successfully verified.")
 
