@@ -805,22 +805,41 @@ sequence alignment to a target amplicon on either strand.</li>
 mutually exclusive partitions (<span
 class="math inline">2, 193 + 10 + 126 + 2, 671 = 5, 000</span>)
 reconciles 100% of the tested reads without unexplained records.</li>
-<li><em>Operational Concordance and Scope Limitation:</em> Within this
-deterministic 5,000-read audit sample, cognate-anchored classification
-yields 43.86% on-target (2,193 / 5,000), while exhaustive dual-strand
-all-384-target alignment yields 46.38% on-target ((2,193 + 126) /
-5,000), representing <strong>97.28% operational binary
-concordance</strong> (<span
-class="math inline">[2,193+2,671]/5, 000 × 100% = 4, 864/5, 000</span>,
-with 136 discordant reads: 10 cognate reads failing quality and 126
-non-cognate reads achieving target alignment, representing 2.72%
-discordance). Crucially, this concordance metric measures agreement
-specifically within this 5,000-read sample between cognate-anchored and
-all-target semi-global gapped alignment; it is not derived from a
-full-dataset confusion matrix, should not be extrapolated as proof of
-identical classification across all 3.94 million reads, and does not
-establish mathematical equivalence to the original Bowtie2 amplicon
-mapping workflow.</li>
+<li><em>Two-Method Confusion Matrix and Verified Concordance:</em>
+Cross-classifying each read’s binary outcome under Method 2
+(cognate-anchored gapped alignment) against dual-strand all-384-target
+alignment constructs a complete 2 <span class="math inline">×</span> 2
+confusion matrix:
+<ul>
+<li><em>Both On-Target (Agreement):</em> Exactly 2,193 reads (43.86% of
+sample).</li>
+<li><em>Both Off-Target (Agreement):</em> Exactly 2,681 reads (53.62% of
+sample), comprising 2,671 non-cognate reads failing all targets plus all
+10 cognate reads that failed alignment to their assigned target. A
+dedicated per-read trace confirmed that 100% (10/10) of these cognate
+reads also failed alignment against all 384 targets on both strands (0
+passed any target), meaning both methods agree they are
+off-target/nonspecific.</li>
+<li><em>Cognate OFF / All-Target ON (Discordant):</em> Exactly 126 reads
+(2.52% of sample; non-cognate reads achieving sequence alignment to a
+target amplicon).</li>
+<li><em>Cognate ON / All-Target OFF (Discordant):</em> Exactly 0 reads
+(0.00%; mathematically impossible as the assigned target is within the
+384-target set).</li>
+<li><em>Verified Per-Read Binary Concordance:</em> Total agreement is
+<span
+class="math inline">(2,193+2,681)/5, 000 = <strong>97.48</strong><strong>%</strong></span>
+(<span class="math inline">4, 874/5, 000</span> reads), with exactly 126
+discordant reads (<span
+class="math inline"><strong>2.52</strong><strong>%</strong></span>).
+Crucially, this concordance metric measures agreement specifically
+within this 5,000-read sample between cognate-anchored and all-target
+semi-global gapped alignment; it is not derived from a full-dataset
+confusion matrix, should not be extrapolated as proof of identical
+classification across all 3.94 million reads, and does not establish
+mathematical equivalence to the original Bowtie2 amplicon mapping
+workflow.</li>
+</ul></li>
 </ul></li>
 <li><strong>Replication Scope and Framework Framing:</strong> This study
 is an independent, open-source <strong>qualified partial
@@ -1062,9 +1081,9 @@ amplicon from MOESM5. A separate dual-strand all-target audit across an
 initial deterministic sample of 5,000 classified reads (768 targets per
 read) confirmed 0.00% cross-target false positive alignment among
 cognate reads and a minor 2.52% target capture among non-cognate reads,
-establishing 97.28% operational binary concordance between
-cognate-anchored and all-target alignment (<span
-class="math inline">[2,193+2,671]/5, 000</span>). Crucially, this
+establishing 97.48% operational binary concordance across an exhaustive
+2 <span class="math inline">×</span> 2 confusion matrix (<span
+class="math inline">[2,193+2,681]/5, 000</span>). Crucially, this
 concordance metric measures agreement specifically within this
 5,000-read sample; it is not derived from a full-dataset confusion
 matrix, should not be extrapolated as proof of identical classification

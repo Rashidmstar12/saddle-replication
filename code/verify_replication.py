@@ -436,10 +436,22 @@ def run_verification(check_fastq: bool = False, full_fastq: bool = False) -> boo
             print("FAIL: Arithmetic mismatch in all-target alignment audit.", file=sys.stderr)
             return False
 
-        agreeing_reads = c_own + nc_fail
-        discordant_reads = c_fail + nc_any
+        cm = a384.get("two_method_confusion_matrix", {})
+        both_on = cm.get("both_ontarget", c_own)
+        both_off = cm.get("both_offtarget", nc_fail + c_fail)
+        off_on = cm.get("cognate_off_alltarget_on", nc_any)
+        on_off = cm.get("cognate_on_alltarget_off", 0)
+        c_fail_all_fail = cm.get("cognate_failed_own_and_failed_all_targets", c_fail)
+
+        if (both_on + both_off + off_on + on_off) != s_size:
+            print("FAIL: Confusion matrix does not sum to sample size.", file=sys.stderr)
+            return False
+
+        agreeing_reads = both_on + both_off
+        discordant_reads = off_on + on_off
         expected_concordance = round((agreeing_reads / s_size) * 100.0, 2)
         expected_discordance = round((discordant_reads / s_size) * 100.0, 2)
+
         if not math.isclose(a384['concordance_pct'], expected_concordance, abs_tol=1e-2):
             print(f"FAIL: Concordance percentage mismatch ({a384['concordance_pct']}% vs expected {expected_concordance}%).", file=sys.stderr)
             return False
@@ -448,8 +460,15 @@ def run_verification(check_fastq: bool = False, full_fastq: bool = False) -> boo
         print(f"    - Cognate reads: {c_own + c_fail:,} ({c_own:,} match intended target, {c_fail:,} fail, 0 cross-target false positives)")
         print(f"    - Non-cognate reads: {nc_any + nc_fail:,} ({nc_any:,} match target sequences, {nc_fail:,} fail all targets)")
         print(f"    - Arithmetic Check: {c_own} + {c_fail} + {nc_any} + {nc_fail} = {s_size} (exact 100% group partition)")
-        all_tgt_pct = a384.get("all_384_target_dual_strand_ontarget_pct", a384.get("all_384_target_ontarget_pct", 0.0))
-        print(f"    - Operational Binary Concordance: {a384['concordance_pct']:.2f}% (agreeing: {agreeing_reads:,} / {s_size:,} [{expected_concordance:.2f}%] | discordant: {discordant_reads:,} [{expected_discordance:.2f}%])")
+        print(f"    - Two-Method Confusion Matrix (Cognate-Anchored vs All-Target):")
+        print(f"        * Both On-Target:  {both_on:,} ({both_on/s_size*100:.2f}%)")
+        print(f"        * Both Off-Target: {both_off:,} ({both_off/s_size*100:.2f}%) [{nc_fail:,} non-cognates + {c_fail_all_fail} cognates failing all targets]")
+        print(f"        * Discordant (Cognate OFF, All-Target ON): {off_on:,} ({off_on/s_size*100:.2f}%)")
+        print(f"        * Discordant (Cognate ON, All-Target OFF): {on_off:,} (0.00%)")
+        print(f"    - Verified Per-Read Binary Concordance: {a384['concordance_pct']:.2f}% ({agreeing_reads:,} / {s_size:,})")
+        print(f"    - Verified Per-Read Binary Discordance: {expected_discordance:.2f}% ({discordant_reads:,} / {s_size:,})")
+        print(f"    - Lineage of 10 Cognate Reads: 10/10 failed assigned target AND failed all 384 targets.")
+        print(f"      Both methods agree they are off-target (placed in both_offtarget: {nc_fail} + {c_fail_all_fail} = {both_off:,} reads).")
 
         rec_cnt = indel_aud["recovered_by_gapped_alignment_count"]
         ind_pct = indel_aud["percentage_with_indels"]

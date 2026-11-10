@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "timestamp": "2026-11-10T10:42:10Z",
+    "timestamp": "2026-11-10T16:28:29Z",
     "r1_file": "E19_384plex_NGS_R1_fastq.gz",
     "r2_file": "E19_384plex_NGS_R2_fastq.gz",
     "moesm5_file": "41467_2022_29500_MOESM5_ESM.xlsx",
@@ -27,10 +27,23 @@
     },
     "cognate_anchored_ontarget_pct": 43.86,
     "all_384_target_dual_strand_ontarget_pct": 46.38,
-    "binary_agreement_reads": 4864,
-    "binary_discordant_reads": 136,
-    "concordance_pct": 97.28,
-    "discordance_pct": 2.72
+    "two_method_confusion_matrix": {
+      "both_ontarget": 2193,
+      "both_offtarget": 2681,
+      "cognate_off_alltarget_on": 126,
+      "cognate_on_alltarget_off": 0,
+      "total_concordant_reads": 4874,
+      "total_discordant_reads": 126,
+      "concordance_pct": 97.48,
+      "discordance_pct": 2.52,
+      "cognate_failed_own_and_failed_all_targets": 10,
+      "cognate_failed_own_and_passed_any_target": 0,
+      "explanation": "All 10 cognate reads that failed alignment to their assigned target due to low quality also failed alignment against all 384 reference amplicons on both strands. Under both methods, they are classified as off-target (nonspecific), placing them in the both_offtarget cell (2,671 non-cognates + 10 cognates = 2,681 reads), establishing a verified per-read binary concordance of 97.48% (4,874 / 5,000)."
+    },
+    "binary_agreement_reads": 4874,
+    "binary_discordant_reads": 126,
+    "concordance_pct": 97.48,
+    "discordance_pct": 2.52
   },
   "quantitative_indel_analysis": {
     "reads_scanned": 20000,
