@@ -476,7 +476,7 @@ def run_verification(check_fastq: bool = False, full_fastq: bool = False) -> boo
         cigar_recs = indel_aud.get("all_cigar_records_count", len(indel_aud.get("all_cigar_records", [])))
         print(f"\n  Quantitative Indel Analysis (Scanned N={indel_aud['reads_scanned']:,}):")
         print(f"    - Recovered by gapped alignment: {rec_cnt} reads (all {cigar_recs} CIGAR records preserved)")
-        print(f"    - Reads containing frameshift indels: {rec_cnt} ({ind_pct:.1f}% of recovered reads, 0.0% substitution-only)")
+        print(f"    - Reads containing alignment gaps: {rec_cnt} ({ind_pct:.1f}% of recovered reads, 0.0% substitution-only)")
         if cigar_recs != rec_cnt:
             print(f"FAIL: Preserved CIGAR records ({cigar_recs}) do not match recovered reads ({rec_cnt}).", file=sys.stderr)
             return False

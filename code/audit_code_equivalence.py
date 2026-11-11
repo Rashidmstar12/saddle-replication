@@ -115,8 +115,8 @@ def generate_code_equivalence_table():
             "saddle_original_logic": "Iterates hash collision list; first pair satisfying score > 0.6 triggers dimer_find=1 or others_find=1 and breaks loop.",
             "python_pipeline_location": "analysis/reconstruct_saddle_384.py: lines 173-195",
             "python_pipeline_logic": "Iterates prefix matches; takes first primer with matching identity > 0.6.",
-            "equivalence_status": "Preserved",
-            "notes": "First valid primer match triggers assignment."
+            "equivalence_status": "Alternative Collision Handling",
+            "notes": "Early-exit behavior on first valid match (>0.60 identity), but the underlying hash and collision-resolution data structures differ (MATLAB PrimeNumberHash array lookup vs Python prefix dictionary)."
         }
     ]
     return table

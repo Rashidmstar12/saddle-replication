@@ -336,9 +336,9 @@ class="citation" data-cites="xie2022designing">(Xie et al. 2022)</span>.
 Due to their substantially smaller size relative to target genomic
 amplicons, primer-dimers amplify with high kinetic efficiency, rapidly
 exhausting enzymatic reagents and saturating sequencing libraries.</p>
-<p>To mitigate this exponential risk, Xie et al. <span class="citation"
-data-cites="xie2022designing">(2022)</span> introduced SADDLE
-(<strong>S</strong>imulated <strong>A</strong>nnealing
+<p>To mitigate this combinatorial, quadratic risk, Xie et al. <span
+class="citation" data-cites="xie2022designing">(2022)</span> introduced
+SADDLE (<strong>S</strong>imulated <strong>A</strong>nnealing
 <strong>D</strong>esign using <strong>D</strong>imer
 <strong>L</strong>ikelihood <strong>E</strong>stimation), proposing an
 empirical biophysical scoring heuristic called <em>Badness</em> to
@@ -495,7 +495,7 @@ class="math inline"> &gt; 10</span> bp.</td>
 style="text-align: left;"><code>reconstruct_saddle_384.py:155-163</code>:
 Exact condition: length <span class="math inline"> &gt; 10</span> bp,
 <code>'N'</code> not in sequence, and <span
-class="math inline"> ≥ 70%</span> bases with quality ASCII <span
+class="math inline"> &gt; 70%</span> bases with quality ASCII <span
 class="math inline"> &gt; 63</span> for both R1 and R2.</td>
 <td style="text-align: left;"><strong>Threshold
 Reimplementation</strong> (<span class="math inline"> &gt; 70%</span>
@@ -752,25 +752,21 @@ Reads</strong></td>
 <h3 id="biological-and-methodological-insights">Biological and
 Methodological Insights</h3>
 <ol type="1">
-<li><strong>Inferred Preprocessing Denominator and Read
+<li><strong>Derived Preprocessing Denominator and Read
 Partitioning:</strong> In Figure 3f of Xie et al. <span class="citation"
 data-cites="xie2022designing">(2022)</span>, published proportions (~43%
-on-target, ~56% nonspecific, ~1% primer-dimers) sum to 100%, indicating
-that they represent percentages of post-filter classified reads rather
-than raw sequencer output. However, the fact that the original paper’s
-percentages total 100% does not prove that its authors used our specific
-post-filter denominator. Because Xie et al. did not explicitly report
-their exact integer classified read count in Figure 3f, their original
-internal denominator remains unverified. We report two transparent
-denominators: (a) our pipeline’s derived post-filter classified
-denominator (<span class="math inline"><em>N</em> = 2, 860, 664</span>
-read pairs), after filtering 27.44% unclassifiable reads (19.07% missing
-adapters, 3.48% low quality/short, 4.90% unmatched primers), which
-yields on-target (43.61% for Method 2, 43.86% for Method 1), nonspecific
-(55.27%–55.52%), and primer-dimer (0.87%) fractions in approximate
-agreement with the published values within a 1.0 percentage point
-scientific tolerance (differences of +0.61% and +0.86% on-target); and
-(b) the total raw sequencer output (<span
+on-target, ~56% nonspecific, ~1% primer-dimers) sum to 100%, but the
+original publication did not disclose the underlying integer read count
+or filtering denominator. We report two transparent denominators: (a)
+our pipeline’s derived post-filter classified denominator (<span
+class="math inline"><em>N</em> = 2, 860, 664</span> read pairs), after
+filtering 27.44% unclassifiable reads (19.07% missing adapters, 3.48%
+low quality/short, 4.90% unmatched primers), which yields on-target
+(43.61% for Method 2, 43.86% for Method 1), nonspecific (55.27%–55.52%),
+and primer-dimer (0.87%) fractions in approximate agreement with the
+published values within a 1.0 percentage point scientific tolerance
+(differences of +0.61% and +0.86% on-target); and (b) the total raw
+sequencer output (<span
 class="math inline"><em>N</em> = 3, 942, 385</span> read pairs), across
 which on-target amplicons represent 31.64% to 31.82%, nonspecific
 products represent 40.11% to 40.29%, primer-dimers represent 0.63%, and
@@ -1150,26 +1146,31 @@ class="math inline"> ≥ 80%</span> identity, reads partition into 42.76%
 on-target, 56.37% nonspecific, and 0.87% primer-dimers (difference =
 -0.24% on-target). Both aligner cutoffs match published Figure 3f within
 scientific tolerance.</li>
-<li><em>Positional vs Gapped Alignment Insight:</em> Naive ungapped
-string matching artificially depresses on-target reads to 39.49% due to
-1–2 bp sequencing indels, whereas genuine gapped alignment robustly
-tolerates sequencing variations. Crucially, primer-dimer quantification
-(0.87% vs ~1% published) is completely invariant across all
-methods.</li>
+<li><em>Positional vs Gapped Alignment Insight:</em> Ungapped string
+matching yields a lower on-target fraction of 39.49%, whereas
+semi-global gapped alignment recovers reads containing alignment gaps,
+reaching 43.61% (<span class="math inline"> ≥ 75%</span> similarity). An
+audit of 615 recovered reads confirmed that all 615 contained alignment
+gaps (median 8 bp), but this sample does not establish that small 1–2 bp
+sequencing indels are the predominant cause of read divergence across
+the full 3.94-million-read library. Crucially, primer-dimer
+quantification (0.87% vs ~1% published) is completely invariant across
+all alignment methods.</li>
 <li><em>Alignment Scope and Concordance:</em> In the original SADDLE
 publication <span class="citation" data-cites="xie2022designing">(Xie et
 al. 2022)</span>, on-target reads were aligned to intended amplicon
 sequences using Bowtie2 in MATLAB. In our lightweight, turnkey Python
 implementation, Method 2 executes cognate-anchored semi-global gapped
-alignment (<code>edlib</code>, Myers’ bit-vector algorithm) where each
-cognate-primer read is aligned directly against its assigned target
-amplicon from MOESM5. A separate dual-strand all-target audit across an
-initial deterministic sample of 5,000 classified reads (768 targets per
-read) confirmed 0 cross-target best matches among cognate reads (0/2,203
-best-scoring alignments <span class="math inline"> ≥ 75%</span> were
-non-cognate; secondary sub-threshold alignments were not logged) and a
-minor 2.52% target capture among non-cognate reads, establishing 97.48%
-operational binary concordance across an exhaustive 2 <span
+alignment (<code>edlib</code>, Myers’ bit-vector algorithm in
+prefix-matching <code>SHW</code> mode) where each cognate-primer read is
+aligned directly against its assigned target amplicon from MOESM5. A
+separate dual-strand all-target audit across an initial deterministic
+sample of 5,000 classified reads (768 targets per read) confirmed 0
+cross-target best matches among cognate reads (0/2,203 best-scoring
+alignments <span class="math inline"> ≥ 75%</span> were non-cognate;
+secondary sub-threshold alignments were not logged) and a minor 2.52%
+target capture among non-cognate reads, establishing 97.48% operational
+binary concordance across an exhaustive 2 <span
 class="math inline">×</span> 2 confusion matrix (<span
 class="math inline">[2,193+2,681]/5, 000</span>). Crucially, this
 concordance metric measures agreement specifically within this
@@ -1178,19 +1179,22 @@ matrix, should not be extrapolated as proof of identical classification
 across all 3.94 million reads, and does not establish mathematical
 equivalence to the original Bowtie2 amplicon mapping workflow.</li>
 </ul></li>
-<li><strong>Preprocessing Denominators:</strong> As detailed in Section
-3, published Figure 3f proportions (~43% / ~56% / ~1%) sum to 100%,
-indicating that they reflect a post-filter classified-read basis rather
-than total instrument throughput. However, because Xie et al. did not
-explicitly report the exact integer count of classified reads in Figure
-3f, their original internal denominator remains unverified. We report
-both the derived classified denominator under our filtering criteria
-(<span class="math inline"><em>N</em> = 2, 860, 664</span>, which yields
-43.61% / 55.52% / 0.87%) and the total raw sequencer output (<span
-class="math inline"><em>N</em> = 3, 942, 385</span>, which yields 31.64%
-/ 40.11% / 0.63% / 27.44% excluded). We present the agreement with
-Figure 3f as approximate agreement under our specific filtering pipeline
-rather than an established identical execution.</li>
+<li><strong>Preprocessing Denominators:</strong> Xie et al. presented
+read classification proportions (~43% on-target, ~56% nonspecific, ~1%
+primer-dimers) in Figure 3f that sum to 100%, but did not publish the
+underlying integer read counts or their internal filtering denominator.
+While our pipeline’s derived post-filter classified denominator (<span
+class="math inline"><em>N</em> = 2, 860, 664</span>) yields proportions
+in close numerical proximity (43.61% / 55.52% / 0.87%), the fact that
+published percentages sum to 100% does not establish that the original
+authors used this specific denominator. We therefore report both our
+derived post-filter denominator (<span
+class="math inline"><em>N</em> = 2, 860, 664</span>) and the total raw
+sequencer output (<span
+class="math inline"><em>N</em> = 3, 942, 385</span>, across which
+on-target reads represent 31.64%), presenting agreement as approximate
+operational concordance under our documented filtering criteria rather
+than an established identical denominator.</li>
 <li><strong>Qualified Partial Replication Scope Limitation:</strong>
 This study constitutes an independent <strong>qualified partial
 replication</strong> focused strictly on the empirical validation read
