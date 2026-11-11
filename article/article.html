@@ -385,22 +385,20 @@ report an independent <strong>qualified partial replication and
 alternative Python reanalysis</strong> focused on the empirical
 validation analysis of Xie et al. <span class="citation"
 data-cites="xie2022designing">(2022)</span>: - <strong>Primary
-Replication Objective:</strong> Does an alternative open-source Python
-workflow replicate the published read classification proportions (~43%
-on-target, ~56% nonspecific, ~1% primer-dimer) across all 3,942,385 raw
-paired-end reads of the SADDLE 384-plex validation panel (Sample E19,
-Figure 3f), and does it reproduce the extreme heavy-tailed concentration
-of primer-dimer reads? - <strong>Implementation Mapping &amp;
-Disclosures:</strong> How does this standalone Python reconstruction
-differ from the original authors’ MATLAB scripts
-(<code>Data_process.m</code>, <code>Dimer_Identify.m</code>) and Bowtie2
-workflow, and what are the specific algorithmic approximations? -
-<strong>Supplementary Exploratory Analysis:</strong> In a secondary
-analysis clearly distinguished from the primary replication claim, how
-well does the SADDLE Badness heuristic rank observed dimer events
-compared to standard nearest-neighbor thermodynamics (<span
-class="math inline">\(-\Delta G_{37}^\circ\)</span>) and supervised
-machine learning models?</p>
+Replication Objective:</strong> To assess whether an independent,
+open-source Python reanalysis of the publicly available 384-plex SADDLE
+sequencing data (Sample E19) yields read-classification proportions
+consistent with those reported by Xie et al. <span class="citation"
+data-cites="xie2022designing">(2022, fig. 3f)</span>, while explicitly
+documenting preprocessing exclusions, read-count denominators, and
+methodological differences from the original MATLAB/Bowtie2 workflow. -
+<strong>Secondary Objective:</strong> To characterize the distribution
+and concentration of observed primer-dimer interactions within the
+reconstructed read-count data. - <strong>Supplementary Exploratory
+Analysis:</strong> To compare approximate SADDLE-style primer-dimer risk
+scores with thermodynamic and supervised machine-learning baselines,
+without presenting these comparisons as replicated findings from the
+original study.</p>
 <h1 id="original-work-and-artifact-audit">Original Work and Artifact
 Audit</h1>
 <p>The original study by Xie et al. <span class="citation"

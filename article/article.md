@@ -50,9 +50,9 @@ Despite the impact of SADDLE, computational reproducibility is constrained by tw
 2. **Independent Verification of Empirical Partitions:** While the authors published rounded percentage summaries in Figure 3f of their manuscript (~43% on-target, ~56% nonspecific, ~1% primer-dimers), an independent, open-source replication of the read-accounting pipeline operating directly on the raw FASTQ data in a standalone, turnkey environment has not been formally documented.
 
 In this ReScience C article [@rougier2017sustainable], we report an independent **qualified partial replication and alternative Python reanalysis** focused on the empirical validation analysis of Xie et al. [-@xie2022designing]:
-- **Primary Replication Objective:** Does an alternative open-source Python workflow replicate the published read classification proportions (~43% on-target, ~56% nonspecific, ~1% primer-dimer) across all 3,942,385 raw paired-end reads of the SADDLE 384-plex validation panel (Sample E19, Figure 3f), and does it reproduce the extreme heavy-tailed concentration of primer-dimer reads?
-- **Implementation Mapping & Disclosures:** How does this standalone Python reconstruction differ from the original authors' MATLAB scripts (`Data_process.m`, `Dimer_Identify.m`) and Bowtie2 workflow, and what are the specific algorithmic approximations?
-- **Supplementary Exploratory Analysis:** In a secondary analysis clearly distinguished from the primary replication claim, how well does the SADDLE Badness heuristic rank observed dimer events compared to standard nearest-neighbor thermodynamics ($-\Delta G_{37}^\circ$) and supervised machine learning models?
+- **Primary Replication Objective:** To assess whether an independent, open-source Python reanalysis of the publicly available 384-plex SADDLE sequencing data (Sample E19) yields read-classification proportions consistent with those reported by Xie et al. [-@xie2022designing, Figure 3f], while explicitly documenting preprocessing exclusions, read-count denominators, and methodological differences from the original MATLAB/Bowtie2 workflow.
+- **Secondary Objective:** To characterize the distribution and concentration of observed primer-dimer interactions within the reconstructed read-count data.
+- **Supplementary Exploratory Analysis:** To compare approximate SADDLE-style primer-dimer risk scores with thermodynamic and supervised machine-learning baselines, without presenting these comparisons as replicated findings from the original study.
 
 # Original Work and Artifact Audit
 
