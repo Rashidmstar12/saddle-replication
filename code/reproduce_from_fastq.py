@@ -18,7 +18,7 @@ It performs a dual methodological evaluation:
 1. Method 1 (Primer-Pairing Heuristic): Evaluates cognate primer pairing (fp_i x rp_i)
    and insert length >= L1 + L2 - 2 bp.
 2. Method 2 (Cognate-Anchored Gapped Sequence Alignment via edlib): Executes Myers' exact
-   bit-vector semi-global alignment (mode='SHW') against the 384 intended reference
+   bit-vector semi-global prefix alignment (mode='SHW') against the 384 intended reference
    amplicons from Supplementary Data MOESM5.
 
 Strict Fail-Closed Validations:
@@ -310,6 +310,12 @@ def run_pipeline(raw_dir: Path, max_reads: int = None):
 
             if max_reads and total_reads >= max_reads:
                 break
+
+        # Check for trailing extra R2 reads after R1 reached end of file
+        if not max_reads:
+            extra_r2 = f2.readline()
+            if extra_r2:
+                raise ValueError("FASTQ pair truncation: R2 has trailing reads after R1 reached end of file")
 
     elapsed = time.time() - t0
     total_classified = categories["dimers"] + categories["method1_ontarget"] + categories["method1_nonspecific"]

@@ -336,9 +336,9 @@ class="citation" data-cites="xie2022designing">(Xie et al. 2022)</span>.
 Due to their substantially smaller size relative to target genomic
 amplicons, primer-dimers amplify with high kinetic efficiency, rapidly
 exhausting enzymatic reagents and saturating sequencing libraries.</p>
-<p>To mitigate this combinatorial, quadratic risk, Xie et al. <span
-class="citation" data-cites="xie2022designing">(2022)</span> introduced
-SADDLE (<strong>S</strong>imulated <strong>A</strong>nnealing
+<p>To mitigate this quadratically increasing interaction burden, Xie et
+al. <span class="citation" data-cites="xie2022designing">(2022)</span>
+introduced SADDLE (<strong>S</strong>imulated <strong>A</strong>nnealing
 <strong>D</strong>esign using <strong>D</strong>imer
 <strong>L</strong>ikelihood <strong>E</strong>stimation), proposing an
 empirical biophysical scoring heuristic called <em>Badness</em> to
@@ -1146,16 +1146,16 @@ class="math inline"> ≥ 80%</span> identity, reads partition into 42.76%
 on-target, 56.37% nonspecific, and 0.87% primer-dimers (difference =
 -0.24% on-target). Both aligner cutoffs match published Figure 3f within
 scientific tolerance.</li>
-<li><em>Positional vs Gapped Alignment Insight:</em> Ungapped string
-matching yields a lower on-target fraction of 39.49%, whereas
-semi-global gapped alignment recovers reads containing alignment gaps,
-reaching 43.61% (<span class="math inline"> ≥ 75%</span> similarity). An
-audit of 615 recovered reads confirmed that all 615 contained alignment
-gaps (median 8 bp), but this sample does not establish that small 1–2 bp
-sequencing indels are the predominant cause of read divergence across
-the full 3.94-million-read library. Crucially, primer-dimer
-quantification (0.87% vs ~1% published) is completely invariant across
-all alignment methods.</li>
+<li><em>Positional vs Gapped Alignment Insight:</em> The ungapped
+comparison yields 39.49%, whereas gapped alignment yields 43.61% (<span
+class="math inline"> ≥ 75%</span> edit-distance-derived similarity); a
+615-read selected audit demonstrates gaps as one operational
+explanation, without establishing the full-library cause. While all 615
+audit reads contained alignment gaps (median 8 bp), this selected sample
+does not establish that small 1–2 bp sequencing indels are the
+predominant cause of read divergence across the full 3.94-million-read
+library. Crucially, primer-dimer quantification (0.87% vs ~1% published)
+is completely invariant across all alignment methods.</li>
 <li><em>Alignment Scope and Concordance:</em> In the original SADDLE
 publication <span class="citation" data-cites="xie2022designing">(Xie et
 al. 2022)</span>, on-target reads were aligned to intended amplicon
@@ -1179,22 +1179,22 @@ matrix, should not be extrapolated as proof of identical classification
 across all 3.94 million reads, and does not establish mathematical
 equivalence to the original Bowtie2 amplicon mapping workflow.</li>
 </ul></li>
-<li><strong>Preprocessing Denominators:</strong> Xie et al. presented
-read classification proportions (~43% on-target, ~56% nonspecific, ~1%
-primer-dimers) in Figure 3f that sum to 100%, but did not publish the
-underlying integer read counts or their internal filtering denominator.
-While our pipeline’s derived post-filter classified denominator (<span
-class="math inline"><em>N</em> = 2, 860, 664</span>) yields proportions
-in close numerical proximity (43.61% / 55.52% / 0.87%), the fact that
-published percentages sum to 100% does not establish that the original
-authors used this specific denominator. We therefore report both our
-derived post-filter denominator (<span
+<li><strong>Preprocessing Denominators:</strong> The original
+publication <span class="citation" data-cites="xie2022designing">(Xie et
+al. 2022)</span> reported rounded percentage summaries in Figure 3f
+(~43% on-target, ~56% nonspecific, ~1% primer-dimers) without disclosing
+the underlying integer read counts or their internal filtering
+denominator. While our pipeline’s derived post-filter classified
+denominator (<span class="math inline"><em>N</em> = 2, 860, 664</span>)
+yields proportions in close numerical proximity (43.61% / 55.52% /
+0.87%), the original authors’ internal denominator remains unverified.
+We therefore report both our derived post-filter denominator (<span
 class="math inline"><em>N</em> = 2, 860, 664</span>) and the total raw
 sequencer output (<span
 class="math inline"><em>N</em> = 3, 942, 385</span>, across which
-on-target reads represent 31.64%), presenting agreement as approximate
-operational concordance under our documented filtering criteria rather
-than an established identical denominator.</li>
+on-target reads represent 31.64%), presenting agreement strictly as
+approximate operational concordance under our documented filtering
+criteria rather than an established identical denominator.</li>
 <li><strong>Qualified Partial Replication Scope Limitation:</strong>
 This study constitutes an independent <strong>qualified partial
 replication</strong> focused strictly on the empirical validation read

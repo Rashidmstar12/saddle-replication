@@ -214,24 +214,24 @@ target genomic amplicons, primer-dimers amplify with high kinetic
 efficiency, rapidly exhausting enzymatic reagents and saturating
 sequencing libraries.
 
-To mitigate this combinatorial, quadratic risk, Xie et al. (2022)
-introduced SADDLE (\textbf{S}imulated \textbf{A}nnealing \textbf{D}esign
-using \textbf{D}imer \textbf{L}ikelihood \textbf{E}stimation), proposing
-an empirical biophysical scoring heuristic called \emph{Badness} to
-quantify 3'-directed extensible hybridization and using simulated
-annealing optimization to partition multiplex primer pools into
-compatible sub-pools. In their 96-plex experimental optimization
-(Figures 3a--3c), the authors demonstrated that primer-dimer reads
-dropped from 90.7\% in a naively designed pool (PS1) to 4.9\% in an
-optimized pool (PS3). Scaling the technology to higher multiplexing, the
-authors designed and experimentally tested a \textbf{384-plex primer set
-designed by SADDLE (768 primers; Sample E19)}. In \textbf{Figure 3f} and
-the accompanying text, the authors reported that the sequencing library
-of this 384-plex panel achieved high on-target specificity
-(\textasciitilde43\%) and low primer-dimer formation
-(\textasciitilde1\%), with the remaining reads (\textasciitilde56\%)
-representing nonspecific background products formed by non-cognate
-primer pairings.
+To mitigate this quadratically increasing interaction burden, Xie et al.
+(2022) introduced SADDLE (\textbf{S}imulated \textbf{A}nnealing
+\textbf{D}esign using \textbf{D}imer \textbf{L}ikelihood
+\textbf{E}stimation), proposing an empirical biophysical scoring
+heuristic called \emph{Badness} to quantify 3'-directed extensible
+hybridization and using simulated annealing optimization to partition
+multiplex primer pools into compatible sub-pools. In their 96-plex
+experimental optimization (Figures 3a--3c), the authors demonstrated
+that primer-dimer reads dropped from 90.7\% in a naively designed pool
+(PS1) to 4.9\% in an optimized pool (PS3). Scaling the technology to
+higher multiplexing, the authors designed and experimentally tested a
+\textbf{384-plex primer set designed by SADDLE (768 primers; Sample
+E19)}. In \textbf{Figure 3f} and the accompanying text, the authors
+reported that the sequencing library of this 384-plex panel achieved
+high on-target specificity (\textasciitilde43\%) and low primer-dimer
+formation (\textasciitilde1\%), with the remaining reads
+(\textasciitilde56\%) representing nonspecific background products
+formed by non-cognate primer pairings.
 
 Despite the impact of SADDLE, computational reproducibility is
 constrained by two key factors: 1. \textbf{Software Ecosystem and
@@ -953,16 +953,17 @@ Benchmarking}\label{findings-from-supplementary-benchmarking}
     on-target). Both aligner cutoffs match published Figure 3f within
     scientific tolerance.
   \item
-    \emph{Positional vs Gapped Alignment Insight:} Ungapped string
-    matching yields a lower on-target fraction of 39.49\%, whereas
-    semi-global gapped alignment recovers reads containing alignment
-    gaps, reaching 43.61\% (\(\ge 75\%\) similarity). An audit of 615
-    recovered reads confirmed that all 615 contained alignment gaps
-    (median 8 bp), but this sample does not establish that small 1--2 bp
-    sequencing indels are the predominant cause of read divergence
-    across the full 3.94-million-read library. Crucially, primer-dimer
-    quantification (0.87\% vs \textasciitilde1\% published) is
-    completely invariant across all alignment methods.
+    \emph{Positional vs Gapped Alignment Insight:} The ungapped
+    comparison yields 39.49\%, whereas gapped alignment yields 43.61\%
+    (\(\ge 75\%\) edit-distance-derived similarity); a 615-read selected
+    audit demonstrates gaps as one operational explanation, without
+    establishing the full-library cause. While all 615 audit reads
+    contained alignment gaps (median 8 bp), this selected sample does
+    not establish that small 1--2 bp sequencing indels are the
+    predominant cause of read divergence across the full
+    3.94-million-read library. Crucially, primer-dimer quantification
+    (0.87\% vs \textasciitilde1\% published) is completely invariant
+    across all alignment methods.
   \item
     \emph{Alignment Scope and Concordance:} In the original SADDLE
     publication (Xie et al. 2022), on-target reads were aligned to
@@ -987,21 +988,20 @@ Benchmarking}\label{findings-from-supplementary-benchmarking}
     the original Bowtie2 amplicon mapping workflow.
   \end{itemize}
 \item
-  \textbf{Preprocessing Denominators:} Xie et al.~presented read
-  classification proportions (\textasciitilde43\% on-target,
-  \textasciitilde56\% nonspecific, \textasciitilde1\% primer-dimers) in
-  Figure 3f that sum to 100\%, but did not publish the underlying
+  \textbf{Preprocessing Denominators:} The original publication (Xie et
+  al. 2022) reported rounded percentage summaries in Figure 3f
+  (\textasciitilde43\% on-target, \textasciitilde56\% nonspecific,
+  \textasciitilde1\% primer-dimers) without disclosing the underlying
   integer read counts or their internal filtering denominator. While our
   pipeline's derived post-filter classified denominator
   (\(N = 2,860,664\)) yields proportions in close numerical proximity
-  (43.61\% / 55.52\% / 0.87\%), the fact that published percentages sum
-  to 100\% does not establish that the original authors used this
-  specific denominator. We therefore report both our derived post-filter
-  denominator (\(N = 2,860,664\)) and the total raw sequencer output
-  (\(N = 3,942,385\), across which on-target reads represent 31.64\%),
-  presenting agreement as approximate operational concordance under our
-  documented filtering criteria rather than an established identical
-  denominator.
+  (43.61\% / 55.52\% / 0.87\%), the original authors' internal
+  denominator remains unverified. We therefore report both our derived
+  post-filter denominator (\(N = 2,860,664\)) and the total raw
+  sequencer output (\(N = 3,942,385\), across which on-target reads
+  represent 31.64\%), presenting agreement strictly as approximate
+  operational concordance under our documented filtering criteria rather
+  than an established identical denominator.
 \item
   \textbf{Qualified Partial Replication Scope Limitation:} This study
   constitutes an independent \textbf{qualified partial replication}
