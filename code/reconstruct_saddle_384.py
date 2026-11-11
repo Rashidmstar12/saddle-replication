@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-scripts/reconstruct_saddle_384.py
+code/reconstruct_saddle_384.py
 
 Reconstructs experimentally observed dimer-read labels, on-target reads,
 and nonspecific amplicon reads from the raw SADDLE 384-plex paired-end FASTQ

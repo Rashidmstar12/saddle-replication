@@ -4,7 +4,7 @@ code/reproduce_from_fastq.py
 
 End-to-End FASTQ-to-Classification Replication Pipeline for:
 "[Re] Computational Replication of SADDLE: Empirical Next-Generation Sequencing
-      Validation of Multiplex PCR Read Partitions"
+      Read Partitions and Primer Interaction Distribution in a 384-Plex PCR Panel"
 
 Author: Rashid Kadayil (ORCID: 0009-0009-6398-4557)
 Original Publication: Xie et al., Nature Communications 13, 1881 (2022), Figure 3f

@@ -1,7 +1,6 @@
-import sys
 #!/usr/bin/env python3
 """
-analysis/run_baseline_benchmark.py
+code/run_baseline_benchmark.py
 
 PHASE 0D: Controlled Baseline Benchmark
 Trains baseline models on SADDLE 96-plex (PS1-PS3: 55,584 pairs) and evaluates

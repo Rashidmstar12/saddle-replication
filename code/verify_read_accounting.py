@@ -1,7 +1,6 @@
-import sys
 #!/usr/bin/env python3
 """
-analysis/verify_read_accounting.py
+code/verify_read_accounting.py
 
 Independently performs exhaustive, mutually exclusive read accounting
 across all 3,942,385 raw paired-end sequencing reads of SADDLE 384-plex (E19).

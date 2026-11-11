@@ -1,5 +1,5 @@
 ---
-title: "[Re] Computational Replication of SADDLE: Empirical Next-Generation Sequencing Validation of Multiplex PCR Read Partitions"
+title: "[Re] Computational Replication of SADDLE: Empirical Next-Generation Sequencing Read Partitions and Primer Interaction Distribution in a 384-Plex PCR Panel"
 author:
   - name: Rashid Kadayil
     orcid: 0009-0009-6398-4557

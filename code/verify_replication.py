@@ -4,7 +4,7 @@ code/verify_replication.py
 
 Self-contained replication verification script for:
 "[Re] Computational Replication of SADDLE: Empirical Next-Generation Sequencing
-      Validation of Multiplex PCR Read Partitions"
+      Read Partitions and Primer Interaction Distribution in a 384-Plex PCR Panel"
 
 Replication Author: Rashid Kadayil (ORCID: 0009-0009-6398-4557)
 Original Study: Xie, N. G., Wang, M. X., Song, P., Mao, S., Wang, Y., Yang, Y.,
@@ -419,7 +419,7 @@ def run_verification(check_fastq: bool = False, full_fastq: bool = False) -> boo
 
     if "ungapped_positional_comparison_75" in comp_data:
         pos_pct = comp_data["ungapped_positional_comparison_75"]["ontarget_pct"]
-        print(f"\n  Ungapped Positional ID >=75% (No Indels): {pos_pct:.2f}% (artificially depressed by 1-2 bp indels)")
+        print(f"\n  Ungapped Positional ID >=75% (No Indels): {pos_pct:.2f}% (artificially depressed by alignment gaps)")
 
     audit_path = data_dir / "alignment_and_indel_audit.json"
     if audit_path.exists():

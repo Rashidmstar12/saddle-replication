@@ -4,7 +4,7 @@ code/audit_alignment_and_indels.py
 
 Empirical Alignment Concordance and Quantitative Indel Audit for:
 "[Re] Computational Replication of SADDLE: Empirical Next-Generation Sequencing
-      Validation of Multiplex PCR Read Partitions"
+      Read Partitions and Primer Interaction Distribution in a 384-Plex PCR Panel"
 
 Author: Rashid Kadayil (ORCID: 0009-0009-6398-4557)
 

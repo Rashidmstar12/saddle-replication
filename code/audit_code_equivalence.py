@@ -1,7 +1,6 @@
-import sys
 #!/usr/bin/env python3
 """
-analysis/audit_code_equivalence.py
+code/audit_code_equivalence.py
 
 PHASE 0D / PHASE 0E RETRACTION NOTICE:
 This script contains:
@@ -41,7 +40,7 @@ def generate_code_equivalence_table():
             "category": "Adapter Identification & Trimming",
             "saddle_original_location": "Data_process.m: lines 23-57, 118, 128",
             "saddle_original_logic": "f_adp_pos = strfind(currline_1, 'AGATCGGAAGAGCACACGTCTGAACTCC'); r_adp_pos = strfind(currline_2, 'AGATCGGAAGAGCGTCGTGTAGGGAAAG'); requires ~isempty(f_adp_pos) && ~isempty(r_adp_pos); trims read1 to 1:(f_adp_pos-1) and read2 to 1:(r_adp_pos-1). Bifurcates reads by length (>=60 bp for Bowtie2 vs <60 bp for candidate dimers).",
-            "python_pipeline_location": "analysis/reconstruct_saddle_384.py: lines 39-40, 145-152",
+            "python_pipeline_location": "code/reconstruct_saddle_384.py: lines 39-40, 145-152",
             "python_pipeline_logic": "pos1 = r1_seq.find('AGATCGGAAGAGCACAC'); pos2 = r2_seq.find('AGATCGGAAGAGCGTCG'); if pos1 == -1 or pos2 == -1: drop; trims t1 = r1_seq[:pos1], t2 = r2_seq[:pos2]. Single unified stream.",
             "equivalence_status": "Alternative Heuristic",
             "notes": "Python uses 17 bp core Illumina TruSeq adapter prefix without length-based stream bifurcation (Data_process.m splits reads into >=60 bp for Bowtie2 vs <60 bp for dimer identification)."
@@ -50,7 +49,7 @@ def generate_code_equivalence_table():
             "category": "Quality Filtering",
             "saddle_original_location": "Data_process.m: lines 109-111",
             "saddle_original_logic": "f_quality = length(find(double(f4)>63))/length(f4); r_quality = length(find(double(r4)>63))/length(r4); condition: f_quality > 0.7 && r_quality > 0.7 && ~contains(f2,'N') && ~contains(r2,'N') && length(f4) > 10 && length(r4) > 10.",
-            "python_pipeline_location": "analysis/reconstruct_saddle_384.py: lines 155-163",
+            "python_pipeline_location": "code/reconstruct_saddle_384.py: lines 155-163",
             "python_pipeline_logic": "Checks len(t1) > 10 and len(t2) > 10; 'N' not in t1 and 'N' not in t2; sum(1 for c in qual if ord(c) > 63) / len > 0.7 for both R1 and R2.",
             "equivalence_status": "Threshold Reimplementation",
             "notes": "Exact threshold match. Filters out short inserts (<=10 bp), ambiguous base calls ('N'), and low quality reads (<=70% Q30+)."
@@ -59,7 +58,7 @@ def generate_code_equivalence_table():
             "category": "Primer Matching & Reverse-Complement Handling",
             "saddle_original_location": "Dimer_Identify.m: lines 28-41, 71-95",
             "saddle_original_logic": "Computes 8-base hash via PrimeNumberHash(lower(p{i}(1:8)), hashmod=786433); looks up first 8 bases of read; evaluates Smith-Waterman alignment score: swalign(f_seq, currline1(1:length(f_seq))) / score_perfect > 0.6.",
-            "python_pipeline_location": "analysis/reconstruct_saddle_384.py: lines 67-69, 166-196",
+            "python_pipeline_location": "code/reconstruct_saddle_384.py: lines 67-69, 166-196",
             "python_pipeline_logic": "prefix_map built from first 8 bp of each primer; matches candidate primers by prefix; calculates matches / len(primer) > 0.6 on the prefix of length min(len(p), len(t)).",
             "equivalence_status": "Alternative Heuristic",
             "notes": "Python implementation directly matches 5' primer sequences via character match fraction without requiring MATLAB swalign local alignment."
@@ -68,7 +67,7 @@ def generate_code_equivalence_table():
             "category": "Insert-Length Classification (Dimer vs Non-Specific)",
             "saddle_original_location": "Dimer_Identify.m: lines 70, 96-108",
             "saddle_original_logic": "Requires length(readF) > 15; if length(currline1)-1 < (length(f_seq) + length(r_seq) - 2) -> dimer; else -> others (nonspecific).",
-            "python_pipeline_location": "analysis/reconstruct_saddle_384.py: lines 203-220",
+            "python_pipeline_location": "code/reconstruct_saddle_384.py: lines 203-220",
             "python_pipeline_logic": "dimer_threshold = p1_len + p2_len - 2; insert_len = len(t1); if is_cognate and insert_len >= dimer_threshold -> on-target; elif insert_len < dimer_threshold -> dimer; else -> nonspecific.",
             "equivalence_status": "Formula Approximation",
             "notes": "Shared threshold formula is length(p1) + length(p2) - 2. Dimer_Identify.m additionally requires length(readF) > 15 bp, which Python does not enforce."
@@ -77,7 +76,7 @@ def generate_code_equivalence_table():
             "category": "Treatment of On-Target Reads (Bowtie2 vs Primer Pairing)",
             "saddle_original_location": "analysis_code.ipynb: lines 17-38",
             "saddle_original_logic": "Maps reads using Bowtie2 against Ref_1.fasta (reference amplicons). pysam.sort / index; OnTar = df.mapped // 2; unmapped reads saved for Dimer_Identify.m.",
-            "python_pipeline_location": "analysis/reconstruct_saddle_384.py: lines 199-210",
+            "python_pipeline_location": "code/reconstruct_saddle_384.py: lines 199-210",
             "python_pipeline_logic": "is_cognate = (best_id2 == best_id1 + 384) or (best_id1 == best_id2 + 384); if is_cognate and insert_len >= dimer_threshold -> on-target amplicon. Also evaluates edlib semi-global gapped alignment.",
             "equivalence_status": "Approximation (Primer Pairing and edlib gapped alignment vs Bowtie2)",
             "notes": "Material methodological difference. Python pipeline identifies cognate primer pairs and tests edlib gapped alignment, avoiding external Bowtie2 binary dependencies."
@@ -86,7 +85,7 @@ def generate_code_equivalence_table():
             "category": "SADDLE Pairwise Badness Heuristic Formula",
             "saddle_original_location": "Nature Communications 13, 1881 (2022) / Methods",
             "saddle_original_logic": "Sums complementary match weights W_k for k from 4 to 8 bases between primer sequences.",
-            "python_pipeline_location": "analysis/run_baseline_benchmark.py: lines 159-198",
+            "python_pipeline_location": "code/run_baseline_benchmark.py: lines 159-198",
             "python_pipeline_logic": "Evaluates 3' terminal matches of lengths 4, 5, 6 and internal matches of length 7. Constant MID8 = 256.0 was declared but internal 8-mer match loop was omitted.",
             "equivalence_status": "Approximation (4-7 bp Heuristic Variant)",
             "notes": "Benchmark evaluates an approximate 4-7 bp heuristic variant. Furthermore, this score was included as an input feature for Logistic Regression and XGBoost alongside physics parameters."
@@ -95,7 +94,7 @@ def generate_code_equivalence_table():
             "category": "Ordered and Unordered Pair Aggregation",
             "saddle_original_location": "Dimer_Identify.m: lines 3, 52, 98, 125-126",
             "saddle_original_logic": "dimer(ID1, ID2) = dimer(ID1, ID2) + 1; public repository script is hardcoded for 192 primers (96-plex panel: index = 1:192).",
-            "python_pipeline_location": "analysis/reconstruct_saddle_384.py: lines 238-249",
+            "python_pipeline_location": "code/reconstruct_saddle_384.py: lines 238-249",
             "python_pipeline_logic": "dimer_matrix_ordered[best_id1, best_id2] += 1; saves saddle_384_matrix_ordered.npy; then aggregates unordered pair (i, j) = dimer(i, j) + dimer(j, i) (or dimer(i, i) if i == j) to saddle_384_matrix_unordered.npy across all 768 primers.",
             "equivalence_status": "Panel Scaling Reimplementation",
             "notes": "Python implementation scales to the 768 primers of the 384-plex panel (295,296 unordered pairs); the public MATLAB script was written for 96-plex."
@@ -104,7 +103,7 @@ def generate_code_equivalence_table():
             "category": "Treatment of Homodimers and Self-Interactions",
             "saddle_original_location": "Dimer_Identify.m: lines 98",
             "saddle_original_logic": "When ID1 == ID2, dimer(ID1, ID1) is incremented on the diagonal.",
-            "python_pipeline_location": "analysis/reconstruct_saddle_384.py: lines 214, 246",
+            "python_pipeline_location": "code/reconstruct_saddle_384.py: lines 214, 246",
             "python_pipeline_logic": "dimer_matrix_ordered[i, i] is incremented; in unordered matrix, unordered(i, i) = ordered(i, i).",
             "equivalence_status": "Preserved",
             "notes": "Self-dimers / homodimers are preserved on diagonal."
@@ -113,7 +112,7 @@ def generate_code_equivalence_table():
             "category": "Treatment of Ambiguous Primer Matches",
             "saddle_original_location": "Dimer_Identify.m: lines 79-82",
             "saddle_original_logic": "Iterates hash collision list; first pair satisfying score > 0.6 triggers dimer_find=1 or others_find=1 and breaks loop.",
-            "python_pipeline_location": "analysis/reconstruct_saddle_384.py: lines 173-195",
+            "python_pipeline_location": "code/reconstruct_saddle_384.py: lines 173-195",
             "python_pipeline_logic": "Iterates prefix matches; takes first primer with matching identity > 0.6.",
             "equivalence_status": "Alternative Collision Handling",
             "notes": "Early-exit behavior on first valid match (>0.60 identity), but the underlying hash and collision-resolution data structures differ (MATLAB PrimeNumberHash array lookup vs Python prefix dictionary)."

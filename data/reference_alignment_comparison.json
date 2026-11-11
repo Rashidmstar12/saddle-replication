@@ -26,7 +26,7 @@
   "ungapped_positional_comparison_75": {
     "ontarget_count": 1129696,
     "ontarget_pct": 39.4907,
-    "note": "Ungapped string position comparison artificially drops on-target to 39.49% due to 1-2 bp indels."
+    "note": "Ungapped string position comparison artificially drops on-target to 39.49% due to alignment gaps."
   },
   "method2_edlib_gapped_alignment_75": {
     "ontarget_count": 1247496,
