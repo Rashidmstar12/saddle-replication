@@ -377,24 +377,26 @@ operating directly on the raw FASTQ data in a standalone, turnkey
 environment has not been formally documented.</p>
 <p>In this ReScience C article <span class="citation"
 data-cites="rougier2017sustainable">(Rougier et al. 2017)</span>, we
-report an independent <strong>qualified partial replication</strong>
-focused strictly on the empirical validation analysis of Xie et al.
-<span class="citation" data-cites="xie2022designing">(2022)</span>: -
-<strong>Primary Replication Objective:</strong> Does an independent,
-open-source Python implementation replicate the published read
-classification proportions (~43% on-target, ~56% nonspecific, ~1%
-primer-dimer) across all 3,942,385 raw paired-end reads of the SADDLE
-384-plex validation panel (Sample E19, Figure 3f), and does it reproduce
-the heavy-tailed concentration of primer-dimer reads? -
-<strong>Implementation Mapping:</strong> Can the read-classification
-pipeline be reconstructed without commercial MATLAB licenses or external
-binary alignment tools while maintaining operational fidelity? -
+report an independent <strong>qualified partial replication and
+alternative Python reanalysis</strong> focused on the empirical
+validation analysis of Xie et al. <span class="citation"
+data-cites="xie2022designing">(2022)</span>: - <strong>Primary
+Replication Objective:</strong> Does an alternative open-source Python
+workflow replicate the published read classification proportions (~43%
+on-target, ~56% nonspecific, ~1% primer-dimer) across all 3,942,385 raw
+paired-end reads of the SADDLE 384-plex validation panel (Sample E19,
+Figure 3f), and does it reproduce the extreme heavy-tailed concentration
+of primer-dimer reads? - <strong>Implementation Mapping &amp;
+Disclosures:</strong> How does this standalone Python reconstruction
+differ from the original authors’ MATLAB scripts
+(<code>Data_process.m</code>, <code>Dimer_Identify.m</code>) and Bowtie2
+workflow, and what are the specific algorithmic approximations? -
 <strong>Supplementary Exploratory Analysis:</strong> In a secondary
 analysis clearly distinguished from the primary replication claim, how
 well does the SADDLE Badness heuristic rank observed dimer events
 compared to standard nearest-neighbor thermodynamics (<span
-class="math inline"> − <em>Δ</em><em>G</em></span>) and supervised
-machine learning models?</p>
+class="math inline"> − <em>Δ</em><em>G</em><sub>37</sub><sup>∘</sup></span>)
+and supervised machine learning models?</p>
 <h1 id="original-work-and-artifact-audit">Original Work and Artifact
 Audit</h1>
 <p>The original study by Xie et al. <span class="citation"
@@ -437,8 +439,10 @@ Methodology and Implementation</h1>
 <p>We implemented a clean-room, open-source Python 3.10+ pipeline
 designed to operate without MATLAB or platform-dependent aligners.</p>
 <h2 id="structural-code-mapping">Structural Code Mapping</h2>
-<p>Table 1 details the structural correspondence between the original
-SADDLE validation code and our Python reconstruction.</p>
+<p>Table 1 details the structural correspondence and methodological
+differences between the published SADDLE validation code
+(<code>Data_process.m</code>, <code>Dimer_Identify.m</code>, Bowtie2)
+and our Python reconstruction.</p>
 <table>
 <caption>Structural mapping and methodological comparison between the
 published SADDLE validation scripts and the clean-room Python
@@ -455,21 +459,29 @@ implementation.</caption>
 <th style="text-align: left;">Original SADDLE Logic (MATLAB /
 Bowtie2)</th>
 <th style="text-align: left;">Python Clean-Room Reconstruction</th>
-<th style="text-align: left;">Equivalence Classification</th>
+<th style="text-align: left;">Methodological Relationship</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;"><strong>Adapter Trimming</strong></td>
-<td style="text-align: left;"><code>Data_process.m:23-57</code>: Scans
-<code>AGATCGGAAGAGCACACGTCTGAACTCC</code> on R1 and
-<code>AGATCGGAAGAGCGTCGTGTAGGGAAAG</code> on R2; trims read to prefix
-before adapter.</td>
+<td style="text-align: left;"><strong>Adapter Trimming &amp;
+Routing</strong></td>
+<td
+style="text-align: left;"><code>Data_process.m:23-57, 118, 128</code>:
+Scans full 28–29 bp adapters (<code>AGATCGGAAGAGCACACGTCTGAACTCC</code>
+on R1, <code>AGATCGGAAGAGCGTCGTGTAGGGAAAG</code> on R2); bifurcates
+reads by length (<span class="math inline"> ≥ 60</span> bp routed to
+Bowtie2 vs. <span class="math inline"> &lt; 60</span> bp routed to
+candidate dimer search).</td>
 <td
 style="text-align: left;"><code>reconstruct_saddle_384.py:145-152</code>:
-Scans core 17-bp Illumina TruSeq prefixes <code>AGATCGGAAGAGCACAC</code>
-(R1) and <code>AGATCGGAAGAGCGTCG</code> (R2); trims reads.</td>
-<td style="text-align: left;">Operationally Equivalent</td>
+Scans core 17-bp Illumina TruSeq prefixes
+(<code>AGATCGGAAGAGCACAC</code> on R1, <code>AGATCGGAAGAGCGTCG</code> on
+R2); processes all qualifying reads in a single unified streaming flow
+without 60-bp length bifurcation.</td>
+<td style="text-align: left;"><strong>Alternative Python
+Heuristic</strong> (17-bp prefix matching; single-stream flow without
+60-bp length bifurcation)</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;"><strong>Quality Filtering</strong></td>
@@ -481,68 +493,85 @@ bases have Phred quality <span class="math inline"> &gt; 30</span>
 class="math inline"> &gt; 10</span> bp.</td>
 <td
 style="text-align: left;"><code>reconstruct_saddle_384.py:155-163</code>:
-Exact condition: length <span class="math inline"> &gt; 10</span>,
+Exact condition: length <span class="math inline"> &gt; 10</span> bp,
 <code>'N'</code> not in sequence, and <span
 class="math inline"> ≥ 70%</span> bases with quality ASCII <span
 class="math inline"> &gt; 63</span> for both R1 and R2.</td>
-<td style="text-align: left;">Exact Numerical Match</td>
+<td style="text-align: left;"><strong>Threshold
+Reimplementation</strong> (<span class="math inline"> &gt; 70%</span>
+Q30, no ‘N’, length <span class="math inline"> &gt; 10</span> bp)</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;"><strong>Primer Matching</strong></td>
 <td
 style="text-align: left;"><code>Dimer_Identify.m:28-41, 71-95</code>:
-Computes 8-base hash using
-<code>PrimeNumberHash(lower(p{i}(1:8)))</code>; evaluates Smith-Waterman
-prefix identity <span class="math inline"> &gt; 0.6</span>.</td>
+8-base hash lookup via <code>PrimeNumberHash</code>; computes
+Smith–Waterman local alignment score via <code>swalign</code>
+(<code>score / score_perfect &gt; 0.6</code>).</td>
 <td
 style="text-align: left;"><code>reconstruct_saddle_384.py:166-196</code>:
-Builds 8-bp prefix index across all 768 primers; evaluates prefix match
-identity <span class="math inline"> &gt; 0.6</span> on prefix of length
-<span
+8-bp prefix index across all 768 primers; evaluates direct positional
+match fraction <span class="math inline"> &gt; 0.60</span> on prefix of
+length <span
 class="math inline">min (len(<em>p</em>),len(<em>t</em>))</span>.</td>
-<td style="text-align: left;">Operationally Equivalent</td>
+<td style="text-align: left;"><strong>Alternative Heuristic</strong>
+(Positional character matching vs. MATLAB <code>swalign</code>
+Smith–Waterman local alignment)</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;"><strong>Insert Length &amp; Dimer
 Threshold</strong></td>
-<td style="text-align: left;"><code>Dimer_Identify.m:96-108</code>:
-Dimer condition:
-<code>length(currline1) - 1 &lt; (length(f_seq) + length(r_seq) - 2)</code>.</td>
+<td style="text-align: left;"><code>Dimer_Identify.m:70, 96-108</code>:
+Requires <code>length(readF) &gt; 15</code> and
+<code>length(f_seq) &lt; length(currline1)</code>; dimer condition:
+insert length <span
+class="math inline"> &lt; <em>L</em><sub>1</sub> + <em>L</em><sub>2</sub> − 2</span>
+bp.</td>
 <td
 style="text-align: left;"><code>reconstruct_saddle_384.py:203-220</code>:
-Dimer threshold: <span
-class="math inline"><em>L</em><sub>1</sub> + <em>L</em><sub>2</sub> − 2</span>.
-Reads with insert length strictly below threshold are classified as
-dimers.</td>
-<td style="text-align: left;">Exact Formula Match</td>
+Dimer condition: insert length <span
+class="math inline"> &lt; <em>L</em><sub>1</sub> + <em>L</em><sub>2</sub> − 2</span>
+bp; does not apply MATLAB’s <span class="math inline"> &gt; 15</span> bp
+filter.</td>
+<td style="text-align: left;"><strong>Formula Approximation</strong>
+(Shared threshold <span
+class="math inline"> &lt; <em>L</em><sub>1</sub> + <em>L</em><sub>2</sub> − 2</span>
+bp; differs in read length <span class="math inline"> &gt; 15</span> bp
+eligibility filter)</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;"><strong>On-Target Amplicon
 Assignment</strong></td>
 <td style="text-align: left;"><code>analysis_code.ipynb:17-38</code>:
 Executes Bowtie2 alignment against reference amplicons; unmapped reads
-passed to dimer script.</td>
+routed to dimer script.</td>
 <td
 style="text-align: left;"><code>reconstruct_saddle_384.py:199-210</code>:
-Identifies cognate pairs by primer index (<span
+Method 1 assigns cognate pairs by primer ID (<span
 class="math inline"><em>P</em><sub>2</sub> = <em>P</em><sub>1</sub> + 384</span>);
-classifies cognate reads with insert length <span
-class="math inline"> ≥ <em>L</em><sub>1</sub> + <em>L</em><sub>2</sub> − 2</span>
-as on-target.</td>
-<td style="text-align: left;">Methodological Approximation (Primer
-pairing vs. sequence alignment)</td>
+Method 2 executes cognate-anchored semi-global gapped alignment
+(<code>edlib</code>) against assigned reference amplicon.</td>
+<td style="text-align: left;"><strong>Methodological
+Approximation</strong> (Cognate primer pairing and edlib semi-global
+gapped alignment vs. Bowtie2)</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;"><strong>Pair Aggregation &amp;
-Homodimers</strong></td>
-<td style="text-align: left;"><code>Dimer_Identify.m:98, 125-126</code>:
-Increments <span class="math inline">768 × 768</span> matrix; preserves
-homodimers on diagonal <code>dimer(i, i)</code>.</td>
+<td style="text-align: left;"><strong>Pair Aggregation &amp; Panel
+Scaling</strong></td>
+<td
+style="text-align: left;"><code>Dimer_Identify.m:3, 52, 98, 125-126</code>:
+Public repository script hardcoded for 192 primers
+(<code>index = 1:192; % 96-plex</code>), populating <span
+class="math inline">192 × 192</span> matrix.</td>
 <td
 style="text-align: left;"><code>reconstruct_saddle_384.py:238-249</code>:
-Computes <span class="math inline">768 × 768</span> ordered matrix, then
-folds into 295,296 unordered pairs with diagonal preserved.</td>
-<td style="text-align: left;">Exact Match</td>
+Constructs <span class="math inline">768 × 768</span> interaction matrix
+across all 768 primers for the 384-plex panel, then folds into 295,296
+unordered pairs.</td>
+<td style="text-align: left;"><strong>Panel Scaling
+Reimplementation</strong> (<span class="math inline">768 × 768</span>
+matrix for 384-plex; public MATLAB script hard-coded for <span
+class="math inline">192 × 192</span> / 96-plex)</td>
 </tr>
 </tbody>
 </table>
@@ -583,12 +612,13 @@ class="citation" data-cites="sosic2017edlib">(Šošić and Šikić
 and substitutions, <code>mode='SHW'</code>). Reads achieving semi-global
 edit distance similarity <span class="math inline"> ≥ 75%</span> or
 <span class="math inline"> ≥ 80%</span> (defined as <span
-class="math inline">1 − <em>d</em><sub><em>E</em></sub>/<em>L</em> ≥ 0.75</span>,
+class="math inline">1 − <em>d</em><sub><em>E</em></sub>/<em>L</em><sub>read</sub> ≥ 0.75</span>,
 where <span class="math inline"><em>d</em><sub><em>E</em></sub></span>
-is the edit distance and <span class="math inline"><em>L</em></span> is
-the reference amplicon length) against their assigned cognate amplicon
-are classified as <em>On-Target</em>; reads failing this threshold are
-classified as <em>Nonspecific</em>.</p>
+is Myers’ bit-vector edit distance and <span
+class="math inline"><em>L</em><sub>read</sub></span> is the trimmed read
+sequence length, <code>len(t1)</code>) against their assigned cognate
+amplicon are classified as <em>On-Target</em>; reads failing this
+threshold are classified as <em>Nonspecific</em>.</p>
 <h1 id="primary-replication-results">Primary Replication Results</h1>
 <h2 id="replicated-ngs-read-accounting-breakdown">Replicated NGS Read
 Accounting Breakdown</h2>
@@ -599,17 +629,26 @@ reads (27.44%) excluded. Exclusions partition into: - Missing adapter
 sequence: 751,644 reads (19.07% of raw depth); - Quality and length
 filters: 137,086 reads (3.48% of raw depth); - Primer prefix unmatched:
 192,991 to 192,997 reads (4.90% of raw depth).</p>
-<p><em>(Note on the 6-Read Lineage Discrepancy: The minor difference of
-exactly 6 reads between accounting partitions arises from the
-denominator used during primer prefix matching. In extreme-short primer
-dimers with inserts of 12–14 bp, dividing matches by full primer length
-(<span class="math inline"> ≈ 22</span> bp) yields identity <span
+<p><em>(Note on the 6-Read Lineage Discrepancy and Length Eligibility
+Rules: The minor difference of exactly 6 reads between accounting
+partitions arises from the denominator used during primer prefix
+matching in our Python pipeline. In extreme-short primer dimers with
+inserts of 12–14 bp, dividing matches by full primer length (<span
+class="math inline"> ≈ 22</span> bp) yields identity <span
 class="math inline"> ≤ 0.60</span> and excludes the reads as
 primer-unmatched [192,997 excluded, 24,872 dimers], whereas dividing by
 the trimmed insert length evaluates identity as <span
 class="math inline">1.0</span> and retains them as dimers [192,991
-excluded, 24,878 dimers]. This single-read lineage difference does not
-affect any published percentage).</em></p>
+excluded, 24,878 dimers]. Crucially, the original published MATLAB
+script <code>Dimer_Identify.m</code> enforces an explicit length filter
+requiring read length <span class="math inline"> &gt; 15</span> bp
+(<code>if length(readF) &gt; 15</code>) and insert longer than primer
+length. Consequently, in the original MATLAB pipeline, reads of 12–14 bp
+would be filtered out by this length condition. These 6 reads therefore
+reflect our Python pipeline’s alternative length filter (<span
+class="math inline"> &gt; 10</span> bp) rather than exact reproduction
+of the original MATLAB eligibility rules. Neither accounting alters the
+rounded 0.87% dimer fraction).</em></p>
 <p>Table 2 compares the classified read proportions directly against the
 published findings in Figure 3f and the main text of Xie et al. <span
 class="citation" data-cites="xie2022designing">(2022)</span> across all
@@ -755,36 +794,40 @@ alignment criteria.</li>
 Mechanism:</strong> In earlier exploratory audits, evaluating reference
 sequence matching via ungapped character-by-character string comparison
 artificially depressed on-target classification to 39.49% (1,129,696
-reads). To determine the exact molecular cause, our audit script
+reads). To determine why gapped alignment recovers reads that fail
+positional matching, our audit script
 (<code>code/audit_alignment_and_indels.py</code>) parsed full CIGAR
-alignment paths across 615 audit reads that passed gapped alignment
-(<span class="math inline"> ≥ 75%</span> identity) but failed ungapped
-positional matching. Every single recovered read (<strong>100.0%,
-615/615</strong>) contained insertions or deletions: 7.80% (48/615)
-contained 1-bp deletions, 0.33% (2/615) contained 1-bp insertions, and
-91.87% (565/615) exhibited multiple indels or homopolymer stutters;
-<strong>0.0% had substitutions only</strong>. For example, in read
+alignment paths across 615 audit reads that passed gapped semi-global
+alignment (<span class="math inline"> ≥ 75%</span> similarity) but
+failed ungapped positional matching. Every single recovered read
+(<strong>100.0%, 615/615</strong>) contained alignment gaps (insertions
+or deletions relative to the reference; <strong>0.0% had substitutions
+only</strong>). Across these 615 records, 53 reads (8.62%) contained
+<span class="math inline"> ≤ 2</span> inserted/deleted bases (48 with
+1-bp deletion, 2 with 1-bp insertion, 3 with 2-bp indels), while the
+majority (562 reads, 91.38%) exhibited larger or multiple indels, with a
+median of 8 inserted/deleted bases across the recovered set. For
+example, in read
 <code>@M04612:271:000000000-CWC2J:1:1101:16920:1534</code> matching
-amplicon 351 (<code>CIGAR: 56=1D9=1X37=</code>), a single 1-bp deletion
-at position 56 caused unaligned positional identity to drop from 98.06%
-to 64.08% by shifting the downstream reading frame. Gapped semi-global
+amplicon 351 (<code>CIGAR: 56=1D9=1X37=</code>), a 1-bp deletion at
+position 56 caused unaligned positional identity to drop from 98.06% to
+64.08% by shifting the downstream alignment frame. Gapped semi-global
 alignment (<code>edlib</code>) resolves this frame shift, restoring
 on-target classification to <strong>43.61%</strong> (<span
-class="math inline"> ≥ 75%</span> identity, <span
+class="math inline"> ≥ 75%</span> similarity, <span
 class="math inline"><em>Δ</em> =  + 0.61%</span>) and
 <strong>42.76%</strong> (<span class="math inline"> ≥ 80%</span>
-identity, <span class="math inline"><em>Δ</em> =  − 0.24%</span>).
+similarity, <span class="math inline"><em>Δ</em> =  − 0.24%</span>).
 Complete CIGAR strings, read identifiers, and indel counts for all 615
 recovered reads are recorded without truncation in
 <code>data/alignment_and_indel_audit.json</code>. These alignment
-records confirm that alignment gap operations (insertions/deletions)
-fully account for the divergence between gapped alignment and ungapped
-positional comparison in these reads. We note that while small indels in
-Illumina sequencing frequently arise from basecalling errors or
-polymerase stutter during library preparation, these CIGAR records
-confirm the operational requirement for gapped alignment rather than
-proving the biological versus technical etiology of each individual
-indel.</li>
+records confirm that alignment gap operations account for the recovery
+of reads failing positional comparison. However, this sample audit
+reflects a specific subset of reads and does not establish that small
+1–2 bp indels or homopolymer stutters are the predominant cause of read
+divergence across the full 3.94-million-read library, nor does it
+establish the biological versus technical etiology of individual
+alignment gaps.</li>
 <li><strong>Dual-Strand All-384-Target Alignment Audit and
 Concordance:</strong> In the full FASTQ reconstruction pipeline (Method
 2), each cognate-primer read is aligned semi-globally against its single
@@ -853,20 +896,22 @@ workflow.</li>
 </ul></li>
 </ul></li>
 <li><strong>Replication Scope and Framework Framing:</strong> This study
-is an independent, open-source <strong>qualified partial
-replication</strong> and approximate reanalysis. In the original
-publication <span class="citation" data-cites="xie2022designing">(Xie et
-al. 2022)</span>, on-target reads were aligned to intended amplicon
-sequences using Bowtie2 in MATLAB. In our standalone Python
-implementation, Method 2 executes cognate-anchored semi-global gapped
-alignment (<code>edlib</code>, Myers’ bit-vector algorithm) where each
-cognate-primer read is aligned directly against its assigned target
-amplicon from MOESM5. As established by the dual-strand 384-target
-audit, cognate anchoring achieves high operational concordance within
-the audit sample while requiring zero commercial software licenses or
-external binary aligner dependencies. SADDLE’s simulated annealing
-primer pool design software was withheld under patent protection and is
-not evaluated.</li>
+is an independent, open-source <strong>qualified partial replication and
+alternative Python reanalysis</strong>. In the original publication
+<span class="citation" data-cites="xie2022designing">(Xie et al.
+2022)</span>, reads were processed using MATLAB scripts
+(<code>Data_process.m</code>, <code>Dimer_Identify.m</code>) and
+Bowtie2. In our standalone Python workflow, we reconstruct the core
+classification logic using open-source tools: core adapter prefix
+trimming, single-stream processing, direct prefix matching, and
+cognate-anchored semi-global gapped alignment (<code>edlib</code>).
+While our implementation reproduces the reported read classification
+proportions (~43% / ~56% / ~1%) and the extreme heavy-tailed
+primer-dimer concentration (~67.6% from one pair) without commercial
+software licenses or external aligner dependencies, it is an alternative
+approximate workflow rather than an exact reimplementation of the
+original MATLAB scripts. SADDLE’s simulated annealing primer pool design
+software was withheld under patent protection and is not evaluated.</li>
 </ol>
 <h2 id="extreme-heavy-tailed-interaction-concentration">Extreme
 Heavy-Tailed Interaction Concentration</h2>
@@ -953,7 +998,13 @@ panels using thermodynamic, sequence-alignment, and approximate
 SADDLE-style Badness features. Binary labels represent observed dimer
 formation (<span class="math inline"> ≥ 1</span> NGS read).
 Precision@<span class="math inline"><em>K</em></span> evaluated using
-deterministic secondary key sorting.</caption>
+deterministic secondary key sorting (<span
+class="math inline">rank_key(<em>i</em>) = (−score<sub><em>i</em></sub>,pair_index<sub><em>i</em></sub>)</span>).
+Under this deterministic secondary sort, the Constant Baseline has zero
+observed dimer pairs among the first 100 pairs (yielding 0.0% at P@10,
+P@50, and P@100); the theoretical expected precision for an unranked
+random choice across the entire panel is the empirical base rate (<span
+class="math inline">1, 172/295, 296 = 0.3969% ≈ 0.40%</span>).</caption>
 <colgroup>
 <col style="width: 12%" />
 <col style="width: 12%" />
@@ -1021,13 +1072,25 @@ class="math inline"><em>Δ</em><em>G</em><sub>37</sub><sup>∘</sup></span>)</td
 <td style="text-align: left;">0.2143</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;"><em>Constant Baseline</em></td>
-<td style="text-align: left;"><em>Empirical Base Rate</em></td>
+<td style="text-align: left;"><em>Constant Baseline
+(Deterministic)</em></td>
+<td style="text-align: left;"><em>Deterministic Tie-Break</em></td>
 <td style="text-align: left;"><em>0.5000</em></td>
 <td style="text-align: left;"><em>0.0040</em></td>
-<td style="text-align: left;"><em>0.4%</em></td>
-<td style="text-align: left;"><em>0.4%</em></td>
-<td style="text-align: left;"><em>0.4%</em></td>
+<td style="text-align: left;"><em>0.0%</em></td>
+<td style="text-align: left;"><em>0.0%</em></td>
+<td style="text-align: left;"><em>0.0%</em></td>
+<td style="text-align: left;"><em>0.0040</em></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><em>Random Choice Baseline
+(Expected)</em></td>
+<td style="text-align: left;"><em>Theoretical Expectation</em></td>
+<td style="text-align: left;"><em>0.5000</em></td>
+<td style="text-align: left;"><em>0.0040</em></td>
+<td style="text-align: left;"><em>0.40%</em></td>
+<td style="text-align: left;"><em>0.40%</em></td>
+<td style="text-align: left;"><em>0.40%</em></td>
 <td style="text-align: left;"><em>0.0040</em></td>
 </tr>
 </tbody>

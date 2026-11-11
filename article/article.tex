@@ -253,22 +253,24 @@ directly on the raw FASTQ data in a standalone, turnkey environment has
 not been formally documented.
 
 In this ReScience C article (Rougier et al. 2017), we report an
-independent \textbf{qualified partial replication} focused strictly on
-the empirical validation analysis of Xie et al. (2022): -
-\textbf{Primary Replication Objective:} Does an independent, open-source
-Python implementation replicate the published read classification
+independent \textbf{qualified partial replication and alternative Python
+reanalysis} focused on the empirical validation analysis of Xie et al.
+(2022): - \textbf{Primary Replication Objective:} Does an alternative
+open-source Python workflow replicate the published read classification
 proportions (\textasciitilde43\% on-target, \textasciitilde56\%
 nonspecific, \textasciitilde1\% primer-dimer) across all 3,942,385 raw
 paired-end reads of the SADDLE 384-plex validation panel (Sample E19,
-Figure 3f), and does it reproduce the heavy-tailed concentration of
-primer-dimer reads? - \textbf{Implementation Mapping:} Can the
-read-classification pipeline be reconstructed without commercial MATLAB
-licenses or external binary alignment tools while maintaining
-operational fidelity? - \textbf{Supplementary Exploratory Analysis:} In
-a secondary analysis clearly distinguished from the primary replication
-claim, how well does the SADDLE Badness heuristic rank observed dimer
-events compared to standard nearest-neighbor thermodynamics
-(\(-\Delta G\)) and supervised machine learning models?
+Figure 3f), and does it reproduce the extreme heavy-tailed concentration
+of primer-dimer reads? - \textbf{Implementation Mapping \& Disclosures:}
+How does this standalone Python reconstruction differ from the original
+authors' MATLAB scripts (\texttt{Data\_process.m},
+\texttt{Dimer\_Identify.m}) and Bowtie2 workflow, and what are the
+specific algorithmic approximations? - \textbf{Supplementary Exploratory
+Analysis:} In a secondary analysis clearly distinguished from the
+primary replication claim, how well does the SADDLE Badness heuristic
+rank observed dimer events compared to standard nearest-neighbor
+thermodynamics (\(-\Delta G_{37}^\circ\)) and supervised machine
+learning models?
 
 \section{Original Work and Artifact
 Audit}\label{original-work-and-artifact-audit}
@@ -313,8 +315,10 @@ to operate without MATLAB or platform-dependent aligners.
 
 \subsection{Structural Code Mapping}\label{structural-code-mapping}
 
-Table 1 details the structural correspondence between the original
-SADDLE validation code and our Python reconstruction.
+Table 1 details the structural correspondence and methodological
+differences between the published SADDLE validation code
+(\texttt{Data\_process.m}, \texttt{Dimer\_Identify.m}, Bowtie2) and our
+Python reconstruction.
 
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2500}}
@@ -332,7 +336,7 @@ Original SADDLE Logic (MATLAB / Bowtie2)
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
 Python Clean-Room Reconstruction
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-Equivalence Classification
+Methodological Relationship
 \end{minipage} \\
 \midrule\noalign{}
 \endfirsthead
@@ -344,53 +348,69 @@ Original SADDLE Logic (MATLAB / Bowtie2)
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
 Python Clean-Room Reconstruction
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-Equivalence Classification
+Methodological Relationship
 \end{minipage} \\
 \midrule\noalign{}
 \endhead
 \bottomrule\noalign{}
 \endlastfoot
-\textbf{Adapter Trimming} & \texttt{Data\_process.m:23-57}: Scans
-\texttt{AGATCGGAAGAGCACACGTCTGAACTCC} on R1 and
-\texttt{AGATCGGAAGAGCGTCGTGTAGGGAAAG} on R2; trims read to prefix before
-adapter. & \texttt{reconstruct\_saddle\_384.py:145-152}: Scans core
-17-bp Illumina TruSeq prefixes \texttt{AGATCGGAAGAGCACAC} (R1) and
-\texttt{AGATCGGAAGAGCGTCG} (R2); trims reads. & Operationally
-Equivalent \\
+\textbf{Adapter Trimming \& Routing} &
+\texttt{Data\_process.m:23-57,\ 118,\ 128}: Scans full 28--29 bp
+adapters (\texttt{AGATCGGAAGAGCACACGTCTGAACTCC} on R1,
+\texttt{AGATCGGAAGAGCGTCGTGTAGGGAAAG} on R2); bifurcates reads by length
+(\(\ge 60\) bp routed to Bowtie2 vs.~\(< 60\) bp routed to candidate
+dimer search). & \texttt{reconstruct\_saddle\_384.py:145-152}: Scans
+core 17-bp Illumina TruSeq prefixes (\texttt{AGATCGGAAGAGCACAC} on R1,
+\texttt{AGATCGGAAGAGCGTCG} on R2); processes all qualifying reads in a
+single unified streaming flow without 60-bp length bifurcation. &
+\textbf{Alternative Python Heuristic} (17-bp prefix matching;
+single-stream flow without 60-bp length bifurcation) \\
 \textbf{Quality Filtering} & \texttt{Data\_process.m:109-111}: Filters
 read pairs unless \(>70\%\) of bases have Phred quality \(>30\) (ASCII
 \(>63\)), no ambiguous \texttt{\textquotesingle{}N\textquotesingle{}}
 bases, and trimmed length \(>10\) bp. &
 \texttt{reconstruct\_saddle\_384.py:155-163}: Exact condition: length
-\(>10\), \texttt{\textquotesingle{}N\textquotesingle{}} not in sequence,
-and \(\ge 70\%\) bases with quality ASCII \(>63\) for both R1 and R2. &
-Exact Numerical Match \\
+\(>10\) bp, \texttt{\textquotesingle{}N\textquotesingle{}} not in
+sequence, and \(\ge 70\%\) bases with quality ASCII \(>63\) for both R1
+and R2. & \textbf{Threshold Reimplementation} (\(>70\%\) Q30, no `N',
+length \(>10\) bp) \\
 \textbf{Primer Matching} & \texttt{Dimer\_Identify.m:28-41,\ 71-95}:
-Computes 8-base hash using \texttt{PrimeNumberHash(lower(p\{i\}(1:8)))};
-evaluates Smith-Waterman prefix identity \(>0.6\). &
-\texttt{reconstruct\_saddle\_384.py:166-196}: Builds 8-bp prefix index
-across all 768 primers; evaluates prefix match identity \(>0.6\) on
-prefix of length \(\min(\text{len}(p), \text{len}(t))\). & Operationally
-Equivalent \\
+8-base hash lookup via \texttt{PrimeNumberHash}; computes
+Smith--Waterman local alignment score via \texttt{swalign}
+(\texttt{score\ /\ score\_perfect\ \textgreater{}\ 0.6}). &
+\texttt{reconstruct\_saddle\_384.py:166-196}: 8-bp prefix index across
+all 768 primers; evaluates direct positional match fraction \(>0.60\) on
+prefix of length \(\min(\text{len}(p), \text{len}(t))\). &
+\textbf{Alternative Heuristic} (Positional character matching vs.~MATLAB
+\texttt{swalign} Smith--Waterman local alignment) \\
 \textbf{Insert Length \& Dimer Threshold} &
-\texttt{Dimer\_Identify.m:96-108}: Dimer condition:
-\texttt{length(currline1)\ -\ 1\ \textless{}\ (length(f\_seq)\ +\ length(r\_seq)\ -\ 2)}.
-& \texttt{reconstruct\_saddle\_384.py:203-220}: Dimer threshold:
-\(L_1 + L_2 - 2\). Reads with insert length strictly below threshold are
-classified as dimers. & Exact Formula Match \\
+\texttt{Dimer\_Identify.m:70,\ 96-108}: Requires
+\texttt{length(readF)\ \textgreater{}\ 15} and
+\texttt{length(f\_seq)\ \textless{}\ length(currline1)}; dimer
+condition: insert length \(< L_1 + L_2 - 2\) bp. &
+\texttt{reconstruct\_saddle\_384.py:203-220}: Dimer condition: insert
+length \(< L_1 + L_2 - 2\) bp; does not apply MATLAB's \(> 15\) bp
+filter. & \textbf{Formula Approximation} (Shared threshold
+\(< L_1 + L_2 - 2\) bp; differs in read length \(> 15\) bp eligibility
+filter) \\
 \textbf{On-Target Amplicon Assignment} &
 \texttt{analysis\_code.ipynb:17-38}: Executes Bowtie2 alignment against
-reference amplicons; unmapped reads passed to dimer script. &
-\texttt{reconstruct\_saddle\_384.py:199-210}: Identifies cognate pairs
-by primer index (\(P_2 = P_1 + 384\)); classifies cognate reads with
-insert length \(\ge L_1 + L_2 - 2\) as on-target. & Methodological
-Approximation (Primer pairing vs.~sequence alignment) \\
-\textbf{Pair Aggregation \& Homodimers} &
-\texttt{Dimer\_Identify.m:98,\ 125-126}: Increments \(768 \times 768\)
-matrix; preserves homodimers on diagonal \texttt{dimer(i,\ i)}. &
-\texttt{reconstruct\_saddle\_384.py:238-249}: Computes
-\(768 \times 768\) ordered matrix, then folds into 295,296 unordered
-pairs with diagonal preserved. & Exact Match \\
+reference amplicons; unmapped reads routed to dimer script. &
+\texttt{reconstruct\_saddle\_384.py:199-210}: Method 1 assigns cognate
+pairs by primer ID (\(P_2 = P_1 + 384\)); Method 2 executes
+cognate-anchored semi-global gapped alignment (\texttt{edlib}) against
+assigned reference amplicon. & \textbf{Methodological Approximation}
+(Cognate primer pairing and edlib semi-global gapped alignment
+vs.~Bowtie2) \\
+\textbf{Pair Aggregation \& Panel Scaling} &
+\texttt{Dimer\_Identify.m:3,\ 52,\ 98,\ 125-126}: Public repository
+script hardcoded for 192 primers
+(\texttt{index\ =\ 1:192;\ \%\ 96-plex}), populating \(192 \times 192\)
+matrix. & \texttt{reconstruct\_saddle\_384.py:238-249}: Constructs
+\(768 \times 768\) interaction matrix across all 768 primers for the
+384-plex panel, then folds into 295,296 unordered pairs. & \textbf{Panel
+Scaling Reimplementation} (\(768 \times 768\) matrix for 384-plex;
+public MATLAB script hard-coded for \(192 \times 192\) / 96-plex) \\
 \end{longtable}
 
 \subsection{Read Accounting and Partition
@@ -422,9 +442,10 @@ Supplementary Data MOESM5 (Xie et al. 2022) using the open-source
 bit-vector semi-global alignment with indels and substitutions,
 \texttt{mode=\textquotesingle{}SHW\textquotesingle{}}). Reads achieving
 semi-global edit distance similarity \(\ge 75\%\) or \(\ge 80\%\)
-(defined as \(1 - d_E / L \ge 0.75\), where \(d_E\) is the edit distance
-and \(L\) is the reference amplicon length) against their assigned
-cognate amplicon are classified as \emph{On-Target}; reads failing this
+(defined as \(1 - d_E / L_{\text{read}} \ge 0.75\), where \(d_E\) is
+Myers' bit-vector edit distance and \(L_{\text{read}}\) is the trimmed
+read sequence length, \texttt{len(t1)}) against their assigned cognate
+amplicon are classified as \emph{On-Target}; reads failing this
 threshold are classified as \emph{Nonspecific}.
 
 \section{Primary Replication Results}\label{primary-replication-results}
@@ -440,16 +461,24 @@ sequence: 751,644 reads (19.07\% of raw depth); - Quality and length
 filters: 137,086 reads (3.48\% of raw depth); - Primer prefix unmatched:
 192,991 to 192,997 reads (4.90\% of raw depth).
 
-\emph{(Note on the 6-Read Lineage Discrepancy: The minor difference of
-exactly 6 reads between accounting partitions arises from the
-denominator used during primer prefix matching. In extreme-short primer
-dimers with inserts of 12--14 bp, dividing matches by full primer length
+\emph{(Note on the 6-Read Lineage Discrepancy and Length Eligibility
+Rules: The minor difference of exactly 6 reads between accounting
+partitions arises from the denominator used during primer prefix
+matching in our Python pipeline. In extreme-short primer dimers with
+inserts of 12--14 bp, dividing matches by full primer length
 (\(\approx 22\) bp) yields identity \(\le 0.60\) and excludes the reads
 as primer-unmatched {[}192,997 excluded, 24,872 dimers{]}, whereas
 dividing by the trimmed insert length evaluates identity as \(1.0\) and
-retains them as dimers {[}192,991 excluded, 24,878 dimers{]}. This
-single-read lineage difference does not affect any published
-percentage).}
+retains them as dimers {[}192,991 excluded, 24,878 dimers{]}. Crucially,
+the original published MATLAB script \texttt{Dimer\_Identify.m} enforces
+an explicit length filter requiring read length \(> 15\) bp
+(\texttt{if\ length(readF)\ \textgreater{}\ 15}) and insert longer than
+primer length. Consequently, in the original MATLAB pipeline, reads of
+12--14 bp would be filtered out by this length condition. These 6 reads
+therefore reflect our Python pipeline's alternative length filter
+(\(> 10\) bp) rather than exact reproduction of the original MATLAB
+eligibility rules. Neither accounting alters the rounded 0.87\% dimer
+fraction).}
 
 Table 2 compares the classified read proportions directly against the
 published findings in Figure 3f and the main text of Xie et al. (2022)
@@ -577,33 +606,36 @@ Insights}\label{biological-and-methodological-insights}
   earlier exploratory audits, evaluating reference sequence matching via
   ungapped character-by-character string comparison artificially
   depressed on-target classification to 39.49\% (1,129,696 reads). To
-  determine the exact molecular cause, our audit script
+  determine why gapped alignment recovers reads that fail positional
+  matching, our audit script
   (\texttt{code/audit\_alignment\_and\_indels.py}) parsed full CIGAR
-  alignment paths across 615 audit reads that passed gapped alignment
-  (\(\ge 75\%\) identity) but failed ungapped positional matching. Every
-  single recovered read (\textbf{100.0\%, 615/615}) contained insertions
-  or deletions: 7.80\% (48/615) contained 1-bp deletions, 0.33\% (2/615)
-  contained 1-bp insertions, and 91.87\% (565/615) exhibited multiple
-  indels or homopolymer stutters; \textbf{0.0\% had substitutions only}.
-  For example, in read
+  alignment paths across 615 audit reads that passed gapped semi-global
+  alignment (\(\ge 75\%\) similarity) but failed ungapped positional
+  matching. Every single recovered read (\textbf{100.0\%, 615/615})
+  contained alignment gaps (insertions or deletions relative to the
+  reference; \textbf{0.0\% had substitutions only}). Across these 615
+  records, 53 reads (8.62\%) contained \(\le 2\) inserted/deleted bases
+  (48 with 1-bp deletion, 2 with 1-bp insertion, 3 with 2-bp indels),
+  while the majority (562 reads, 91.38\%) exhibited larger or multiple
+  indels, with a median of 8 inserted/deleted bases across the recovered
+  set. For example, in read
   \texttt{@M04612:271:000000000-CWC2J:1:1101:16920:1534} matching
-  amplicon 351 (\texttt{CIGAR:\ 56=1D9=1X37=}), a single 1-bp deletion
-  at position 56 caused unaligned positional identity to drop from
-  98.06\% to 64.08\% by shifting the downstream reading frame. Gapped
+  amplicon 351 (\texttt{CIGAR:\ 56=1D9=1X37=}), a 1-bp deletion at
+  position 56 caused unaligned positional identity to drop from 98.06\%
+  to 64.08\% by shifting the downstream alignment frame. Gapped
   semi-global alignment (\texttt{edlib}) resolves this frame shift,
   restoring on-target classification to \textbf{43.61\%} (\(\ge 75\%\)
-  identity, \(\Delta = +0.61\%\)) and \textbf{42.76\%} (\(\ge 80\%\)
-  identity, \(\Delta = -0.24\%\)). Complete CIGAR strings, read
+  similarity, \(\Delta = +0.61\%\)) and \textbf{42.76\%} (\(\ge 80\%\)
+  similarity, \(\Delta = -0.24\%\)). Complete CIGAR strings, read
   identifiers, and indel counts for all 615 recovered reads are recorded
   without truncation in \texttt{data/alignment\_and\_indel\_audit.json}.
-  These alignment records confirm that alignment gap operations
-  (insertions/deletions) fully account for the divergence between gapped
-  alignment and ungapped positional comparison in these reads. We note
-  that while small indels in Illumina sequencing frequently arise from
-  basecalling errors or polymerase stutter during library preparation,
-  these CIGAR records confirm the operational requirement for gapped
-  alignment rather than proving the biological versus technical etiology
-  of each individual indel.
+  These alignment records confirm that alignment gap operations account
+  for the recovery of reads failing positional comparison. However, this
+  sample audit reflects a specific subset of reads and does not
+  establish that small 1--2 bp indels or homopolymer stutters are the
+  predominant cause of read divergence across the full 3.94-million-read
+  library, nor does it establish the biological versus technical
+  etiology of individual alignment gaps.
 \item
   \textbf{Dual-Strand All-384-Target Alignment Audit and Concordance:}
   In the full FASTQ reconstruction pipeline (Method 2), each
@@ -683,19 +715,23 @@ Insights}\label{biological-and-methodological-insights}
   \end{itemize}
 \item
   \textbf{Replication Scope and Framework Framing:} This study is an
-  independent, open-source \textbf{qualified partial replication} and
-  approximate reanalysis. In the original publication (Xie et al. 2022),
-  on-target reads were aligned to intended amplicon sequences using
-  Bowtie2 in MATLAB. In our standalone Python implementation, Method 2
-  executes cognate-anchored semi-global gapped alignment
-  (\texttt{edlib}, Myers' bit-vector algorithm) where each
-  cognate-primer read is aligned directly against its assigned target
-  amplicon from MOESM5. As established by the dual-strand 384-target
-  audit, cognate anchoring achieves high operational concordance within
-  the audit sample while requiring zero commercial software licenses or
-  external binary aligner dependencies. SADDLE's simulated annealing
-  primer pool design software was withheld under patent protection and
-  is not evaluated.
+  independent, open-source \textbf{qualified partial replication and
+  alternative Python reanalysis}. In the original publication (Xie et
+  al. 2022), reads were processed using MATLAB scripts
+  (\texttt{Data\_process.m}, \texttt{Dimer\_Identify.m}) and Bowtie2. In
+  our standalone Python workflow, we reconstruct the core classification
+  logic using open-source tools: core adapter prefix trimming,
+  single-stream processing, direct prefix matching, and cognate-anchored
+  semi-global gapped alignment (\texttt{edlib}). While our
+  implementation reproduces the reported read classification proportions
+  (\textasciitilde43\% / \textasciitilde56\% / \textasciitilde1\%) and
+  the extreme heavy-tailed primer-dimer concentration
+  (\textasciitilde67.6\% from one pair) without commercial software
+  licenses or external aligner dependencies, it is an alternative
+  approximate workflow rather than an exact reimplementation of the
+  original MATLAB scripts. SADDLE's simulated annealing primer pool
+  design software was withheld under patent protection and is not
+  evaluated.
 \end{enumerate}
 
 \subsection{Extreme Heavy-Tailed Interaction
@@ -785,7 +821,13 @@ supervised models across 295,296 candidate primer pairs from the
 panels using thermodynamic, sequence-alignment, and approximate
 SADDLE-style Badness features. Binary labels represent observed dimer
 formation (\(\ge 1\) NGS read). Precision@\(K\) evaluated using
-deterministic secondary key sorting.}\tabularnewline
+deterministic secondary key sorting
+(\(\text{rank\_key}(i) = (-\text{score}_i, \text{pair\_index}_i)\)).
+Under this deterministic secondary sort, the Constant Baseline has zero
+observed dimer pairs among the first 100 pairs (yielding 0.0\% at P@10,
+P@50, and P@100); the theoretical expected precision for an unranked
+random choice across the entire panel is the empirical base rate
+(\(1,172 / 295,296 = 0.3969\% \approx 0.40\%\)).}\tabularnewline
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 Model / Heuristic
@@ -838,9 +880,12 @@ N/A \\
 0.7317 & 0.0205 & 10.0\% & 4.0\% & 8.0\% & 0.1986 \\
 \textbf{XGBoost (Augmented)} & Supervised Probabilistic &
 \textbf{0.7564} & 0.0371 & 20.0\% & 20.0\% & 16.0\% & 0.2143 \\
-\emph{Constant Baseline} & \emph{Empirical Base Rate} & \emph{0.5000} &
-\emph{0.0040} & \emph{0.4\%} & \emph{0.4\%} & \emph{0.4\%} &
-\emph{0.0040} \\
+\emph{Constant Baseline (Deterministic)} & \emph{Deterministic
+Tie-Break} & \emph{0.5000} & \emph{0.0040} & \emph{0.0\%} & \emph{0.0\%}
+& \emph{0.0\%} & \emph{0.0040} \\
+\emph{Random Choice Baseline (Expected)} & \emph{Theoretical
+Expectation} & \emph{0.5000} & \emph{0.0040} & \emph{0.40\%} &
+\emph{0.40\%} & \emph{0.40\%} & \emph{0.0040} \\
 \end{longtable}
 
 \subsubsection{Findings from Supplementary

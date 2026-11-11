@@ -4,7 +4,7 @@
 # Title of the article:
 # - For a successful replication, it should be prefixed with "[Re]"
 # - For a failed replication, it should be prefixed with "[¬Re]"
-title: "[Re] Computational Replication of SADDLE: Empirical Next-Generation Sequencing Validation of Multiplex PCR Read Partitions"
+title: "[Re] Computational Replication of SADDLE: Empirical Next-Generation Sequencing Read Partitions and Primer Interaction Distribution in a 384-Plex PCR Panel"
 
 # List of authors with name, orcid number, email and affiliation
 # Affiliation "*" means contact author (required even for single-authored papers)
