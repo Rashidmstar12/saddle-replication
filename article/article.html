@@ -4,6 +4,7 @@
   <meta charset="utf-8" />
   <meta name="generator" content="pandoc" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="Rashid Kadayil" />
   <meta name="dcterms.date" content="2026-11-10" />
   <title>[Re] Computational Replication of SADDLE: Empirical Next-Generation Sequencing Read Partitions and Primer Interaction Distribution in a 384-Plex PCR Panel</title>
   <style>
@@ -166,7 +167,6 @@
       margin: 0 0.8em 0.2em -1.6em;
       vertical-align: middle;
     }
-    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
     /* CSS for syntax highlighting */
     pre > code.sourceCode { white-space: pre; position: relative; }
     pre > code.sourceCode > span { line-height: 1.25; }
@@ -252,6 +252,10 @@
     div.csl-indent {
       margin-left: 2em;
     }  </style>
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js"
+  type="text/javascript"></script>
   <!--[if lt IE 9]>
     <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
   <![endif]-->
@@ -261,7 +265,7 @@
 <h1 class="title">[Re] Computational Replication of SADDLE: Empirical
 Next-Generation Sequencing Read Partitions and Primer Interaction
 Distribution in a 384-Plex PCR Panel</h1>
-<p class="author">true</p>
+<p class="author">Rashid Kadayil</p>
 <p class="date">2026-11-10</p>
 </header>
 <h1 id="abstract">Abstract</h1>
@@ -297,12 +301,12 @@ products, and 0.87% primer-dimers (24,878 reads), approximately
 reproducing the published Figure 3f proportions (~43%, ~56%, ~1%) within
 0.86% for Method 1 and 0.61% for Method 2 (within a 1.0 percentage point
 scientific tolerance). Evaluated over the full raw instrument library
-(<span class="math inline"><em>N</em> = 3, 942, 385</span>), on-target
+(<span class="math inline">\(N = 3,942,385\)</span>), on-target
 amplicons represent 31.64% of sequencer output. We further corroborate
 the severe heavy-tailed concentration of primer-dimer formation across
 the 295,296 candidate primer pairings, where only 1,172 pairs (0.397%)
 exhibit non-zero dimerization and a single dominant interaction
-(<code>rp213</code> <span class="math inline">×</span>
+(<code>rp213</code> <span class="math inline">\(\times\)</span>
 <code>rp371</code>) accounts for 67.57% of all dimer reads in the
 verified pair-level interaction matrix (16,805 / 24,872 reads). In a
 supplementary exploratory benchmark, we evaluate the predictive validity
@@ -323,11 +327,11 @@ data-cites="untergasser2012primer3 chen2026prism">(Untergasser et al.
 2012; Chen et al. 2026)</span>. However, scaling multiplex PCR beyond
 small panels is fundamentally constrained by pairwise primer-primer
 cross-hybridization. For a panel targeting <span
-class="math inline"><em>N</em></span> amplicons, <span
-class="math inline">2<em>N</em></span> distinct primer oligonucleotides
-are pooled, yielding:</p>
-<p><span class="math display">$$\binom{2N+1}{2} = \frac{(2N+1)(2N)}{2}
-\approx 2N^2$$</span></p>
+class="math inline">\(N\)</span> amplicons, <span
+class="math inline">\(2N\)</span> distinct primer oligonucleotides are
+pooled, yielding:</p>
+<p><span class="math display">\[\binom{2N+1}{2} = \frac{(2N+1)(2N)}{2}
+\approx 2N^2\]</span></p>
 <p>possible pairwise interaction combinations (including homodimer and
 self-interactions). Minor sequence complementarity—specifically when
 aligned at the extensible 3’ terminus—enables DNA polymerase extension,
@@ -395,8 +399,8 @@ workflow, and what are the specific algorithmic approximations? -
 analysis clearly distinguished from the primary replication claim, how
 well does the SADDLE Badness heuristic rank observed dimer events
 compared to standard nearest-neighbor thermodynamics (<span
-class="math inline"> − <em>Δ</em><em>G</em><sub>37</sub><sup>∘</sup></span>)
-and supervised machine learning models?</p>
+class="math inline">\(-\Delta G_{37}^\circ\)</span>) and supervised
+machine learning models?</p>
 <h1 id="original-work-and-artifact-audit">Original Work and Artifact
 Audit</h1>
 <p>The original study by Xie et al. <span class="citation"
@@ -427,11 +431,10 @@ reference amplicons using Bowtie2 <span class="citation"
 data-cites="langmead2012fast">(Langmead and Salzberg 2012)</span>,
 matches 5’ primer sequences via an 8-base hash lookup, and classifies
 reads with insert lengths strictly shorter than <span
-class="math inline"><em>L</em><sub>1</sub> + <em>L</em><sub>2</sub> − 2</span>
-bp as primer-dimers. - <strong>Raw Data Completeness:</strong> The
-Figshare repository contains the complete 3,942,385 raw paired-end reads
-for Sample E19 across two gzipped FASTQ files
-(<code>E19_384plex_NGS_R1_fastq.gz</code> and
+class="math inline">\(L_1 + L_2 - 2\)</span> bp as primer-dimers. -
+<strong>Raw Data Completeness:</strong> The Figshare repository contains
+the complete 3,942,385 raw paired-end reads for Sample E19 across two
+gzipped FASTQ files (<code>E19_384plex_NGS_R1_fastq.gz</code> and
 <code>E19_384plex_NGS_R2_fastq.gz</code>, totaling 914 MB), providing
 uncompromised primary empirical inputs.</p>
 <h1 id="replication-methodology-and-implementation">Replication
@@ -470,8 +473,8 @@ Routing</strong></td>
 style="text-align: left;"><code>Data_process.m:23-57, 118, 128</code>:
 Scans full 28–29 bp adapters (<code>AGATCGGAAGAGCACACGTCTGAACTCC</code>
 on R1, <code>AGATCGGAAGAGCGTCGTGTAGGGAAAG</code> on R2); bifurcates
-reads by length (<span class="math inline"> ≥ 60</span> bp routed to
-Bowtie2 vs. <span class="math inline"> &lt; 60</span> bp routed to
+reads by length (<span class="math inline">\(\ge 60\)</span> bp routed
+to Bowtie2 vs. <span class="math inline">\(&lt; 60\)</span> bp routed to
 candidate dimer search).</td>
 <td
 style="text-align: left;"><code>reconstruct_saddle_384.py:145-152</code>:
@@ -486,20 +489,20 @@ Heuristic</strong> (17-bp prefix matching; single-stream flow without
 <tr class="even">
 <td style="text-align: left;"><strong>Quality Filtering</strong></td>
 <td style="text-align: left;"><code>Data_process.m:109-111</code>:
-Filters read pairs unless <span class="math inline"> &gt; 70%</span> of
-bases have Phred quality <span class="math inline"> &gt; 30</span>
-(ASCII <span class="math inline"> &gt; 63</span>), no ambiguous
+Filters read pairs unless <span class="math inline">\(&gt;70\%\)</span>
+of bases have Phred quality <span class="math inline">\(&gt;30\)</span>
+(ASCII <span class="math inline">\(&gt;63\)</span>), no ambiguous
 <code>'N'</code> bases, and trimmed length <span
-class="math inline"> &gt; 10</span> bp.</td>
+class="math inline">\(&gt;10\)</span> bp.</td>
 <td
 style="text-align: left;"><code>reconstruct_saddle_384.py:155-163</code>:
-Exact condition: length <span class="math inline"> &gt; 10</span> bp,
-<code>'N'</code> not in sequence, and <span
-class="math inline"> &gt; 70%</span> bases with quality ASCII <span
-class="math inline"> &gt; 63</span> for both R1 and R2.</td>
+Exact condition: length <span class="math inline">\(&gt;10\)</span> bp,
+<code>'N'</code> not in sequence, and <span class="math inline">\(&gt;
+70\%\)</span> bases with quality ASCII <span
+class="math inline">\(&gt;63\)</span> for both R1 and R2.</td>
 <td style="text-align: left;"><strong>Threshold
-Reimplementation</strong> (<span class="math inline"> &gt; 70%</span>
-Q30, no ‘N’, length <span class="math inline"> &gt; 10</span> bp)</td>
+Reimplementation</strong> (<span class="math inline">\(&gt;70\%\)</span>
+Q30, no ‘N’, length <span class="math inline">\(&gt;10\)</span> bp)</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;"><strong>Primer Matching</strong></td>
@@ -511,9 +514,9 @@ Smith–Waterman local alignment score via <code>swalign</code>
 <td
 style="text-align: left;"><code>reconstruct_saddle_384.py:166-196</code>:
 8-bp prefix index across all 768 primers; evaluates direct positional
-match fraction <span class="math inline"> &gt; 0.60</span> on prefix of
-length <span
-class="math inline">min (len(<em>p</em>),len(<em>t</em>))</span>.</td>
+match fraction <span class="math inline">\(&gt;0.60\)</span> on prefix
+of length <span class="math inline">\(\min(\text{len}(p),
+\text{len}(t))\)</span>.</td>
 <td style="text-align: left;"><strong>Alternative Heuristic</strong>
 (Positional character matching vs. MATLAB <code>swalign</code>
 Smith–Waterman local alignment)</td>
@@ -524,20 +527,17 @@ Threshold</strong></td>
 <td style="text-align: left;"><code>Dimer_Identify.m:70, 96-108</code>:
 Requires <code>length(readF) &gt; 15</code> and
 <code>length(f_seq) &lt; length(currline1)</code>; dimer condition:
-insert length <span
-class="math inline"> &lt; <em>L</em><sub>1</sub> + <em>L</em><sub>2</sub> − 2</span>
+insert length <span class="math inline">\(&lt; L_1 + L_2 - 2\)</span>
 bp.</td>
 <td
 style="text-align: left;"><code>reconstruct_saddle_384.py:203-220</code>:
-Dimer condition: insert length <span
-class="math inline"> &lt; <em>L</em><sub>1</sub> + <em>L</em><sub>2</sub> − 2</span>
-bp; does not apply MATLAB’s <span class="math inline"> &gt; 15</span> bp
-filter.</td>
+Dimer condition: insert length <span class="math inline">\(&lt; L_1 +
+L_2 - 2\)</span> bp; does not apply MATLAB’s <span
+class="math inline">\(&gt; 15\)</span> bp filter.</td>
 <td style="text-align: left;"><strong>Formula Approximation</strong>
-(Shared threshold <span
-class="math inline"> &lt; <em>L</em><sub>1</sub> + <em>L</em><sub>2</sub> − 2</span>
-bp; differs in read length <span class="math inline"> &gt; 15</span> bp
-eligibility filter)</td>
+(Shared threshold <span class="math inline">\(&lt; L_1 + L_2 -
+2\)</span> bp; differs in read length <span class="math inline">\(&gt;
+15\)</span> bp eligibility filter)</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;"><strong>On-Target Amplicon
@@ -548,9 +548,9 @@ routed to dimer script.</td>
 <td
 style="text-align: left;"><code>reconstruct_saddle_384.py:199-210</code>:
 Method 1 assigns cognate pairs by primer ID (<span
-class="math inline"><em>P</em><sub>2</sub> = <em>P</em><sub>1</sub> + 384</span>);
-Method 2 executes cognate-anchored semi-global gapped alignment
-(<code>edlib</code>) against assigned reference amplicon.</td>
+class="math inline">\(P_2 = P_1 + 384\)</span>); Method 2 executes
+cognate-anchored semi-global gapped alignment (<code>edlib</code>)
+against assigned reference amplicon.</td>
 <td style="text-align: left;"><strong>Methodological
 Approximation</strong> (Cognate primer pairing and edlib semi-global
 gapped alignment vs. Bowtie2)</td>
@@ -562,63 +562,59 @@ Scaling</strong></td>
 style="text-align: left;"><code>Dimer_Identify.m:3, 52, 98, 125-126</code>:
 Public repository script hardcoded for 192 primers
 (<code>index = 1:192; % 96-plex</code>), populating <span
-class="math inline">192 × 192</span> matrix.</td>
+class="math inline">\(192 \times 192\)</span> matrix.</td>
 <td
 style="text-align: left;"><code>reconstruct_saddle_384.py:238-249</code>:
-Constructs <span class="math inline">768 × 768</span> interaction matrix
-across all 768 primers for the 384-plex panel, then folds into 295,296
-unordered pairs.</td>
+Constructs <span class="math inline">\(768 \times 768\)</span>
+interaction matrix across all 768 primers for the 384-plex panel, then
+folds into 295,296 unordered pairs.</td>
 <td style="text-align: left;"><strong>Panel Scaling
-Reimplementation</strong> (<span class="math inline">768 × 768</span>
-matrix for 384-plex; public MATLAB script hard-coded for <span
-class="math inline">192 × 192</span> / 96-plex)</td>
+Reimplementation</strong> (<span class="math inline">\(768 \times
+768\)</span> matrix for 384-plex; public MATLAB script hard-coded for
+<span class="math inline">\(192 \times 192\)</span> / 96-plex)</td>
 </tr>
 </tbody>
 </table>
 <h2 id="read-accounting-and-partition-logic">Read Accounting and
 Partition Logic</h2>
-<p>Each paired-end sequencing read <span
-class="math inline">(<em>R</em><sub>1</sub>,<em>R</em><sub>2</sub>)</span>
-in Sample E19 is processed through mutually exclusive and exhaustive
-accounting bins: 1. <strong>Adapter Missing:</strong> Read pairs lacking
-adapter signatures on both reads, R1 only, or R2 only. 2.
+<p>Each paired-end sequencing read <span class="math inline">\((R_1,
+R_2)\)</span> in Sample E19 is processed through mutually exclusive and
+exhaustive accounting bins: 1. <strong>Adapter Missing:</strong> Read
+pairs lacking adapter signatures on both reads, R1 only, or R2 only. 2.
 <strong>Quality Excluded:</strong> Read pairs with trimmed inserts <span
-class="math inline"> ≤ 10</span> bp, containing ambiguous
+class="math inline">\(\le 10\)</span> bp, containing ambiguous
 <code>'N'</code> bases, or failing the 70% Q30 threshold. 3.
 <strong>Primer Unmatched:</strong> Read pairs where either or both 5’
 ends cannot be matched to the 768 pool primers with <span
-class="math inline"> &gt; 60%</span> identity. 4. <strong>Classified
+class="math inline">\(&gt;60\%\)</span> identity. 4. <strong>Classified
 Amplicons:</strong> Reads with both primers successfully resolved. These
 are partitioned into <strong>Primer-Dimers</strong> (insert <span
-class="math inline"> &lt; <em>L</em><sub>1</sub> + <em>L</em><sub>2</sub> − 2</span>
-bp), and non-dimer products. To evaluate on-target specificity
-rigorously, non-dimer products are assessed under two distinct
-methodological criteria: - <strong>Method 1 (Primer Pairing
-Heuristic):</strong> A read is classified as <em>On-Target</em> if both
-primers form a cognate target pair (<span
-class="math inline"><em>P</em><sub>2</sub> = <em>P</em><sub>1</sub> + 384</span>)
-and insert length <span
-class="math inline"> ≥ <em>L</em><sub>1</sub> + <em>L</em><sub>2</sub> − 2</span>
-bp; all non-cognate pairings are classified as <em>Nonspecific</em>.
-This turnkey method avoids external aligner dependencies. -
-<strong>Method 2 (Cognate-Anchored Gapped Sequence Alignment via
-edlib):</strong> In addition to cognate primer matching, the insert
-sequence is aligned directly against the intended full-length reference
-amplicon sequence extracted from Supplementary Data MOESM5 <span
-class="citation" data-cites="xie2022designing">(Xie et al. 2022)</span>
-using the open-source <code>edlib</code> C/Python library <span
-class="citation" data-cites="sosic2017edlib">(Šošić and Šikić
-2017)</span> (Myers’ exact bit-vector semi-global alignment with indels
-and substitutions, <code>mode='SHW'</code>). Reads achieving semi-global
-edit distance similarity <span class="math inline"> ≥ 75%</span> or
-<span class="math inline"> ≥ 80%</span> (defined as <span
-class="math inline">1 − <em>d</em><sub><em>E</em></sub>/<em>L</em><sub>read</sub> ≥ 0.75</span>,
-where <span class="math inline"><em>d</em><sub><em>E</em></sub></span>
-is Myers’ bit-vector edit distance and <span
-class="math inline"><em>L</em><sub>read</sub></span> is the trimmed read
-sequence length, <code>len(t1)</code>) against their assigned cognate
-amplicon are classified as <em>On-Target</em>; reads failing this
-threshold are classified as <em>Nonspecific</em>.</p>
+class="math inline">\(&lt; L_1 + L_2 - 2\)</span> bp), and non-dimer
+products. To evaluate on-target specificity rigorously, non-dimer
+products are assessed under two distinct methodological criteria: -
+<strong>Method 1 (Primer Pairing Heuristic):</strong> A read is
+classified as <em>On-Target</em> if both primers form a cognate target
+pair (<span class="math inline">\(P_2 = P_1 + 384\)</span>) and insert
+length <span class="math inline">\(\ge L_1 + L_2 - 2\)</span> bp; all
+non-cognate pairings are classified as <em>Nonspecific</em>. This
+turnkey method avoids external aligner dependencies. - <strong>Method 2
+(Cognate-Anchored Gapped Sequence Alignment via edlib):</strong> In
+addition to cognate primer matching, the insert sequence is aligned
+directly against the intended full-length reference amplicon sequence
+extracted from Supplementary Data MOESM5 <span class="citation"
+data-cites="xie2022designing">(Xie et al. 2022)</span> using the
+open-source <code>edlib</code> C/Python library <span class="citation"
+data-cites="sosic2017edlib">(Šošić and Šikić 2017)</span> (Myers’ exact
+bit-vector semi-global alignment with indels and substitutions,
+<code>mode='SHW'</code>). Reads achieving semi-global edit distance
+similarity <span class="math inline">\(\ge 75\%\)</span> or <span
+class="math inline">\(\ge 80\%\)</span> (defined as <span
+class="math inline">\(1 - d_E / L_{\text{read}} \ge 0.75\)</span>, where
+<span class="math inline">\(d_E\)</span> is Myers’ bit-vector edit
+distance and <span class="math inline">\(L_{\text{read}}\)</span> is the
+trimmed read sequence length, <code>len(t1)</code>) against their
+assigned cognate amplicon are classified as <em>On-Target</em>; reads
+failing this threshold are classified as <em>Nonspecific</em>.</p>
 <h1 id="primary-replication-results">Primary Replication Results</h1>
 <h2 id="replicated-ngs-read-accounting-breakdown">Replicated NGS Read
 Accounting Breakdown</h2>
@@ -634,21 +630,21 @@ Rules: The minor difference of exactly 6 reads between accounting
 partitions arises from the denominator used during primer prefix
 matching in our Python pipeline. In extreme-short primer dimers with
 inserts of 12–14 bp, dividing matches by full primer length (<span
-class="math inline"> ≈ 22</span> bp) yields identity <span
-class="math inline"> ≤ 0.60</span> and excludes the reads as
+class="math inline">\(\approx 22\)</span> bp) yields identity <span
+class="math inline">\(\le 0.60\)</span> and excludes the reads as
 primer-unmatched [192,997 excluded, 24,872 dimers], whereas dividing by
 the trimmed insert length evaluates identity as <span
-class="math inline">1.0</span> and retains them as dimers [192,991
+class="math inline">\(1.0\)</span> and retains them as dimers [192,991
 excluded, 24,878 dimers]. Crucially, the original published MATLAB
 script <code>Dimer_Identify.m</code> enforces an explicit length filter
-requiring read length <span class="math inline"> &gt; 15</span> bp
+requiring read length <span class="math inline">\(&gt; 15\)</span> bp
 (<code>if length(readF) &gt; 15</code>) and insert longer than primer
 length. Consequently, in the original MATLAB pipeline, reads of 12–14 bp
 would be filtered out by this length condition. These 6 reads therefore
 reflect our Python pipeline’s alternative length filter (<span
-class="math inline"> &gt; 10</span> bp) rather than exact reproduction
-of the original MATLAB eligibility rules. Neither accounting alters the
-rounded 0.87% dimer fraction).</em></p>
+class="math inline">\(&gt; 10\)</span> bp) rather than exact
+reproduction of the original MATLAB eligibility rules. Neither
+accounting alters the rounded 0.87% dimer fraction).</em></p>
 <p>Table 2 compares the classified read proportions directly against the
 published findings in Figure 3f and the main text of Xie et al. <span
 class="citation" data-cites="xie2022designing">(2022)</span> across all
@@ -661,11 +657,10 @@ Illumina MiSeq paired-end sequencing with MiSeq Reagent Kit v2, Figure
 cognate-anchored gapped semi-global sequence alignment via
 <code>edlib</code> against assigned cognate reference amplicons.
 Percentages are presented on both the derived post-filter
-classified-read basis (<span
-class="math inline"><em>N</em> = 2, 860, 664</span>, which yields
-proportions approximately reconciling with published Figure 3f) and the
-total raw sequencer output basis (<span
-class="math inline"><em>N</em> = 3, 942, 385</span>). The exact integer
+classified-read basis (<span class="math inline">\(N =
+2,860,664\)</span>, which yields proportions approximately reconciling
+with published Figure 3f) and the total raw sequencer output basis
+(<span class="math inline">\(N = 3,942,385\)</span>). The exact integer
 denominator was not published in Figure 3f and remains
 unverified.</caption>
 <colgroup>
@@ -683,11 +678,11 @@ unverified.</caption>
 <th style="text-align: left;">Method 1: Primer Pairing Count (%
 Classified)</th>
 <th style="text-align: left;">Method 2: edlib Gapped (<span
-class="math inline"> ≥ 75%</span>) Count (% Classified)</th>
+class="math inline">\(\ge 75\%\)</span>) Count (% Classified)</th>
 <th style="text-align: left;">Method 2: edlib Gapped (<span
-class="math inline"> ≥ 80%</span>) Count (% Classified)</th>
+class="math inline">\(\ge 80\%\)</span>) Count (% Classified)</th>
 <th style="text-align: left;">% of Total Raw Reads (<span
-class="math inline"><em>N</em> = 3, 942, 385</span>)</th>
+class="math inline">\(N = 3,942,385\)</span>)</th>
 <th style="text-align: left;">Published SADDLE Figure 3f <span
 class="citation" data-cites="xie2022designing">(Xie et al.
 2022)</span></th>
@@ -759,21 +754,20 @@ on-target, ~56% nonspecific, ~1% primer-dimers) sum to 100%, but the
 original publication did not disclose the underlying integer read count
 or filtering denominator. We report two transparent denominators: (a)
 our pipeline’s derived post-filter classified denominator (<span
-class="math inline"><em>N</em> = 2, 860, 664</span> read pairs), after
+class="math inline">\(N = 2,860,664\)</span> read pairs), after
 filtering 27.44% unclassifiable reads (19.07% missing adapters, 3.48%
 low quality/short, 4.90% unmatched primers), which yields on-target
 (43.61% for Method 2, 43.86% for Method 1), nonspecific (55.27%–55.52%),
 and primer-dimer (0.87%) fractions in approximate agreement with the
 published values within a 1.0 percentage point scientific tolerance
 (differences of +0.61% and +0.86% on-target); and (b) the total raw
-sequencer output (<span
-class="math inline"><em>N</em> = 3, 942, 385</span> read pairs), across
-which on-target amplicons represent 31.64% to 31.82%, nonspecific
-products represent 40.11% to 40.29%, primer-dimers represent 0.63%, and
-excluded reads represent 27.44%. We do not present the original
-denominator as established, but rather report this derived post-filter
-denominator as an approximate operational alignment under our filtering
-criteria. Both denominators are fully documented in
+sequencer output (<span class="math inline">\(N = 3,942,385\)</span>
+read pairs), across which on-target amplicons represent 31.64% to
+31.82%, nonspecific products represent 40.11% to 40.29%, primer-dimers
+represent 0.63%, and excluded reads represent 27.44%. We do not present
+the original denominator as established, but rather report this derived
+post-filter denominator as an approximate operational alignment under
+our filtering criteria. Both denominators are fully documented in
 <code>data/reference_alignment_comparison.json</code> and the execution
 audit logs.</li>
 <li><strong>Invariance of Primer-Dimer Suppression:</strong> Under all
@@ -782,10 +776,9 @@ accounts for exactly <strong>0.87% of classified reads</strong> (and
 0.63% of raw reads), replicating the published finding of
 <strong>~1%</strong> in Figure 3f within 0.13% absolute difference.
 Because primer-dimers are defined strictly by insert length truncation
-(<span
-class="math inline"> &lt; <em>L</em><sub>1</sub> + <em>L</em><sub>2</sub> − 2</span>
-bp), dimer quantification is completely robust to downstream sequence
-alignment criteria.</li>
+(<span class="math inline">\(&lt; L_1 + L_2 - 2\)</span> bp), dimer
+quantification is completely robust to downstream sequence alignment
+criteria.</li>
 <li><strong>Quantitative Indel Analysis and Operational Gap
 Mechanism:</strong> In earlier exploratory audits, evaluating reference
 sequence matching via ungapped character-by-character string comparison
@@ -794,15 +787,15 @@ reads). To determine why gapped alignment recovers reads that fail
 positional matching, our audit script
 (<code>code/audit_alignment_and_indels.py</code>) parsed full CIGAR
 alignment paths across 615 audit reads that passed gapped semi-global
-alignment (<span class="math inline"> ≥ 75%</span> similarity) but
+alignment (<span class="math inline">\(\ge 75\%\)</span> similarity) but
 failed ungapped positional matching. Every single recovered read
 (<strong>100.0%, 615/615</strong>) contained alignment gaps (insertions
 or deletions relative to the reference; <strong>0.0% had substitutions
 only</strong>). Across these 615 records, 53 reads (8.62%) contained
-<span class="math inline"> ≤ 2</span> inserted/deleted bases (48 with
-1-bp deletion, 2 with 1-bp insertion, 3 with 2-bp indels), while the
-majority (562 reads, 91.38%) exhibited larger or multiple indels, with a
-median of 8 inserted/deleted bases across the recovered set. For
+<span class="math inline">\(\le 2\)</span> inserted/deleted bases (48
+with 1-bp deletion, 2 with 1-bp insertion, 3 with 2-bp indels), while
+the majority (562 reads, 91.38%) exhibited larger or multiple indels,
+with a median of 8 inserted/deleted bases across the recovered set. For
 example, in read
 <code>@M04612:271:000000000-CWC2J:1:1101:16920:1534</code> matching
 amplicon 351 (<code>CIGAR: 56=1D9=1X37=</code>), a 1-bp deletion at
@@ -810,10 +803,10 @@ position 56 caused unaligned positional identity to drop from 98.06% to
 64.08% by shifting the downstream alignment frame. Gapped semi-global
 alignment (<code>edlib</code>) resolves this frame shift, restoring
 on-target classification to <strong>43.61%</strong> (<span
-class="math inline"> ≥ 75%</span> similarity, <span
-class="math inline"><em>Δ</em> =  + 0.61%</span>) and
-<strong>42.76%</strong> (<span class="math inline"> ≥ 80%</span>
-similarity, <span class="math inline"><em>Δ</em> =  − 0.24%</span>).
+class="math inline">\(\ge 75\%\)</span> similarity, <span
+class="math inline">\(\Delta = +0.61\%\)</span>) and
+<strong>42.76%</strong> (<span class="math inline">\(\ge 80\%\)</span>
+similarity, <span class="math inline">\(\Delta = -0.24\%\)</span>).
 Complete CIGAR strings, read identifiers, and indel counts for all 615
 recovered reads are recorded without truncation in
 <code>data/alignment_and_indel_audit.json</code>. These alignment
@@ -840,26 +833,26 @@ per read) partitions the sample into:
 <ul>
 <li><em>Cognate Reads (2,203 reads, 44.06% of sample):</em> Exactly
 2,193 reads (99.55% of cognates) aligned to their intended cognate
-target (<span class="math inline"> ≥ 75%</span> identity) and 10 reads
-(0.45%) failed the 75% alignment threshold against their assigned
+target (<span class="math inline">\(\ge 75\%\)</span> identity) and 10
+reads (0.45%) failed the 75% alignment threshold against their assigned
 target. Crucially, <strong>0 reads (0.00%)</strong> had a non-cognate
 amplicon as their highest-identity alignment <span
-class="math inline"> ≥ 75%</span> (0/2,203 cross-target best matches;
-secondary sub-threshold alignments were not logged).</li>
+class="math inline">\(\ge 75\%\)</span> (0/2,203 cross-target best
+matches; secondary sub-threshold alignments were not logged).</li>
 <li><em>Non-Cognate Reads (2,797 reads, 55.94% of sample):</em> Exactly
 2,671 reads (95.50% of non-cognates) failed alignment against all 384
 amplicons on both strands, while 126 reads (4.50% of non-cognates, 2.52%
-of total sample) achieved <span class="math inline"> ≥ 75%</span>
+of total sample) achieved <span class="math inline">\(\ge 75\%\)</span>
 sequence alignment to a target amplicon on either strand.</li>
 <li><em>Exact Arithmetic Reconciliation:</em> The sum of all four
-mutually exclusive partitions (<span
-class="math inline">2, 193 + 10 + 126 + 2, 671 = 5, 000</span>)
-reconciles 100% of the tested reads without unexplained records.</li>
+mutually exclusive partitions (<span class="math inline">\(2,193 + 10 +
+126 + 2,671 = 5,000\)</span>) reconciles 100% of the tested reads
+without unexplained records.</li>
 <li><em>Two-Method Confusion Matrix and Verified Concordance:</em>
 Cross-classifying each read’s binary outcome under Method 2
 (cognate-anchored gapped alignment) against dual-strand all-384-target
-alignment constructs a complete 2 <span class="math inline">×</span> 2
-confusion matrix:
+alignment constructs a complete 2 <span
+class="math inline">\(\times\)</span> 2 confusion matrix:
 <ul>
 <li><em>Both On-Target (Agreement):</em> Exactly 2,193 reads (43.86% of
 sample).</li>
@@ -877,18 +870,16 @@ target amplicon).</li>
 (0.00%; mathematically impossible as the assigned target is within the
 384-target set).</li>
 <li><em>Verified Per-Read Binary Concordance:</em> Total agreement is
-<span
-class="math inline">(2,193+2,681)/5, 000 = <strong>97.48</strong><strong>%</strong></span>
-(<span class="math inline">4, 874/5, 000</span> reads), with exactly 126
-discordant reads (<span
-class="math inline"><strong>2.52</strong><strong>%</strong></span>).
-Crucially, this concordance metric measures agreement specifically
-within this 5,000-read sample between cognate-anchored and all-target
-semi-global gapped alignment; it is not derived from a full-dataset
-confusion matrix, should not be extrapolated as proof of identical
-classification across all 3.94 million reads, and does not establish
-mathematical equivalence to the original Bowtie2 amplicon mapping
-workflow.</li>
+<span class="math inline">\((2,193 + 2,681) / 5,000 =
+\mathbf{97.48\%}\)</span> (<span class="math inline">\(4,874 /
+5,000\)</span> reads), with exactly 126 discordant reads (<span
+class="math inline">\(\mathbf{2.52\%}\)</span>). Crucially, this
+concordance metric measures agreement specifically within this
+5,000-read sample between cognate-anchored and all-target semi-global
+gapped alignment; it is not derived from a full-dataset confusion
+matrix, should not be extrapolated as proof of identical classification
+across all 3.94 million reads, and does not establish mathematical
+equivalence to the original Bowtie2 amplicon mapping workflow.</li>
 </ul></li>
 </ul></li>
 <li><strong>Replication Scope and Framework Framing:</strong> This study
@@ -915,21 +906,21 @@ Heavy-Tailed Interaction Concentration</h2>
 across all 295,296 possible candidate primer pairs: - <strong>Zero-Dimer
 Pairs:</strong> 294,124 candidate pairs (99.6031%) produced exactly zero
 observed dimer reads. - <strong>Active Dimer Pairs (<span
-class="math inline"> ≥ 1</span> read):</strong> Only 1,172 pairs
+class="math inline">\(\ge 1\)</span> read):</strong> Only 1,172 pairs
 (0.3969% empirical prevalence) generated one or more dimer reads. -
-<strong>Severe Dimer Pairs (<span class="math inline"> ≥ 10</span>
+<strong>Severe Dimer Pairs (<span class="math inline">\(\ge 10\)</span>
 reads):</strong> Only 98 pairs (0.0332% prevalence) produced 10 or more
 dimer reads. - <strong>Dominant Interaction:</strong> A single primer
 pair—reverse primer 213 (<code>rp213</code>) <span
-class="math inline">×</span> reverse primer 371
+class="math inline">\(\times\)</span> reverse primer 371
 (<code>rp371</code>)—generated 16,805 dimer reads, accounting for
 <strong>67.57%</strong> of all observed dimer reads in the verified
-pair-level distribution (<span
-class="math inline">16, 805/24, 872</span> reads in
-<code>data/saddle_384_dimer_pairs.tsv</code>). In the current rerun
-partition (<span class="math inline">24, 878</span> total dimer reads),
-the 6 additional extreme-short reads across the library do not
-materially alter this extreme concentration (~67.6%).</p>
+pair-level distribution (<span class="math inline">\(16,805 /
+24,872\)</span> reads in <code>data/saddle_384_dimer_pairs.tsv</code>).
+In the current rerun partition (<span
+class="math inline">\(24,878\)</span> total dimer reads), the 6
+additional extreme-short reads across the library do not materially
+alter this extreme concentration (~67.6%).</p>
 <p>This reproduces the qualitative finding highlighted by Xie et al.:
 primer-dimer formation is not uniformly distributed across sequence
 space, but is characterized by an extreme, heavy-tailed concentration
@@ -949,29 +940,25 @@ SADDLE Badness and Baselines</h2>
 <p>In Xie et al. <span class="citation"
 data-cites="xie2022designing">(2022)</span>, Badness is calculated over
 maximal continuous complementary matches of length <span
-class="math inline"> ≥ 4</span> bp between primers <span
-class="math inline"><em>P</em><sub>1</sub></span> and <span
-class="math inline"><em>P</em><sub>2</sub></span>:</p>
-<p><span class="math display">$$\text{Badness}(P_1, P_2) = \sum_{k \in
+class="math inline">\(\ge 4\)</span> bp between primers <span
+class="math inline">\(P_1\)</span> and <span
+class="math inline">\(P_2\)</span>:</p>
+<p><span class="math display">\[\text{Badness}(P_1, P_2) = \sum_{k \in
 \mathcal{M}} 2^{\text{len}_k} \cdot 2^{\text{numGC}_k} \cdot
-\frac{1}{(d_1^{(k)} + 1)(d_2^{(k)} + 1)}$$</span></p>
-<p>where <span class="math inline">len<sub><em>k</em></sub></span> is
-match length, <span
-class="math inline">numGC<sub><em>k</em></sub></span> is GC count within
-the match, and <span
-class="math inline"><em>d</em><sub>1</sub><sup>(<em>k</em>)</sup>, <em>d</em><sub>2</sub><sup>(<em>k</em>)</sup></span>
-are nucleotide distances from the 3’ termini. In our benchmark, we
-evaluate an approximate 4–7 bp heuristic variant.</p>
+\frac{1}{(d_1^{(k)} + 1)(d_2^{(k)} + 1)}\]</span></p>
+<p>where <span class="math inline">\(\text{len}_k\)</span> is match
+length, <span class="math inline">\(\text{numGC}_k\)</span> is GC count
+within the match, and <span class="math inline">\(d_1^{(k)},
+d_2^{(k)}\)</span> are nucleotide distances from the 3’ termini. In our
+benchmark, we evaluate an approximate 4–7 bp heuristic variant.</p>
 <p>We compare Badness against: 1. <strong>SantaLucia Thermodynamics
-(<span class="math inline"> − <em>Δ</em><em>G</em></span>):</strong>
-Approximate nearest-neighbor hybridization free-energy score based on
-standard 37 °C parameters (<span
-class="math inline"><em>Δ</em><em>G</em><sub>37</sub><sup>∘</sup></span>)
+(<span class="math inline">\(-\Delta G\)</span>):</strong> Approximate
+nearest-neighbor hybridization free-energy score based on standard 37 °C
+parameters (<span class="math inline">\(\Delta G_{37}^\circ\)</span>)
 <span class="citation" data-cites="santalucia1998unified">(SantaLucia
 1998)</span>. 2. <strong>Logistic Regression (Augmented
 Features):</strong> L2-regularized linear model trained on thermodynamic
-free energy (<span
-class="math inline"><em>Δ</em><em>G</em><sub>37</sub><sup>∘</sup></span>),
+free energy (<span class="math inline">\(\Delta G_{37}^\circ\)</span>),
 terminal 3’ hybridization, match lengths, GC content, and the
 approximate SADDLE-style Badness heuristic score. 3. <strong>XGBoost
 (Augmented Features):</strong> Gradient boosted decision tree ensemble
@@ -979,28 +966,30 @@ trained on the exact same augmented feature set (thermodynamics,
 alignment features, and approximate SADDLE-style Badness).</p>
 <p>To ensure deterministic evaluation without tie-breaking instability,
 candidates are ranked by primary score descending, with ties broken by
-ascending pair index: <span
-class="math inline">rank_key(<em>i</em>) = (−score<sub><em>i</em></sub>,pair_index<sub><em>i</em></sub>)</span>.</p>
+ascending pair index: <span class="math inline">\(\text{rank\_key}(i) =
+(-\text{score}_i, \text{pair\_index}_i)\)</span>.</p>
 <h2 id="benchmark-metrics-and-calibration-analysis">Benchmark Metrics
 and Calibration Analysis</h2>
 <p>Table 3 presents the evaluation across all 295,296 candidate pairs
-against empirical binary labels (<span class="math inline"> ≥ 1</span>
-dimer read).</p>
+against empirical binary labels (<span class="math inline">\(\ge
+1\)</span> dimer read).</p>
 <table>
 <caption>Supplementary benchmark of sequence-based heuristics and
 supervised models across 295,296 candidate primer pairs from the
 384-plex validation panel. Supervised models were trained on 96-plex
 panels using thermodynamic, sequence-alignment, and approximate
 SADDLE-style Badness features. Binary labels represent observed dimer
-formation (<span class="math inline"> ≥ 1</span> NGS read).
-Precision@<span class="math inline"><em>K</em></span> evaluated using
+formation (<span class="math inline">\(\ge 1\)</span> NGS read).
+Precision@<span class="math inline">\(K\)</span> evaluated using
 deterministic secondary key sorting (<span
-class="math inline">rank_key(<em>i</em>) = (−score<sub><em>i</em></sub>,pair_index<sub><em>i</em></sub>)</span>).
-Under this deterministic secondary sort, the Constant Baseline has zero
-observed dimer pairs among the first 100 pairs (yielding 0.0% at P@10,
-P@50, and P@100); the theoretical expected precision for an unranked
-random choice across the entire panel is the empirical base rate (<span
-class="math inline">1, 172/295, 296 = 0.3969% ≈ 0.40%</span>).</caption>
+class="math inline">\(\text{rank\_key}(i) = (-\text{score}_i,
+\text{pair\_index}_i)\)</span>). Under this deterministic secondary
+sort, the Constant Baseline has zero observed dimer pairs among the
+first 100 pairs (yielding 0.0% at P@10, P@50, and P@100); the
+theoretical expected precision for an unranked random choice across the
+entire panel is the empirical base rate (<span
+class="math inline">\(1,172 / 295,296 = 0.3969\% \approx
+0.40\%\)</span>).</caption>
 <colgroup>
 <col style="width: 12%" />
 <col style="width: 12%" />
@@ -1036,9 +1025,9 @@ class="math inline">1, 172/295, 296 = 0.3969% ≈ 0.40%</span>).</ca
 </tr>
 <tr class="even">
 <td style="text-align: left;"><strong>SantaLucia (<span
-class="math inline"> − <em>Δ</em><em>G</em></span>)</strong></td>
+class="math inline">\(-\Delta G\)</span>)</strong></td>
 <td style="text-align: left;">Thermodynamic (<span
-class="math inline"><em>Δ</em><em>G</em><sub>37</sub><sup>∘</sup></span>)</td>
+class="math inline">\(\Delta G_{37}^\circ\)</span>)</td>
 <td style="text-align: left;">0.7105</td>
 <td style="text-align: left;">0.0125</td>
 <td style="text-align: left;">20.0%</td>
@@ -1097,12 +1086,11 @@ Supplementary Benchmarking</h3>
 <li><strong>Heuristic vs. Thermodynamics:</strong> SADDLE Badness
 achieves an Average Precision of 0.0597, representing a <strong>4.8-fold
 improvement over nearest-neighbor free energy alone</strong> (<span
-class="math inline"> − <em>Δ</em><em>G</em><sub>37</sub><sup>∘</sup></span>,
-AP = 0.0125) and a <strong>4.0-fold improvement in
-Precision@100</strong> (24.0% vs. 6.0%). This supports the hypothesis of
-Xie et al. that terminal 3’ alignment and heavy GC penalties capture
-enzymatic extension risk more effectively than global hybridization
-stability.</li>
+class="math inline">\(-\Delta G_{37}^\circ\)</span>, AP = 0.0125) and a
+<strong>4.0-fold improvement in Precision@100</strong> (24.0% vs. 6.0%).
+This supports the hypothesis of Xie et al. that terminal 3’ alignment
+and heavy GC penalties capture enzymatic extension risk more effectively
+than global hybridization stability.</li>
 <li><strong>Top-Rank Discrimination vs. Supervised Models:</strong>
 SADDLE Badness outperforms both Logistic Regression (AP = 0.0205, P@100
 = 8.0%) and XGBoost (AP = 0.0371, P@100 = 16.0%) in top-rank precision,
@@ -1114,7 +1102,7 @@ parameters.</li>
 Models:</strong> Independent recalculation of Brier scores reveals that
 both Logistic Regression (0.1986) and XGBoost (0.2143) are severely
 miscalibrated relative to the uninformative baseline (<span
-class="math inline"><em>p</em>(1−<em>p</em>) = 0.003953 ≈ 0.0040</span>).
+class="math inline">\(p(1-p) = 0.003953 \approx 0.0040\)</span>).
 Because the supervised models were trained to maximize ranking
 separation under class imbalance, their mean predicted probabilities
 (~0.38) greatly exceed the true empirical prevalence (0.00397), yielding
@@ -1128,34 +1116,34 @@ heuristics or unaligned string comparisons, our replication evaluated
 both classification paradigms across all 3,942,385 reads:
 <ul>
 <li><em>Method 1 (Primer Pairing):</em> Assigns on-target status based
-on cognate primer IDs (<span
-class="math inline"><em>P</em><sub>2</sub> = <em>P</em><sub>1</sub> + 384</span>)
-and insert length threshold <span
-class="math inline"> ≥ <em>L</em><sub>1</sub> + <em>L</em><sub>2</sub> − 2</span>
-bp, yielding 43.86% on-target, 55.27% nonspecific, and 0.87%
-primer-dimers. This reproduces published Figure 3f (~43% / ~56% / ~1%)
-within a 1.0% absolute tolerance (difference = +0.86% on-target).</li>
+on cognate primer IDs (<span class="math inline">\(P_2 = P_1 +
+384\)</span>) and insert length threshold <span
+class="math inline">\(\ge L_1 + L_2 - 2\)</span> bp, yielding 43.86%
+on-target, 55.27% nonspecific, and 0.87% primer-dimers. This reproduces
+published Figure 3f (~43% / ~56% / ~1%) within a 1.0% absolute tolerance
+(difference = +0.86% on-target).</li>
 <li><em>Method 2 (Genuine Gapped Sequence Alignment via edlib):</em>
 Performs Myers’ exact bit-vector semi-global sequence alignment against
 the assigned cognate reference amplicon from Supplementary Data MOESM5
 <span class="citation" data-cites="xie2022designing">(Xie et al.
-2022)</span>. At <span class="math inline"> ≥ 75%</span> identity, reads
-partition into 43.61% on-target, 55.52% nonspecific, and 0.87%
+2022)</span>. At <span class="math inline">\(\ge 75\%\)</span> identity,
+reads partition into 43.61% on-target, 55.52% nonspecific, and 0.87%
 primer-dimers (difference = +0.61% on-target). At <span
-class="math inline"> ≥ 80%</span> identity, reads partition into 42.76%
-on-target, 56.37% nonspecific, and 0.87% primer-dimers (difference =
--0.24% on-target). Both aligner cutoffs match published Figure 3f within
-scientific tolerance.</li>
+class="math inline">\(\ge 80\%\)</span> identity, reads partition into
+42.76% on-target, 56.37% nonspecific, and 0.87% primer-dimers
+(difference = -0.24% on-target). Both aligner cutoffs match published
+Figure 3f within scientific tolerance.</li>
 <li><em>Positional vs Gapped Alignment Insight:</em> The ungapped
 comparison yields 39.49%, whereas gapped alignment yields 43.61% (<span
-class="math inline"> ≥ 75%</span> edit-distance-derived similarity); a
-615-read selected audit demonstrates gaps as one operational
-explanation, without establishing the full-library cause. While all 615
-audit reads contained alignment gaps (median 8 bp), this selected sample
-does not establish that small 1–2 bp sequencing indels are the
-predominant cause of read divergence across the full 3.94-million-read
-library. Crucially, primer-dimer quantification (0.87% vs ~1% published)
-is completely invariant across all alignment methods.</li>
+class="math inline">\(\ge 75\%\)</span> edit-distance-derived
+similarity); a 615-read selected audit demonstrates gaps as one
+operational explanation, without establishing the full-library cause.
+While all 615 audit reads contained alignment gaps (median 8 bp), this
+selected sample does not establish that small 1–2 bp sequencing indels
+are the predominant cause of read divergence across the full
+3.94-million-read library. Crucially, primer-dimer quantification (0.87%
+vs ~1% published) is completely invariant across all alignment
+methods.</li>
 <li><em>Alignment Scope and Concordance:</em> In the original SADDLE
 publication <span class="citation" data-cites="xie2022designing">(Xie et
 al. 2022)</span>, on-target reads were aligned to intended amplicon
@@ -1167,12 +1155,12 @@ aligned directly against its assigned target amplicon from MOESM5. A
 separate dual-strand all-target audit across an initial deterministic
 sample of 5,000 classified reads (768 targets per read) confirmed 0
 cross-target best matches among cognate reads (0/2,203 best-scoring
-alignments <span class="math inline"> ≥ 75%</span> were non-cognate;
-secondary sub-threshold alignments were not logged) and a minor 2.52%
-target capture among non-cognate reads, establishing 97.48% operational
-binary concordance across an exhaustive 2 <span
-class="math inline">×</span> 2 confusion matrix (<span
-class="math inline">[2,193+2,681]/5, 000</span>). Crucially, this
+alignments <span class="math inline">\(\ge 75\%\)</span> were
+non-cognate; secondary sub-threshold alignments were not logged) and a
+minor 2.52% target capture among non-cognate reads, establishing 97.48%
+operational binary concordance across an exhaustive 2 <span
+class="math inline">\(\times\)</span> 2 confusion matrix (<span
+class="math inline">\([2,193 + 2,681] / 5,000\)</span>). Crucially, this
 concordance metric measures agreement specifically within this
 5,000-read sample; it is not derived from a full-dataset confusion
 matrix, should not be extrapolated as proof of identical classification
@@ -1185,16 +1173,16 @@ al. 2022)</span> reported rounded percentage summaries in Figure 3f
 (~43% on-target, ~56% nonspecific, ~1% primer-dimers) without disclosing
 the underlying integer read counts or their internal filtering
 denominator. While our pipeline’s derived post-filter classified
-denominator (<span class="math inline"><em>N</em> = 2, 860, 664</span>)
-yields proportions in close numerical proximity (43.61% / 55.52% /
-0.87%), the original authors’ internal denominator remains unverified.
-We therefore report both our derived post-filter denominator (<span
-class="math inline"><em>N</em> = 2, 860, 664</span>) and the total raw
-sequencer output (<span
-class="math inline"><em>N</em> = 3, 942, 385</span>, across which
-on-target reads represent 31.64%), presenting agreement strictly as
-approximate operational concordance under our documented filtering
-criteria rather than an established identical denominator.</li>
+denominator (<span class="math inline">\(N = 2,860,664\)</span>) yields
+proportions in close numerical proximity (43.61% / 55.52% / 0.87%), the
+original authors’ internal denominator remains unverified. We therefore
+report both our derived post-filter denominator (<span
+class="math inline">\(N = 2,860,664\)</span>) and the total raw
+sequencer output (<span class="math inline">\(N = 3,942,385\)</span>,
+across which on-target reads represent 31.64%), presenting agreement
+strictly as approximate operational concordance under our documented
+filtering criteria rather than an established identical
+denominator.</li>
 <li><strong>Qualified Partial Replication Scope Limitation:</strong>
 This study constitutes an independent <strong>qualified partial
 replication</strong> focused strictly on the empirical validation read
@@ -1222,23 +1210,24 @@ open-source Python workflow, we confirmed that classified reads from the
 SADDLE-designed 384-plex validation panel (Figure 3f) replicate
 published values (~43% on-target, ~56% nonspecific, ~1% primer-dimers).
 On our pipeline’s derived post-filter classified denominator (<span
-class="math inline"><em>N</em> = 2, 860, 664</span>), reads partition
-under primer-pairing classification (Method 1) into 43.86% on-target,
-55.27% nonspecific, and 0.87% primer-dimers. Under genuine gapped
-sequence alignment against assigned target amplicons (Method 2 via
+class="math inline">\(N = 2,860,664\)</span>), reads partition under
+primer-pairing classification (Method 1) into 43.86% on-target, 55.27%
+nonspecific, and 0.87% primer-dimers. Under genuine gapped sequence
+alignment against assigned target amplicons (Method 2 via
 <code>edlib</code>), reads partition into 43.61% on-target (<span
-class="math inline"> ≥ 75%</span> identity) or 42.76% on-target (<span
-class="math inline"> ≥ 80%</span> identity), 55.52% to 56.37%
-nonspecific, and 0.87% primer-dimers (24,878 reads), approximately
-reproducing the published ~43% / ~56% / ~1% figures within 0.61% to
-0.86% absolute difference. Evaluated across all 3,942,385 raw sequencing
-reads, on-target amplicons represent 31.64% of sequencer output. Under
-all criteria and denominators, primer-dimer formation is strictly
-suppressed (0.87% of classified reads, 0.63% of raw reads), confirming
-the core experimental claim of SADDLE. We also corroborated the severe
-heavy-tailed concentration of dimer reads, with a single primer pair
-generating 67.57% of all dimer reads in the verified pair-level
-distribution (16,805 / 24,872 reads in
+class="math inline">\(\ge 75\%\)</span> identity) or 42.76% on-target
+(<span class="math inline">\(\ge 80\%\)</span> identity), 55.52% to
+56.37% nonspecific, and 0.87% primer-dimers (24,878 reads),
+approximately reproducing the published ~43% / ~56% / ~1% figures within
+0.61% to 0.86% absolute difference. Evaluated across all 3,942,385 raw
+sequencing reads, on-target amplicons represent 31.64% of sequencer
+output. Under all criteria and denominators, the observed primer-dimer
+fraction remains low (0.87% of classified reads, 0.63% of raw reads),
+which is consistent with the published experimental finding that the
+SADDLE-designed panel exhibited suppressed dimer formation. We also
+corroborated the severe heavy-tailed concentration of dimer reads, with
+a single primer pair generating 67.57% of all dimer reads in the
+verified pair-level distribution (16,805 / 24,872 reads in
 <code>data/saddle_384_dimer_pairs.tsv</code>). Finally, our
 supplementary exploratory benchmark illustrated the predictive utility
 of the SADDLE Badness heuristic over standard thermodynamics while

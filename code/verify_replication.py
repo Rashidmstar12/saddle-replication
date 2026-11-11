@@ -487,14 +487,19 @@ def run_verification(check_fastq: bool = False, full_fastq: bool = False) -> boo
         test_res = unittest.TestResult()
         suite.run(test_res)
         if test_res.wasSuccessful():
-            print(f"    - Synthetic Classifier Unit Tests: {test_res.testsRun}/{test_res.testsRun} PASS (Gate 1 Engineering Verification)")
+            print(f"    - Synthetic Classifier Unit Tests: {test_res.testsRun}/{test_res.testsRun} PASS (Gate 1 Synthetic Unit Verification)")
         else:
             print(f"FAIL: Synthetic classifier unit tests failed ({len(test_res.errors)} errors, {len(test_res.failures)} failures).", file=sys.stderr)
             return False
     except ImportError:
         pass
 
-    print("  PASS: Primary Replicated Result (NGS read partition, Figure 3f) successfully verified.")
+    if full_fastq:
+        print("  PASS: Primary Replicated Result (NGS read partition, Figure 3f) successfully verified across 3.94M raw reads.")
+    elif check_fastq:
+        print("  PASS: Primary Replicated Result (NGS read partition, Figure 3f) successfully verified on live FASTQ sample.")
+    else:
+        print("  PASS: Archived NGS read partition consistency (Figure 3f) successfully verified.")
 
     # -------------------------------------------------------------------------
     # 2. Verify Empirical Primer Interaction Concentration
@@ -664,7 +669,14 @@ def run_verification(check_fastq: bool = False, full_fastq: bool = False) -> boo
 
     elapsed = time.time() - start_time
     print("\n" + "=" * 78)
-    print(f"FINAL RESULT: ALL RESCIENCE C REPLICATION CHECKS PASSED ({elapsed:.2f} s)")
+    if full_fastq:
+        print(f"FINAL RESULT: FULL FASTQ REPRODUCTION: PASS ({elapsed:.2f} s)")
+    elif check_fastq:
+        print(f"FINAL RESULT: LIVE FASTQ SAMPLE REPRODUCTION: PASS ({elapsed:.2f} s)")
+    else:
+        print(f"FINAL RESULT: ARCHIVED RESULTS CONSISTENCY: PASS ({elapsed:.2f} s)")
+        print("  (Fast check verified archived consistency. To execute full reproduction across")
+        print("   all 3,942,385 raw reads, run: python code/verify_replication.py --full)")
     print("=" * 78)
     return True
 

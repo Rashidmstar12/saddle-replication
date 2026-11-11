@@ -24,7 +24,7 @@ Email: `rashidkadayil@gmail.com`
 Reviewers can verify this computational replication through two independent modalities:
 
 ### Modality A: Fast Standalone Consistency Check (~1.5 Seconds)
-Verifies the complete 295,296-row candidate prediction table, read partitions, label matrices, Brier score calibration, and SHA-256 member checksums without downloading raw FASTQ files. **Requires only Python standard library and standard data science packages (no C-compilers or aligners required)**:
+Verifies the complete 295,296-row candidate prediction table, read partitions, label matrices, Brier score calibration, seven synthetic unit tests, and SHA-256 member checksums without downloading raw FASTQ files (outputs `ARCHIVED RESULTS CONSISTENCY: PASS`). **Requires only Python standard library and standard data science packages (no C-compilers or aligners required)**:
 
 ```bash
 git clone https://github.com/Rashidmstar12/saddle-replication.git
@@ -35,7 +35,7 @@ python code/verify_replication.py
 ```
 
 ### Modality B: Direct Raw FASTQ Execution
-Verifies the classification pipeline directly against raw sequencing reads (Sample E19) using `edlib` and `openpyxl`:
+Verifies the classification pipeline directly against raw sequencing reads (Sample E19) using `edlib` and `openpyxl` (outputs `FULL FASTQ REPRODUCTION: PASS`):
 
 ```bash
 # Prerequisites for raw FASTQ execution:
@@ -46,6 +46,9 @@ python code/reproduce_from_fastq.py --sample 50000
 
 # Complete reconstruction across all 3,942,385 reads (~105 seconds runtime):
 python code/reproduce_from_fastq.py --full
+
+# Full pipeline verification from raw FASTQ through all four check gates:
+python code/verify_replication.py --full
 ```
 *(Requires raw FASTQ files `E19_384plex_NGS_R1_fastq.gz` and `E19_384plex_NGS_R2_fastq.gz` and `41467_2022_29500_MOESM5_ESM.xlsx` in `data/raw/`. When raw files are absent, scripts exit with code 2 `SKIPPED_MISSING_INPUT` rather than falsely claiming PASS).*
 
@@ -113,7 +116,7 @@ saddle-replication/
 │   ├── reconstruct_saddle_384.py  # Full read-classification pipeline from FASTQ
 │   ├── reproduce_from_fastq.py    # Turnkey FASTQ streaming pipeline (--sample or --full)
 │   ├── run_baseline_benchmark.py  # Benchmark evaluation across 295,296 pairs
-│   ├── test_classifiers.py        # Synthetic unit tests for short reads, inputs, and edge cases
+│   ├── test_classifiers.py        # Seven synthetic unit tests for classifier prefix math and simulated edge cases
 │   ├── verify_read_accounting.py  # Mutually exclusive read partition audit
 │   └── verify_replication.py      # Standalone replication verifier (~1.5s runtime)
 └── data/

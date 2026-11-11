@@ -2,16 +2,18 @@
 """
 code/test_classifiers.py
 
-Synthetic Unit & Integration Test Suite for:
+Seven Synthetic Unit Tests for:
 "[Re] Computational Replication of SADDLE: Empirical Next-Generation Sequencing
       Read Partitions and Primer Interaction Distribution in a 384-Plex PCR Panel"
 
 Author: Rashid Kadayil (ORCID: 0009-0009-6398-4557)
 
-Gate 1 Engineering Verification:
-This test suite exercises the canonical primer prefix classifier, historical baseline,
-and FASTQ input parsing safeguards against fixed synthetic fixtures without
-requiring external 914 MB raw sequencing data.
+Gate 1 Synthetic Unit Verification:
+This test suite contains seven synthetic unit tests exercising the canonical primer
+prefix classifier, historical baseline, and simulated input conditions against fixed
+synthetic fixtures. These are isolated unit tests that verify mathematical classification
+edge cases (including the 12/22 bp short-insert denominator discrepancy); they do not
+execute the complete streaming FASTQ production pipeline.
 """
 
 import io
@@ -29,7 +31,7 @@ from canonical_classifier import match_primer_prefix, match_primer_prefix_histor
 
 
 class TestClassifierEquivalenceAndSafeguards(unittest.TestCase):
-    """Synthetic test fixtures testing classification edge cases and data validation."""
+    """Seven synthetic unit tests verifying mathematical classification edge cases and simulated input conditions."""
 
     def setUp(self):
         # Synthetic 22-bp primer
@@ -103,8 +105,8 @@ class TestClassifierEquivalenceAndSafeguards(unittest.TestCase):
 
     def test_paired_fastq_id_synchronization(self):
         """
-        Test Case 5: Paired FASTQ read identifier validation.
-        Synchronized IDs must pass; mismatched IDs must raise ValueError.
+        Test Case 5: Paired FASTQ read identifier validation (synthetic unit check).
+        Compares constructed paired headers; verifies string equality and mismatch detection logic.
         """
         id1_good = "@M04612:271:000000000-CWC2J:1:1101:16920:1534 1:N:0:1"
         id2_good = "@M04612:271:000000000-CWC2J:1:1101:16920:1534 2:N:0:1"
@@ -120,8 +122,8 @@ class TestClassifierEquivalenceAndSafeguards(unittest.TestCase):
 
     def test_missing_reference_amplicon_fail_closed(self):
         """
-        Test Case 6: Missing reference amplicon sequence.
-        When target amplicon is absent from reference dictionary, read must NOT be classified as on-target.
+        Test Case 6: Missing reference amplicon dictionary lookup (synthetic unit check).
+        Verifies that an unmapped target amplicon key is absent from the reference mapping.
         """
         ref_amplicons = {0: "ACGTACGTACGTACGTACGT"}
         # Target amplicon index 99 is missing from dictionary
@@ -133,7 +135,7 @@ class TestClassifierEquivalenceAndSafeguards(unittest.TestCase):
         )
 
     def test_adapter_prefix_detection(self):
-        """Test Case 7: Illumina TruSeq adapter prefix trimming."""
+        """Test Case 7: Illumina TruSeq adapter prefix trimming (synthetic unit check)."""
         f_adp = "AGATCGGAAGAGCACAC"
         r_adp = "AGATCGGAAGAGCGTCG"
         r1_seq = "ACGTACGTACGT" + f_adp + "TTTTTT"
@@ -159,7 +161,7 @@ def run_tests():
     result = runner.run(suite)
     if not result.wasSuccessful():
         sys.exit(1)
-    print("\nALL CLASSIFIER AND INPUT SAFEGUARD UNIT TESTS PASSED (Gate 1 PASS).")
+    print("\nALL SEVEN SYNTHETIC UNIT TESTS PASSED (Gate 1 PASS).")
 
 
 if __name__ == "__main__":

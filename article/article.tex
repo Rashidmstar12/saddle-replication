@@ -88,39 +88,6 @@
 \providecommand{\tightlist}{%
   \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
 \setcounter{secnumdepth}{-\maxdimen} % remove section numbering
-% definitions for citeproc citations
-\NewDocumentCommand\citeproctext{}{}
-\NewDocumentCommand\citeproc{mm}{%
-  \begingroup\def\citeproctext{#2}\cite{#1}\endgroup}
-\makeatletter
- % allow citations to break across lines
- \let\@cite@ofmt\@firstofone
- % avoid brackets around text for \cite:
- \def\@biblabel#1{}
- \def\@cite#1#2{{#1\if@tempswa , #2\fi}}
-\makeatother
-\newlength{\cslhangindent}
-\setlength{\cslhangindent}{1.5em}
-\newlength{\csllabelwidth}
-\setlength{\csllabelwidth}{3em}
-\newenvironment{CSLReferences}[2] % #1 hanging-indent, #2 entry-spacing
- {\begin{list}{}{%
-  \setlength{\itemindent}{0pt}
-  \setlength{\leftmargin}{0pt}
-  \setlength{\parsep}{0pt}
-  % turn on hanging indent if param 1 is 1
-  \ifodd #1
-   \setlength{\leftmargin}{\cslhangindent}
-   \setlength{\itemindent}{-1\cslhangindent}
-  \fi
-  % set entry spacing
-  \setlength{\itemsep}{#2\baselineskip}}}
- {\end{list}}
-\usepackage{calc}
-\newcommand{\CSLBlock}[1]{\hfill\break\parbox[t]{\linewidth}{\strut\ignorespaces#1\strut}}
-\newcommand{\CSLLeftMargin}[1]{\parbox[t]{\csllabelwidth}{\strut#1\strut}}
-\newcommand{\CSLRightInline}[1]{\parbox[t]{\linewidth - \csllabelwidth}{\strut#1\strut}}
-\newcommand{\CSLIndent}[1]{\hspace{\cslhangindent}#1}
 \ifLuaTeX
   \usepackage{selnolig}  % disable illegal ligatures
 \fi
@@ -129,13 +96,14 @@
 \urlstyle{same}
 \hypersetup{
   pdftitle={{[}Re{]} Computational Replication of SADDLE: Empirical Next-Generation Sequencing Read Partitions and Primer Interaction Distribution in a 384-Plex PCR Panel},
+  pdfauthor={Rashid Kadayil},
   hidelinks,
   pdfcreator={LaTeX via pandoc}}
 
 \title{{[}Re{]} Computational Replication of SADDLE: Empirical
 Next-Generation Sequencing Read Partitions and Primer Interaction
 Distribution in a 384-Plex PCR Panel}
-\author{true}
+\author{Rashid Kadayil}
 \date{2026-11-10}
 
 \begin{document}
@@ -197,8 +165,8 @@ are openly accessible under permissive licenses.
 Multiplex PCR simultaneously amplifies dozens to hundreds of genomic
 loci within a single reaction volume, serving as an essential
 preparation step for targeted clinical diagnostics, comprehensive cancer
-hotspot panels, and metagenomic surveillance (Untergasser et al. 2012;
-Chen et al. 2026). However, scaling multiplex PCR beyond small panels is
+hotspot panels, and metagenomic surveillance {[}@untergasser2012primer3;
+@chen2026prism{]}. However, scaling multiplex PCR beyond small panels is
 fundamentally constrained by pairwise primer-primer cross-hybridization.
 For a panel targeting \(N\) amplicons, \(2N\) distinct primer
 oligonucleotides are pooled, yielding:
@@ -209,27 +177,27 @@ possible pairwise interaction combinations (including homodimer and
 self-interactions). Minor sequence complementarity---specifically when
 aligned at the extensible 3' terminus---enables DNA polymerase
 extension, producing short artifactual amplicons termed primer-dimers
-(Xie et al. 2022). Due to their substantially smaller size relative to
-target genomic amplicons, primer-dimers amplify with high kinetic
-efficiency, rapidly exhausting enzymatic reagents and saturating
+{[}@xie2022designing{]}. Due to their substantially smaller size
+relative to target genomic amplicons, primer-dimers amplify with high
+kinetic efficiency, rapidly exhausting enzymatic reagents and saturating
 sequencing libraries.
 
 To mitigate this quadratically increasing interaction burden, Xie et al.
-(2022) introduced SADDLE (\textbf{S}imulated \textbf{A}nnealing
-\textbf{D}esign using \textbf{D}imer \textbf{L}ikelihood
-\textbf{E}stimation), proposing an empirical biophysical scoring
-heuristic called \emph{Badness} to quantify 3'-directed extensible
-hybridization and using simulated annealing optimization to partition
-multiplex primer pools into compatible sub-pools. In their 96-plex
-experimental optimization (Figures 3a--3c), the authors demonstrated
-that primer-dimer reads dropped from 90.7\% in a naively designed pool
-(PS1) to 4.9\% in an optimized pool (PS3). Scaling the technology to
-higher multiplexing, the authors designed and experimentally tested a
-\textbf{384-plex primer set designed by SADDLE (768 primers; Sample
-E19)}. In \textbf{Figure 3f} and the accompanying text, the authors
-reported that the sequencing library of this 384-plex panel achieved
-high on-target specificity (\textasciitilde43\%) and low primer-dimer
-formation (\textasciitilde1\%), with the remaining reads
+{[}-@xie2022designing{]} introduced SADDLE (\textbf{S}imulated
+\textbf{A}nnealing \textbf{D}esign using \textbf{D}imer
+\textbf{L}ikelihood \textbf{E}stimation), proposing an empirical
+biophysical scoring heuristic called \emph{Badness} to quantify
+3'-directed extensible hybridization and using simulated annealing
+optimization to partition multiplex primer pools into compatible
+sub-pools. In their 96-plex experimental optimization (Figures 3a--3c),
+the authors demonstrated that primer-dimer reads dropped from 90.7\% in
+a naively designed pool (PS1) to 4.9\% in an optimized pool (PS3).
+Scaling the technology to higher multiplexing, the authors designed and
+experimentally tested a \textbf{384-plex primer set designed by SADDLE
+(768 primers; Sample E19)}. In \textbf{Figure 3f} and the accompanying
+text, the authors reported that the sequencing library of this 384-plex
+panel achieved high on-target specificity (\textasciitilde43\%) and low
+primer-dimer formation (\textasciitilde1\%), with the remaining reads
 (\textasciitilde56\%) representing nonspecific background products
 formed by non-cognate primer pairings.
 
@@ -244,7 +212,7 @@ and Bowtie2 index files), with raw sequencing data deposited under CC BY
 external Bowtie2 installation configured on Linux/macOS. Furthermore,
 SADDLE's simulated annealing primer pool design software was withheld
 under intellectual property and patent protection (``available upon
-request for non-commercial academic use'' (Xie et al. 2022)). 2.
+request for non-commercial academic use'' {[}@xie2022designing{]}). 2.
 \textbf{Independent Verification of Empirical Partitions:} While the
 authors published rounded percentage summaries in Figure 3f of their
 manuscript (\textasciitilde43\% on-target, \textasciitilde56\%
@@ -253,38 +221,38 @@ open-source replication of the read-accounting pipeline operating
 directly on the raw FASTQ data in a standalone, turnkey environment has
 not been formally documented.
 
-In this ReScience C article (Rougier et al. 2017), we report an
+In this ReScience C article {[}@rougier2017sustainable{]}, we report an
 independent \textbf{qualified partial replication and alternative Python
 reanalysis} focused on the empirical validation analysis of Xie et al.
-(2022): - \textbf{Primary Replication Objective:} Does an alternative
-open-source Python workflow replicate the published read classification
-proportions (\textasciitilde43\% on-target, \textasciitilde56\%
-nonspecific, \textasciitilde1\% primer-dimer) across all 3,942,385 raw
-paired-end reads of the SADDLE 384-plex validation panel (Sample E19,
-Figure 3f), and does it reproduce the extreme heavy-tailed concentration
-of primer-dimer reads? - \textbf{Implementation Mapping \& Disclosures:}
-How does this standalone Python reconstruction differ from the original
-authors' MATLAB scripts (\texttt{Data\_process.m},
-\texttt{Dimer\_Identify.m}) and Bowtie2 workflow, and what are the
-specific algorithmic approximations? - \textbf{Supplementary Exploratory
-Analysis:} In a secondary analysis clearly distinguished from the
-primary replication claim, how well does the SADDLE Badness heuristic
-rank observed dimer events compared to standard nearest-neighbor
-thermodynamics (\(-\Delta G_{37}^\circ\)) and supervised machine
-learning models?
+{[}-@xie2022designing{]}: - \textbf{Primary Replication Objective:} Does
+an alternative open-source Python workflow replicate the published read
+classification proportions (\textasciitilde43\% on-target,
+\textasciitilde56\% nonspecific, \textasciitilde1\% primer-dimer) across
+all 3,942,385 raw paired-end reads of the SADDLE 384-plex validation
+panel (Sample E19, Figure 3f), and does it reproduce the extreme
+heavy-tailed concentration of primer-dimer reads? -
+\textbf{Implementation Mapping \& Disclosures:} How does this standalone
+Python reconstruction differ from the original authors' MATLAB scripts
+(\texttt{Data\_process.m}, \texttt{Dimer\_Identify.m}) and Bowtie2
+workflow, and what are the specific algorithmic approximations? -
+\textbf{Supplementary Exploratory Analysis:} In a secondary analysis
+clearly distinguished from the primary replication claim, how well does
+the SADDLE Badness heuristic rank observed dimer events compared to
+standard nearest-neighbor thermodynamics (\(-\Delta G_{37}^\circ\)) and
+supervised machine learning models?
 
 \section{Original Work and Artifact
 Audit}\label{original-work-and-artifact-audit}
 
-The original study by Xie et al. (2022) was published in \emph{Nature
-Communications} (Volume 13, Article 1881; PMID: 35410464). Primer
-sequences, genomic coordinates, and assay details were provided in
-Supplementary Data (MOESM5). The raw paired-end sequencing reads for the
-384-plex validation panel (Sample E19, Illumina MiSeq paired-end
-sequencing using MiSeq Reagent Kit v2) were deposited on Figshare (DOI:
-10.6084/m9.figshare.16944154.v3) under a Creative Commons Attribution
-4.0 International license (CC BY 4.0), while analysis scripts
-(\texttt{Data\_process.m}, \texttt{Dimer\_Identify.m},
+The original study by Xie et al. {[}-@xie2022designing{]} was published
+in \emph{Nature Communications} (Volume 13, Article 1881; PMID:
+35410464). Primer sequences, genomic coordinates, and assay details were
+provided in Supplementary Data (MOESM5). The raw paired-end sequencing
+reads for the 384-plex validation panel (Sample E19, Illumina MiSeq
+paired-end sequencing using MiSeq Reagent Kit v2) were deposited on
+Figshare (DOI: 10.6084/m9.figshare.16944154.v3) under a Creative Commons
+Attribution 4.0 International license (CC BY 4.0), while analysis
+scripts (\texttt{Data\_process.m}, \texttt{Dimer\_Identify.m},
 \texttt{analysis\_code.ipynb}) were made publicly available through
 GitHub and Figshare.
 
@@ -299,8 +267,8 @@ scripts (\texttt{analysis\_code.ipynb}, \texttt{Data\_process.m},
 \texttt{Dimer\_Identify.m}) and Bowtie2 reference indices publicly
 available on GitHub and Figshare. The pipeline trims Illumina adapters,
 filters reads by Phred quality and length, aligns reads to intended
-reference amplicons using Bowtie2 (Langmead and Salzberg 2012), matches
-5' primer sequences via an 8-base hash lookup, and classifies reads with
+reference amplicons using Bowtie2 {[}@langmead2012fast{]}, matches 5'
+primer sequences via an 8-base hash lookup, and classifies reads with
 insert lengths strictly shorter than \(L_1 + L_2 - 2\) bp as
 primer-dimers. - \textbf{Raw Data Completeness:} The Figshare repository
 contains the complete 3,942,385 raw paired-end reads for Sample E19
@@ -438,8 +406,8 @@ method avoids external aligner dependencies. - \textbf{Method 2
 (Cognate-Anchored Gapped Sequence Alignment via edlib):} In addition to
 cognate primer matching, the insert sequence is aligned directly against
 the intended full-length reference amplicon sequence extracted from
-Supplementary Data MOESM5 (Xie et al. 2022) using the open-source
-\texttt{edlib} C/Python library (Šošić and Šikić 2017) (Myers' exact
+Supplementary Data MOESM5 {[}@xie2022designing{]} using the open-source
+\texttt{edlib} C/Python library {[}@sosic2017edlib{]} (Myers' exact
 bit-vector semi-global alignment with indels and substitutions,
 \texttt{mode=\textquotesingle{}SHW\textquotesingle{}}). Reads achieving
 semi-global edit distance similarity \(\ge 75\%\) or \(\ge 80\%\)
@@ -482,8 +450,9 @@ eligibility rules. Neither accounting alters the rounded 0.87\% dimer
 fraction).}
 
 Table 2 compares the classified read proportions directly against the
-published findings in Figure 3f and the main text of Xie et al. (2022)
-across all evaluation methodologies and denominators.
+published findings in Figure 3f and the main text of Xie et al.
+{[}-@xie2022designing{]} across all evaluation methodologies and
+denominators.
 
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1429}}
@@ -516,7 +485,7 @@ Method 2: edlib Gapped (\(\ge 80\%\)) Count (\% Classified)
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
 \% of Total Raw Reads (\(N = 3,942,385\))
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-Published SADDLE Figure 3f (Xie et al. 2022)
+Published SADDLE Figure 3f {[}@xie2022designing{]}
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
 Replication Status
 \end{minipage} \\
@@ -534,7 +503,7 @@ Method 2: edlib Gapped (\(\ge 80\%\)) Count (\% Classified)
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
 \% of Total Raw Reads (\(N = 3,942,385\))
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-Published SADDLE Figure 3f (Xie et al. 2022)
+Published SADDLE Figure 3f {[}@xie2022designing{]}
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
 Replication Status
 \end{minipage} \\
@@ -567,28 +536,28 @@ Insights}\label{biological-and-methodological-insights}
 \tightlist
 \item
   \textbf{Derived Preprocessing Denominator and Read Partitioning:} In
-  Figure 3f of Xie et al. (2022), published proportions
-  (\textasciitilde43\% on-target, \textasciitilde56\% nonspecific,
-  \textasciitilde1\% primer-dimers) sum to 100\%, but the original
-  publication did not disclose the underlying integer read count or
-  filtering denominator. We report two transparent denominators: (a) our
-  pipeline's derived post-filter classified denominator
-  (\(N = 2,860,664\) read pairs), after filtering 27.44\% unclassifiable
-  reads (19.07\% missing adapters, 3.48\% low quality/short, 4.90\%
-  unmatched primers), which yields on-target (43.61\% for Method 2,
-  43.86\% for Method 1), nonspecific (55.27\%--55.52\%), and
-  primer-dimer (0.87\%) fractions in approximate agreement with the
-  published values within a 1.0 percentage point scientific tolerance
-  (differences of +0.61\% and +0.86\% on-target); and (b) the total raw
-  sequencer output (\(N = 3,942,385\) read pairs), across which
-  on-target amplicons represent 31.64\% to 31.82\%, nonspecific products
-  represent 40.11\% to 40.29\%, primer-dimers represent 0.63\%, and
-  excluded reads represent 27.44\%. We do not present the original
-  denominator as established, but rather report this derived post-filter
-  denominator as an approximate operational alignment under our
-  filtering criteria. Both denominators are fully documented in
-  \texttt{data/reference\_alignment\_comparison.json} and the execution
-  audit logs.
+  Figure 3f of Xie et al. {[}-@xie2022designing{]}, published
+  proportions (\textasciitilde43\% on-target, \textasciitilde56\%
+  nonspecific, \textasciitilde1\% primer-dimers) sum to 100\%, but the
+  original publication did not disclose the underlying integer read
+  count or filtering denominator. We report two transparent
+  denominators: (a) our pipeline's derived post-filter classified
+  denominator (\(N = 2,860,664\) read pairs), after filtering 27.44\%
+  unclassifiable reads (19.07\% missing adapters, 3.48\% low
+  quality/short, 4.90\% unmatched primers), which yields on-target
+  (43.61\% for Method 2, 43.86\% for Method 1), nonspecific
+  (55.27\%--55.52\%), and primer-dimer (0.87\%) fractions in approximate
+  agreement with the published values within a 1.0 percentage point
+  scientific tolerance (differences of +0.61\% and +0.86\% on-target);
+  and (b) the total raw sequencer output (\(N = 3,942,385\) read pairs),
+  across which on-target amplicons represent 31.64\% to 31.82\%,
+  nonspecific products represent 40.11\% to 40.29\%, primer-dimers
+  represent 0.63\%, and excluded reads represent 27.44\%. We do not
+  present the original denominator as established, but rather report
+  this derived post-filter denominator as an approximate operational
+  alignment under our filtering criteria. Both denominators are fully
+  documented in \texttt{data/reference\_alignment\_comparison.json} and
+  the execution audit logs.
 \item
   \textbf{Invariance of Primer-Dimer Suppression:} Under all
   classification definitions and denominators, primer-dimer formation
@@ -713,8 +682,8 @@ Insights}\label{biological-and-methodological-insights}
 \item
   \textbf{Replication Scope and Framework Framing:} This study is an
   independent, open-source \textbf{qualified partial replication and
-  alternative Python reanalysis}. In the original publication (Xie et
-  al. 2022), reads were processed using MATLAB scripts
+  alternative Python reanalysis}. In the original publication
+  {[}@xie2022designing{]}, reads were processed using MATLAB scripts
   (\texttt{Data\_process.m}, \texttt{Dimer\_Identify.m}) and Bowtie2. In
   our standalone Python workflow, we reconstruct the core classification
   logic using open-source tools: core adapter prefix trimming,
@@ -761,17 +730,17 @@ majority of artifactual reads.
 Benchmarking}\label{supplementary-exploratory-analysis-heuristic-and-baseline-benchmarking}
 
 \emph{Note: The following benchmark was not published by Xie et al.
-(2022). It is conducted here as a secondary exploration to evaluate how
-the biophysical SADDLE Badness heuristic and machine learning models
-correlate with empirical dimer labels derived from Sample E19 across all
-295,296 candidate primer pairs.}
+{[}-@xie2022designing{]}. It is conducted here as a secondary
+exploration to evaluate how the biophysical SADDLE Badness heuristic and
+machine learning models correlate with empirical dimer labels derived
+from Sample E19 across all 295,296 candidate primer pairs.}
 
 \subsection{Formulation of SADDLE Badness and
 Baselines}\label{formulation-of-saddle-badness-and-baselines}
 
-In Xie et al. (2022), Badness is calculated over maximal continuous
-complementary matches of length \(\ge 4\) bp between primers \(P_1\) and
-\(P_2\):
+In Xie et al. {[}-@xie2022designing{]}, Badness is calculated over
+maximal continuous complementary matches of length \(\ge 4\) bp between
+primers \(P_1\) and \(P_2\):
 
 \[\text{Badness}(P_1, P_2) = \sum_{k \in \mathcal{M}} 2^{\text{len}_k} \cdot 2^{\text{numGC}_k} \cdot \frac{1}{(d_1^{(k)} + 1)(d_2^{(k)} + 1)}\]
 
@@ -783,12 +752,12 @@ bp heuristic variant.
 We compare Badness against: 1. \textbf{SantaLucia Thermodynamics
 (\(-\Delta G\)):} Approximate nearest-neighbor hybridization free-energy
 score based on standard 37 °C parameters (\(\Delta G_{37}^\circ\))
-(SantaLucia 1998). 2. \textbf{Logistic Regression (Augmented Features):}
-L2-regularized linear model trained on thermodynamic free energy
-(\(\Delta G_{37}^\circ\)), terminal 3' hybridization, match lengths, GC
-content, and the approximate SADDLE-style Badness heuristic score. 3.
-\textbf{XGBoost (Augmented Features):} Gradient boosted decision tree
-ensemble trained on the exact same augmented feature set
+{[}@santalucia1998unified{]}. 2. \textbf{Logistic Regression (Augmented
+Features):} L2-regularized linear model trained on thermodynamic free
+energy (\(\Delta G_{37}^\circ\)), terminal 3' hybridization, match
+lengths, GC content, and the approximate SADDLE-style Badness heuristic
+score. 3. \textbf{XGBoost (Augmented Features):} Gradient boosted
+decision tree ensemble trained on the exact same augmented feature set
 (thermodynamics, alignment features, and approximate SADDLE-style
 Badness).
 
@@ -945,7 +914,7 @@ Benchmarking}\label{findings-from-supplementary-benchmarking}
     \emph{Method 2 (Genuine Gapped Sequence Alignment via edlib):}
     Performs Myers' exact bit-vector semi-global sequence alignment
     against the assigned cognate reference amplicon from Supplementary
-    Data MOESM5 (Xie et al. 2022). At \(\ge 75\%\) identity, reads
+    Data MOESM5 {[}@xie2022designing{]}. At \(\ge 75\%\) identity, reads
     partition into 43.61\% on-target, 55.52\% nonspecific, and 0.87\%
     primer-dimers (difference = +0.61\% on-target). At \(\ge 80\%\)
     identity, reads partition into 42.76\% on-target, 56.37\%
@@ -966,7 +935,7 @@ Benchmarking}\label{findings-from-supplementary-benchmarking}
     across all alignment methods.
   \item
     \emph{Alignment Scope and Concordance:} In the original SADDLE
-    publication (Xie et al. 2022), on-target reads were aligned to
+    publication {[}@xie2022designing{]}, on-target reads were aligned to
     intended amplicon sequences using Bowtie2 in MATLAB. In our
     lightweight, turnkey Python implementation, Method 2 executes
     cognate-anchored semi-global gapped alignment (\texttt{edlib},
@@ -988,14 +957,14 @@ Benchmarking}\label{findings-from-supplementary-benchmarking}
     the original Bowtie2 amplicon mapping workflow.
   \end{itemize}
 \item
-  \textbf{Preprocessing Denominators:} The original publication (Xie et
-  al. 2022) reported rounded percentage summaries in Figure 3f
-  (\textasciitilde43\% on-target, \textasciitilde56\% nonspecific,
-  \textasciitilde1\% primer-dimers) without disclosing the underlying
-  integer read counts or their internal filtering denominator. While our
-  pipeline's derived post-filter classified denominator
-  (\(N = 2,860,664\)) yields proportions in close numerical proximity
-  (43.61\% / 55.52\% / 0.87\%), the original authors' internal
+  \textbf{Preprocessing Denominators:} The original publication
+  {[}@xie2022designing{]} reported rounded percentage summaries in
+  Figure 3f (\textasciitilde43\% on-target, \textasciitilde56\%
+  nonspecific, \textasciitilde1\% primer-dimers) without disclosing the
+  underlying integer read counts or their internal filtering
+  denominator. While our pipeline's derived post-filter classified
+  denominator (\(N = 2,860,664\)) yields proportions in close numerical
+  proximity (43.61\% / 55.52\% / 0.87\%), the original authors' internal
   denominator remains unverified. We therefore report both our derived
   post-filter denominator (\(N = 2,860,664\)) and the total raw
   sequencer output (\(N = 3,942,385\), across which on-target reads
@@ -1027,25 +996,27 @@ Benchmarking}\label{findings-from-supplementary-benchmarking}
 \section{Conclusion}\label{conclusion}
 
 We have performed an independent \textbf{qualified partial computational
-replication} of the empirical NGS validation results from SADDLE (Xie et
-al. 2022). Using an open-source Python workflow, we confirmed that
-classified reads from the SADDLE-designed 384-plex validation panel
-(Figure 3f) replicate published values (\textasciitilde43\% on-target,
-\textasciitilde56\% nonspecific, \textasciitilde1\% primer-dimers). On
-our pipeline's derived post-filter classified denominator
-(\(N = 2,860,664\)), reads partition under primer-pairing classification
-(Method 1) into 43.86\% on-target, 55.27\% nonspecific, and 0.87\%
-primer-dimers. Under genuine gapped sequence alignment against assigned
-target amplicons (Method 2 via \texttt{edlib}), reads partition into
-43.61\% on-target (\(\ge 75\%\) identity) or 42.76\% on-target
-(\(\ge 80\%\) identity), 55.52\% to 56.37\% nonspecific, and 0.87\%
-primer-dimers (24,878 reads), approximately reproducing the published
-\textasciitilde43\% / \textasciitilde56\% / \textasciitilde1\% figures
-within 0.61\% to 0.86\% absolute difference. Evaluated across all
-3,942,385 raw sequencing reads, on-target amplicons represent 31.64\% of
-sequencer output. Under all criteria and denominators, primer-dimer
-formation is strictly suppressed (0.87\% of classified reads, 0.63\% of
-raw reads), confirming the core experimental claim of SADDLE. We also
+replication} of the empirical NGS validation results from SADDLE
+{[}@xie2022designing{]}. Using an open-source Python workflow, we
+confirmed that classified reads from the SADDLE-designed 384-plex
+validation panel (Figure 3f) replicate published values
+(\textasciitilde43\% on-target, \textasciitilde56\% nonspecific,
+\textasciitilde1\% primer-dimers). On our pipeline's derived post-filter
+classified denominator (\(N = 2,860,664\)), reads partition under
+primer-pairing classification (Method 1) into 43.86\% on-target, 55.27\%
+nonspecific, and 0.87\% primer-dimers. Under genuine gapped sequence
+alignment against assigned target amplicons (Method 2 via
+\texttt{edlib}), reads partition into 43.61\% on-target (\(\ge 75\%\)
+identity) or 42.76\% on-target (\(\ge 80\%\) identity), 55.52\% to
+56.37\% nonspecific, and 0.87\% primer-dimers (24,878 reads),
+approximately reproducing the published \textasciitilde43\% /
+\textasciitilde56\% / \textasciitilde1\% figures within 0.61\% to 0.86\%
+absolute difference. Evaluated across all 3,942,385 raw sequencing
+reads, on-target amplicons represent 31.64\% of sequencer output. Under
+all criteria and denominators, the observed primer-dimer fraction
+remains low (0.87\% of classified reads, 0.63\% of raw reads), which is
+consistent with the published experimental finding that the
+SADDLE-designed panel exhibited suppressed dimer formation. We also
 corroborated the severe heavy-tailed concentration of dimer reads, with
 a single primer pair generating 67.57\% of all dimer reads in the
 verified pair-level distribution (16,805 / 24,872 reads in
@@ -1065,8 +1036,8 @@ the public replication repository.
   \textbf{GitHub Repository:}
   \url{https://github.com/Rashidmstar12/saddle-replication}
 \item
-  \textbf{Zenodo Deposit:} (Kadayil 2026,
-  https://doi.org/10.5281/zenodo.24100087)
+  \textbf{Zenodo Deposit:} {[}@kadayil2026saddle,
+  https://doi.org/10.5281/zenodo.24100087{]}
 \item
   \textbf{Primary Data Source:} Figshare (DOI:
   \href{https://doi.org/10.6084/m9.figshare.16944154.v3}{10.6084/m9.figshare.16944154.v3},
@@ -1096,60 +1067,6 @@ files:
 \end{Highlighting}
 \end{Shaded}
 
-\section*{References}\label{references}
-\addcontentsline{toc}{section}{References}
-
-\phantomsection\label{refs}
-\begin{CSLReferences}{1}{0}
-\bibitem[\citeproctext]{ref-chen2026prism}
-Chen, Yixin, Yunheng Han, Ao Wang, Aaron Hong, Adam R. Rivers, Alan
-Kuhnle, and Christina Boucher. 2026. {``Primer Design Through Submodular
-Function Estimation.''} \emph{Bioinformatics} 42 (7): btag478.
-\url{https://doi.org/10.1093/bioinformatics/btag478}.
-
-\bibitem[\citeproctext]{ref-kadayil2026saddle}
-Kadayil, Rashid. 2026. {``{{[}Re{]}} Computational Replication of
-{SADDLE}: Empirical Next-Generation Sequencing Read Partitions and
-Primer Interaction Distribution in a 384-Plex {PCR} Panel.''} Zenodo.
-\url{https://doi.org/10.5281/zenodo.24100087}.
-
-\bibitem[\citeproctext]{ref-langmead2012fast}
-Langmead, Ben, and Steven L. Salzberg. 2012. {``Fast Gapped-Read
-Alignment with {Bowtie} 2.''} \emph{Nature Methods} 9 (4): 357--59.
-\url{https://doi.org/10.1038/nmeth.1923}.
-
-\bibitem[\citeproctext]{ref-rougier2017sustainable}
-Rougier, Nicolas P., Konrad Hinsen, Frédéric Alexandre, Thomas Arildsen,
-Lorena A. Barba, Fabien C. Y. Benureau, et al. 2017. {``Sustainable
-Computational Science: The {ReScience} Initiative.''} \emph{PeerJ
-Computer Science} 3: e142. \url{https://doi.org/10.7717/peerj-cs.142}.
-
-\bibitem[\citeproctext]{ref-santalucia1998unified}
-SantaLucia, John, Jr. 1998. {``A Unified View of Polymer, Dumbbell, and
-Oligonucleotide {DNA} Nearest-Neighbor Thermodynamics.''}
-\emph{Proceedings of the National Academy of Sciences} 95 (4): 1460--65.
-\url{https://doi.org/10.1073/pnas.95.4.1460}.
-
-\bibitem[\citeproctext]{ref-sosic2017edlib}
-Šošić, Martin, and Mile Šikić. 2017. {``Edlib: A {C}/{C}++ Library for
-Fast, Exact Sequence Alignment Using Edit Distance.''}
-\emph{Bioinformatics} 33 (9): 1394--95.
-\url{https://doi.org/10.1093/bioinformatics/btw753}.
-
-\bibitem[\citeproctext]{ref-untergasser2012primer3}
-Untergasser, Andreas, Ioana Cutcutache, Triinu Koressaar, Jian Ye, Brant
-C. Faircloth, Maido Remm, and Steven G. Rozen. 2012. {``{Primer3}---New
-Capabilities and Interfaces.''} \emph{Nucleic Acids Research} 40 (15):
-e115. \url{https://doi.org/10.1093/nar/gks596}.
-
-\bibitem[\citeproctext]{ref-xie2022designing}
-Xie, Nina G., Michael X. Wang, Ping Song, Shiqi Mao, Yifan Wang, Yuxia
-Yang, Junfeng Luo, Shengxiang Ren, and David Yu Zhang. 2022.
-{``Designing Highly Multiplex {PCR} Primer Sets with {Simulated}
-{Annealing} {Design} Using {Dimer} {Likelihood} {Estimation}
-({SADDLE}).''} \emph{Nature Communications} 13 (1): 1881.
-\url{https://doi.org/10.1038/s41467-022-29500-4}.
-
-\end{CSLReferences}
+\section{References}\label{references}
 
 \end{document}
