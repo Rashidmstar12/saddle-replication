@@ -42,6 +42,13 @@ from pathlib import Path
 import numpy as np
 from sklearn.metrics import roc_auc_score, average_precision_score, brier_score_loss
 
+# Add code directory to path for canonical classifier import
+CODE_DIR = Path(__file__).resolve().parent
+if str(CODE_DIR) not in sys.path:
+    sys.path.insert(0, str(CODE_DIR))
+
+from canonical_classifier import match_primer_prefix
+
 def sha256_file(path: Path) -> str:
     h = hashlib.sha256()
     with open(path, "rb") as f:
@@ -178,17 +185,8 @@ def test_fastq_pipeline(base_dir: Path, n_reads: int = 50000) -> bool:
                 excluded += 1
                 continue
 
-            best1, best2 = None, None
-            for pid in prefix_map.get(t1[:8], []):
-                pseq = all_primers[pid][1]
-                chk = min(len(pseq), len(t1))
-                if chk >= 8 and sum(1 for a, b in zip(t1[:chk], pseq[:chk]) if a == b) / chk > 0.6:
-                    best1 = pid; break
-            for pid in prefix_map.get(t2[:8], []):
-                pseq = all_primers[pid][1]
-                chk = min(len(pseq), len(t2))
-                if chk >= 8 and sum(1 for a, b in zip(t2[:chk], pseq[:chk]) if a == b) / chk > 0.6:
-                    best2 = pid; break
+            best1 = match_primer_prefix(t1, prefix_map.get(t1[:8], []), all_primers)
+            best2 = match_primer_prefix(t2, prefix_map.get(t2[:8], []), all_primers)
             if best1 is None or best2 is None:
                 excluded += 1
                 continue
@@ -480,6 +478,21 @@ def run_verification(check_fastq: bool = False, full_fastq: bool = False) -> boo
         if cigar_recs != rec_cnt:
             print(f"FAIL: Preserved CIGAR records ({cigar_recs}) do not match recovered reads ({rec_cnt}).", file=sys.stderr)
             return False
+
+    # Gate 1 Synthetic Unit Test Fixture Verification
+    try:
+        import unittest
+        from test_classifiers import TestClassifierEquivalenceAndSafeguards
+        suite = unittest.TestLoader().loadTestsFromTestCase(TestClassifierEquivalenceAndSafeguards)
+        test_res = unittest.TestResult()
+        suite.run(test_res)
+        if test_res.wasSuccessful():
+            print(f"    - Synthetic Classifier Unit Tests: {test_res.testsRun}/{test_res.testsRun} PASS (Gate 1 Engineering Verification)")
+        else:
+            print(f"FAIL: Synthetic classifier unit tests failed ({len(test_res.errors)} errors, {len(test_res.failures)} failures).", file=sys.stderr)
+            return False
+    except ImportError:
+        pass
 
     print("  PASS: Primary Replicated Result (NGS read partition, Figure 3f) successfully verified.")
 

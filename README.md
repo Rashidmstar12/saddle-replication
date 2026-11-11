@@ -109,9 +109,11 @@ saddle-replication/
 ├── code/
 │   ├── audit_alignment_and_indels.py # Empirical dual-strand 384-target concordance & CIGAR audit
 │   ├── audit_code_equivalence.py  # Structural comparison between MATLAB and Python logic
+│   ├── canonical_classifier.py    # Authoritative single-source-of-truth primer prefix classifier
 │   ├── reconstruct_saddle_384.py  # Full read-classification pipeline from FASTQ
 │   ├── reproduce_from_fastq.py    # Turnkey FASTQ streaming pipeline (--sample or --full)
 │   ├── run_baseline_benchmark.py  # Benchmark evaluation across 295,296 pairs
+│   ├── test_classifiers.py        # Synthetic unit tests for short reads, inputs, and edge cases
 │   ├── verify_read_accounting.py  # Mutually exclusive read partition audit
 │   └── verify_replication.py      # Standalone replication verifier (~1.5s runtime)
 └── data/

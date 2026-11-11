@@ -7,14 +7,23 @@ across all 3,942,385 raw paired-end sequencing reads of SADDLE 384-plex (E19).
 Reconciles every exclusion reason with original SADDLE analysis logic.
 """
 
+import sys
 import gzip
 import json
 import time
+import argparse
 from pathlib import Path
 import openpyxl
 
+# Add code directory to path for canonical classifier import
+CODE_DIR = Path(__file__).resolve().parent
+if str(CODE_DIR) not in sys.path:
+    sys.path.insert(0, str(CODE_DIR))
+
+from canonical_classifier import match_primer_prefix, match_primer_prefix_historical
+
 ROOT = Path(__file__).resolve().parent.parent
-RAW_DIR = ROOT / "data" / "raw" if (ROOT / "data" / "raw").exists() else (ROOT.parent / "data" / "raw" if (ROOT.parent / "data" / "raw").exists() else ROOT / "raw")
+RAW_DIR = ROOT / "data" / "raw" if (ROOT / "data" / "raw").exists() else ROOT / "raw"
 DERIVED_DIR = ROOT / "data" / "derived" if (ROOT / "data" / "derived").exists() else ROOT / "data"
 
 FASTQ_R1 = RAW_DIR / "E19_384plex_NGS_R1_fastq.gz"
@@ -37,9 +46,10 @@ def load_primers():
         prefix_map.setdefault(pseq[:8], []).append(idx)
     return all_primers, prefix_map
 
-def run_accounting():
+def run_accounting(use_historical: bool = False):
     print("=" * 70)
     print("PHASE 0D: EXHAUSTIVE READ ACCOUNTING VERIFICATION")
+    print(f"Mode: {'Historical Baseline (/ len(pseq))' if use_historical else 'Canonical Primary (/ check_len)'}")
     print("=" * 70)
 
     DERIVED_DIR.mkdir(parents=True, exist_ok=True)
@@ -132,23 +142,12 @@ def run_accounting():
             m1 = prefix_map.get(t1[:8], [])
             m2 = prefix_map.get(t2[:8], [])
 
-            best_id1 = None
-            for i1 in m1:
-                pseq1 = all_primers[i1][1]
-                l = min(len(pseq1), len(t1))
-                matches = sum(1 for a, b in zip(pseq1[:l], t1[:l]) if a == b)
-                if matches / len(pseq1) > 0.6:
-                    best_id1 = i1
-                    break
-
-            best_id2 = None
-            for i2 in m2:
-                pseq2 = all_primers[i2][1]
-                l = min(len(pseq2), len(t2))
-                matches = sum(1 for a, b in zip(pseq2[:l], t2[:l]) if a == b)
-                if matches / len(pseq2) > 0.6:
-                    best_id2 = i2
-                    break
+            if use_historical:
+                best_id1 = match_primer_prefix_historical(t1, m1, all_primers)
+                best_id2 = match_primer_prefix_historical(t2, m2, all_primers)
+            else:
+                best_id1 = match_primer_prefix(t1, m1, all_primers)
+                best_id2 = match_primer_prefix(t2, m2, all_primers)
 
             if best_id1 is None and best_id2 is None:
                 categories["primer_unmatched_both"] += 1
@@ -219,4 +218,7 @@ def run_accounting():
     print(f"Accounting JSON written to {out_json}")
 
 if __name__ == "__main__":
-    run_accounting()
+    parser = argparse.ArgumentParser(description="Exhaustive read accounting verification")
+    parser.add_argument("--historical", action="store_true", help="Run with historical Phase 0D full-length primer denominator")
+    args = parser.parse_args()
+    run_accounting(use_historical=args.historical)

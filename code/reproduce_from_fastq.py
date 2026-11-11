@@ -49,6 +49,13 @@ except ImportError:
     print("Please install via: pip install edlib", file=sys.stderr)
     sys.exit(1)
 
+# Canonical primer classifier import
+CODE_DIR = Path(__file__).resolve().parent
+if str(CODE_DIR) not in sys.path:
+    sys.path.insert(0, str(CODE_DIR))
+
+from canonical_classifier import match_primer_prefix
+
 def sha256_file(path: Path) -> str:
     h = hashlib.sha256()
     with open(path, "rb") as f:
@@ -242,22 +249,9 @@ def run_pipeline(raw_dir: Path, max_reads: int = None):
                     break
                 continue
 
-            # 3. Primer identification (5' prefix matching)
-            best1 = None
-            for pid in prefix_map.get(t1[:8], []):
-                pseq = all_primers[pid][1]
-                check_len = min(len(pseq), len(t1))
-                if check_len >= 8 and sum(1 for a, b in zip(t1[:check_len], pseq[:check_len]) if a == b) / check_len > 0.6:
-                    best1 = pid
-                    break
-
-            best2 = None
-            for pid in prefix_map.get(t2[:8], []):
-                pseq = all_primers[pid][1]
-                check_len = min(len(pseq), len(t2))
-                if check_len >= 8 and sum(1 for a, b in zip(t2[:check_len], pseq[:check_len]) if a == b) / check_len > 0.6:
-                    best2 = pid
-                    break
+            # 3. Primer identification (Canonical 5' prefix matching)
+            best1 = match_primer_prefix(t1, prefix_map.get(t1[:8], []), all_primers)
+            best2 = match_primer_prefix(t2, prefix_map.get(t2[:8], []), all_primers)
 
             if best1 is None or best2 is None:
                 categories["primer_unmatched"] += 1

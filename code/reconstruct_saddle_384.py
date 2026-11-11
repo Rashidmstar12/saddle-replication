@@ -24,6 +24,13 @@ from pathlib import Path
 import numpy as np
 import openpyxl
 
+# Add code directory to path for canonical classifier import
+CODE_DIR = Path(__file__).resolve().parent
+if str(CODE_DIR) not in sys.path:
+    sys.path.insert(0, str(CODE_DIR))
+
+from canonical_classifier import match_primer_prefix, match_primer_prefix_historical
+
 ROOT = Path(__file__).resolve().parent.parent
 
 # Input paths
@@ -168,36 +175,10 @@ def run_reconstruction():
                 qc_failed_reads += 1
                 continue
                 
-            # Step 3: Primer identification via 8-mer prefix
-            m1 = prefix_map.get(t1[:8])
-            m2 = prefix_map.get(t2[:8])
-            if not m1 or not m2:
-                primer_unmatched_reads += 1
-                continue
-                
-            best_id1 = None
-            for i1 in m1:
-                pseq1 = all_primers[i1][1]
-                l = min(len(pseq1), len(t1))
-                matches = sum(1 for a, b in zip(pseq1[:l], t1[:l]) if a == b)
-                if matches / len(pseq1) > 0.6:
-                    best_id1 = i1
-                    break
-                    
-            if best_id1 is None:
-                primer_unmatched_reads += 1
-                continue
-                
-            best_id2 = None
-            for i2 in m2:
-                pseq2 = all_primers[i2][1]
-                l = min(len(pseq2), len(t2))
-                matches = sum(1 for a, b in zip(pseq2[:l], t2[:l]) if a == b)
-                if matches / len(pseq2) > 0.6:
-                    best_id2 = i2
-                    break
-                    
-            if best_id2 is None:
+            # Step 3: Primer identification via Canonical 5' prefix matching
+            best_id1 = match_primer_prefix(t1, prefix_map.get(t1[:8], []), all_primers)
+            best_id2 = match_primer_prefix(t2, prefix_map.get(t2[:8], []), all_primers)
+            if best_id1 is None or best_id2 is None:
                 primer_unmatched_reads += 1
                 continue
                 

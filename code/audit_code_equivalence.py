@@ -17,10 +17,18 @@ The Python pipeline is an approximate primer-pairing reconstruction (omitting Bo
 internal amplicon sequence alignment), and SADDLE Badness is an approximate 4-7 bp variant.
 """
 
+import sys
 import gzip
 import json
 import time
 from pathlib import Path
+
+# Add code directory to path for canonical classifier import
+CODE_DIR = Path(__file__).resolve().parent
+if str(CODE_DIR) not in sys.path:
+    sys.path.insert(0, str(CODE_DIR))
+
+from canonical_classifier import match_primer_prefix
 
 ROOT = Path(__file__).resolve().parent.parent
 RAW_DIR = ROOT / "data" / "raw"
@@ -178,26 +186,11 @@ def run_sample_reclassification_audit(sample_step=40):
         if not m1 or not m2:
             return "primer_unmatched"
 
-        id1 = None
-        for i_cand, _, s_cand in m1:
-            l = min(len(s_cand), len(t1))
-            score = sum(1 for a, b in zip(s_cand[:l], t1[:l]) if a == b) / len(s_cand)
-            if score > 0.6:
-                id1 = i_cand
-                break
-
-        if id1 is None:
-            return "primer_unmatched"
-
-        id2 = None
-        for i_cand, _, s_cand in m2:
-            l = min(len(s_cand), len(t2))
-            score = sum(1 for a, b in zip(s_cand[:l], t2[:l]) if a == b) / len(s_cand)
-            if score > 0.6:
-                id2 = i_cand
-                break
-
-        if id2 is None:
+        cand_indices_1 = [idx for idx, _, _ in m1]
+        cand_indices_2 = [idx for idx, _, _ in m2]
+        id1 = match_primer_prefix(t1, cand_indices_1, primers)
+        id2 = match_primer_prefix(t2, cand_indices_2, primers)
+        if id1 is None or id2 is None:
             return "primer_unmatched"
 
         is_cognate = (id2 == id1 + 384) or (id1 == id2 + 384)
