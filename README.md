@@ -103,6 +103,8 @@ saddle-replication/
 ├── CHECKSUMS.tsv                  # Cryptographic SHA-256 manifest of all files
 ├── LICENSE                        # MIT License
 ├── README.md                      # This reviewer guide
+├── paper.md                       # EditorialBot / journal-recognized root manuscript entrypoint
+├── paper.bib                      # BibTeX references for EditorialBot compilation
 ├── article/
 │   ├── article.html               # Formatted standalone HTML with citations
 │   ├── article.md                 # Manuscript source in Markdown (ReScience format)
