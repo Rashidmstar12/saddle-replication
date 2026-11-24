@@ -1,0 +1,121 @@
+{
+  "schema_version": 2,
+  "source_doi": "10.6084/m9.figshare.16944154.v3",
+  "paper_doi": "10.1038/s41467-022-29500-4",
+  "upstream_repo": "https://github.com/NinaGXie/SADDLE",
+  "upstream_commit": "1e474abf88f08131544f8cb73dfbc65a5e842cf3",
+  "files": {
+    "41467_2022_29500_MOESM5_ESM.xlsx": {
+      "category": "supplement",
+      "source": "Nature Communications Supplementary Data 1 (10.1038/s41467-022-29500-4)",
+      "license": "CC BY 4.0",
+      "url": "https://static-content.springer.com/esm/art%3A10.1038%2Fs41467-022-29500-4/MediaObjects/41467_2022_29500_MOESM5_ESM.xlsx",
+      "size_bytes": 240635,
+      "sha256": "78aea89c0ed83e03383b7ae810b3c4be247c231227175bce526d5b1b21e0fc78"
+    },
+    "41467_2022_29500_MOESM7_ESM.xlsx": {
+      "category": "supplement",
+      "source": "Nature Communications Supplementary Data 3 (10.1038/s41467-022-29500-4)",
+      "license": "CC BY 4.0",
+      "url": "https://static-content.springer.com/esm/art%3A10.1038%2Fs41467-022-29500-4/MediaObjects/41467_2022_29500_MOESM7_ESM.xlsx",
+      "size_bytes": 605440,
+      "sha256": "7fb0b042b4fd927ab4101dc575b2c6da9045e2bdd9341591d5a7ca51551ad067"
+    },
+    "SADDLE_PS1_E14_Raw_R1.fastq.gz": {
+      "category": "fastq",
+      "source": "Figshare (10.6084/m9.figshare.16944154.v3)",
+      "license": "CC BY 4.0",
+      "url": "https://ndownloader.figshare.com/files/31350190",
+      "size_bytes": 188952149,
+      "md5": "e675810ebf1fb32270c1e9e1245a72cd",
+      "sha256": "281cee5a54f05c7005ad0192021ee1d0b14fcddc7df99ae245862d0676f8fafb"
+    },
+    "SADDLE_PS1_E14_Raw_R2.fastq.gz": {
+      "category": "fastq",
+      "source": "Figshare (10.6084/m9.figshare.16944154.v3)",
+      "license": "CC BY 4.0",
+      "url": "https://ndownloader.figshare.com/files/31350193",
+      "size_bytes": 206065552,
+      "md5": "caac239ccbc8e3fc92ae9aae7ffbe0c8",
+      "sha256": "cd3084f2a110edc00eb3e86894ff7f69cb8c9934b60c6a07f26155420b0bf924"
+    },
+    "SADDLE_PS2_E14_Raw_R1.fastq.gz": {
+      "category": "fastq",
+      "source": "Figshare (10.6084/m9.figshare.16944154.v3)",
+      "license": "CC BY 4.0",
+      "url": "https://ndownloader.figshare.com/files/31350196",
+      "size_bytes": 213060277,
+      "md5": "a6e59073c820fdb7faf5efcc24811ea9",
+      "sha256": "da4ed78bc702c1c82825bf0a3e297f408e4fd93f30c3d86f90de88bdf5c91429"
+    },
+    "SADDLE_PS2_E14_Raw_R2.fastq.gz": {
+      "category": "fastq",
+      "source": "Figshare (10.6084/m9.figshare.16944154.v3)",
+      "license": "CC BY 4.0",
+      "url": "https://ndownloader.figshare.com/files/31350199",
+      "size_bytes": 232305804,
+      "md5": "30ee5d6f384b572877d7378a7aba3f49",
+      "sha256": "e51fc149b35d59d2c49fb8e94241a82b033aaebd1d0184ba8967c760e6eb822d"
+    },
+    "SADDLE_PS3_E14_Raw_R1.fastq.gz": {
+      "category": "fastq",
+      "source": "Figshare (10.6084/m9.figshare.16944154.v3)",
+      "license": "CC BY 4.0",
+      "url": "https://ndownloader.figshare.com/files/31350211",
+      "size_bytes": 192756686,
+      "md5": "81b2bb8dee8755fac4470365a6093bde",
+      "sha256": "9118df046c6e10bc9e42f5cf0c896d3f1bf57a765cce95570f269ae74ac4317f"
+    },
+    "SADDLE_PS3_E14_Raw_R2.fastq.gz": {
+      "category": "fastq",
+      "source": "Figshare (10.6084/m9.figshare.16944154.v3)",
+      "license": "CC BY 4.0",
+      "url": "https://ndownloader.figshare.com/files/31350214",
+      "size_bytes": 213663867,
+      "md5": "2b186d412874fd02b73d7a10cbe47ab0",
+      "sha256": "8cdd24efca08975df97ec023adabe1aa78743a67008c3865044eccc391b9688c"
+    },
+    "E19_384plex_NGS_R1_fastq.gz": {
+      "category": "fastq",
+      "source": "Figshare (10.6084/m9.figshare.16944154.v3)",
+      "license": "CC BY 4.0",
+      "url": "https://ndownloader.figshare.com/files/31352458",
+      "size_bytes": 436721324,
+      "md5": "295a543934229ccc5cbfe4c742b440b6",
+      "sha256": "7ebbe758dbeaa62b91dbea5c0e9e3bd4c35806a2e8f7c82c59729475d5652c92"
+    },
+    "E19_384plex_NGS_R2_fastq.gz": {
+      "category": "fastq",
+      "source": "Figshare (10.6084/m9.figshare.16944154.v3)",
+      "license": "CC BY 4.0",
+      "url": "https://ndownloader.figshare.com/files/31352461",
+      "size_bytes": 478010555,
+      "md5": "9db88c9dc466c04548dc8673f9280a70",
+      "sha256": "d2e4a5facf1ccc9188a190e4b9384df3cedbd2cfc56659f8f5928531dda0396e"
+    },
+    "Ref_1.fasta": {
+      "category": "reference_fasta",
+      "source": "GitHub NinaGXie/SADDLE commit 1e474abf88f08131544f8cb73dfbc65a5e842cf3",
+      "license": "Third-party upstream (no explicit license header in source repo; fetched programmatically rather than redistributed)",
+      "url": "https://raw.githubusercontent.com/NinaGXie/SADDLE/1e474abf88f08131544f8cb73dfbc65a5e842cf3/Bowtie2_Reference_Sequence/Ref_1.fasta",
+      "size_bytes": 11038,
+      "sha256": "cb430d4454854547a863a2c8a218469eb36e7b828aa450a647cb4473112fd5a5"
+    },
+    "Ref_2.fasta": {
+      "category": "reference_fasta",
+      "source": "GitHub NinaGXie/SADDLE commit 1e474abf88f08131544f8cb73dfbc65a5e842cf3",
+      "license": "Third-party upstream (no explicit license header in source repo; fetched programmatically rather than redistributed)",
+      "url": "https://raw.githubusercontent.com/NinaGXie/SADDLE/1e474abf88f08131544f8cb73dfbc65a5e842cf3/Bowtie2_Reference_Sequence/Ref_2.fasta",
+      "size_bytes": 10985,
+      "sha256": "080122d14eaeea77dbb2ec42abfa9b6fe55851f783722dfc4b7230ba56e9e467"
+    },
+    "Ref_3.fasta": {
+      "category": "reference_fasta",
+      "source": "GitHub NinaGXie/SADDLE commit 1e474abf88f08131544f8cb73dfbc65a5e842cf3",
+      "license": "Third-party upstream (no explicit license header in source repo; fetched programmatically rather than redistributed)",
+      "url": "https://raw.githubusercontent.com/NinaGXie/SADDLE/1e474abf88f08131544f8cb73dfbc65a5e842cf3/Bowtie2_Reference_Sequence/Ref_3.fasta",
+      "size_bytes": 11021,
+      "sha256": "ba6316e90f9f1b568de09600741f51460598c31d0ff26097e340b19a9cdc88dd"
+    }
+  }
+}

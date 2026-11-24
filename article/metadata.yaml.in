@@ -1,0 +1,72 @@
+# Official ReScience C Metadata File (conforms to ReScience/template)
+# Rendered automatically from metadata.yaml.in + data/canonical_results.json
+
+title: "[Re] Open-Source Replication of SADDLE NGS Read Partitions Across 96-Plex and 384-Plex Panels"
+
+authors:
+  - name: Rashid Kadayil
+    orcid: 0009-0009-6398-4557
+    email: rashidkadayil@gmail.com
+    affiliations: 1,*
+
+affiliations:
+  - code:    1
+    name:    Department of Biochemistry and Molecular Biology, School of Life Sciences, Pondicherry University
+    address: Puducherry 605014, India
+
+keywords: multiplex PCR, primer-dimer, SADDLE, computational replication, next-generation sequencing, Bowtie2, edlib, Python, ReScience C
+
+code:
+  - url: https://github.com/Rashidmstar12/saddle-replication
+  - doi:
+  - swh:
+
+data:
+  - url: https://doi.org/10.6084/m9.figshare.16944154.v3
+  - doi: 10.6084/m9.figshare.16944154.v3
+
+replication:
+  - cite: "Xie, N. G., Wang, M. X., Song, P., Mao, S., Wang, Y., Yang, Y., Luo, J., Ren, S., \\& Zhang, D. Y. (2022). Designing highly multiplex PCR primer sets with Simulated Annealing Design using Dimer Likelihood Estimation (SADDLE). Nature Communications, 13, 1881."
+  - bib: xie2022designing
+  - url: https://www.nature.com/articles/s41467-022-29500-4
+  - doi: 10.1038/s41467-022-29500-4
+
+abstract: "In 2022, Xie et al. introduced SADDLE (Nature Communications, 13, 1881), a simulated annealing framework for designing multiplex PCR primer pools up to 384-plex. While the primer design code was described as available upon request under NDA for academic labs (reported as patent pending in Xie et al., 2022), the authors released raw Illumina MiSeq paired-end reads on Figshare (CC BY 4.0) alongside a MATLAB/Python/Bowtie2 post-sequencing workflow. We present an independent open-source reimplementation of selected primary empirical NGS validation analyses across four panels (PS1, PS2, PS3 at 96-plex; E19 at 384-plex; {{all_panels_total_raw}} raw read pairs), eliminating commercial MATLAB dependencies. Our Python+Bowtie2 reimplementation reproduces Figure 3a primer-dimer suppression ({{ps1_pa_dimer_pct}}\\%, {{ps2_pa_dimer_pct}}\\%, {{ps3_pa_dimer_pct}}\\% vs. published {{ps1_pub_dimer}}\\%, {{ps2_pub_dimer}}\\%, {{ps3_pub_dimer}}\\%) and Figure 3f 384-plex partitions ({{e19_pa_ontarget_pct}}\\% on-target, {{e19_pa_nonspec_pct}}\\% nonspecific, {{e19_pa_dimer_pct}}\\% dimers vs. $\\sim${{e19_pub_ontarget}}\\%, $\\sim${{e19_pub_nonspec}}\\%, $\\sim${{e19_pub_dimer_int}}\\%). Cell-by-cell validation against Supplementary Data 3 yields Pearson r = {{pa_conc_opt_r6_min}}--{{pa_conc_opt_r6_max}} and normalized L1 error {{pa_conc_opt_l1_min}}--{{pa_conc_opt_l1_max}}\\% across PS1--PS3 and shows that the Figshare E14 files correspond to the concentration-optimized libraries. A standalone Python/edlib pipeline (without an external command-line aligner) is benchmarked against Bowtie2 across 75--85\\% similarity thresholds and on a matched-pair uniform random sample (N = {{c75_n}}) with full per-read audit tables."
+
+bibliography: bibliography.bib
+
+type: Replication
+
+domain: Computational Biology
+
+language: Python
+
+review:
+  - url:
+
+contributors:
+  - name:
+    orcid:
+    role: editor
+  - name:
+    orcid:
+    role: reviewer
+  - name:
+    orcid:
+    role: reviewer
+
+dates:
+  - received:
+  - accepted:
+  - published:
+
+article:
+  - number:
+  - doi:
+  - url:
+
+journal:
+  - name: "ReScience C"
+  - issn: 2430-3658
+  - volume:
+  - issue:

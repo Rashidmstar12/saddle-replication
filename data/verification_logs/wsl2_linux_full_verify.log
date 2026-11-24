@@ -1,0 +1,125 @@
+============================================================================
+CLEAN-ROOM WSL2 LINUX FULL VERIFICATION TRANSCRIPT (V5)
+Date (UTC): 2026-11-24T17:12:47Z
+Kernel:     Linux BOOK-CLNSIMRKGO 6.6.87.2-microsoft-standard-WSL2 #1 SMP PREEMPT_DYNAMIC Thu Jun  5 18:30:46 UTC 2025 x86_64 GNU/Linux
+Python:     Python 3.14.4
+Bowtie2:    /usr/bin/bowtie2-align-s version 2.5.4
+============================================================================
+......FAIL [per_read_audit:bowtie2_vs_cognate_75]: both_ontarget TSV=0 vs JSON=1
+FAIL [per_read_audit]: duplicate read_id '@r1'
+....
+----------------------------------------------------------------------
+Ran 10 tests in 0.024s
+
+OK
+==============================================================================
+SADDLE MULTI-PANEL OPEN-SOURCE REPLICATION (PS1, PS2, PS3, E19)
+Raw dir:  /mnt/c/Users/rashi/Documents/token test/multi pcr/data/raw
+Ref dir:  /mnt/c/Users/rashi/.gemini/antigravity/brain/64c2ddc2-c559-443a-b33f-1333c7484186/scratch/pinned_refs/reference_fastas
+Out dir:  /tmp/saddle_full_verify_d0w7kgau/data
+Bowtie2:  bowtie2 2.5.4
+==============================================================================
+Verifying immutable raw input & pinned reference SHA-256 checksums...
+  Verified 13 external input files.
+
+>>> Panel PS1 (96-plex, Figure 3a) <<<
+  [Pipeline A] Running Python + Bowtie2 on PS1...
+    Done in 52.1s | Raw=1,823,058 | Classified=1,366,868 | OnTarget=2.65% | Nonspec=6.68% | Dimer=90.66%
+  [Pipeline B] Running standalone Python/edlib on PS1...
+    Done in 33.69s | Classified=1,438,981 | M1=2.35% | edlib75=2.32% | edlib80=2.31% | edlib85=2.31% | Dimer=90.87%
+
+>>> Panel PS2 (96-plex, Figure 3a) <<<
+  [Pipeline A] Running Python + Bowtie2 on PS2...
+    Done in 91.25s | Raw=1,952,269 | Classified=1,469,910 | OnTarget=32.78% | Nonspec=27.60% | Dimer=39.62%
+  [Pipeline B] Running standalone Python/edlib on PS2...
+    Done in 58.9s | Classified=1,490,033 | M1=29.66% | edlib75=29.59% | edlib80=29.58% | edlib85=29.58% | Dimer=41.34%
+
+>>> Panel PS3 (96-plex, Figure 3a) <<<
+  [Pipeline A] Running Python + Bowtie2 on PS3...
+    Done in 139.63s | Raw=1,738,418 | Classified=1,231,925 | OnTarget=66.16% | Nonspec=28.87% | Dimer=4.97%
+  [Pipeline B] Running standalone Python/edlib on PS3...
+    Done in 84.76s | Classified=1,218,237 | M1=61.93% | edlib75=61.71% | edlib80=61.69% | edlib85=61.69% | Dimer=5.34%
+
+>>> Panel E19 (384-plex, Figure 3f) <<<
+  [Pipeline A] Running Python + Bowtie2 on E19...
+    Done in 251.12s | Raw=3,942,385 | Classified=2,784,455 | OnTarget=42.76% | Nonspec=56.39% | Dimer=0.85%
+  [Pipeline B] Running standalone Python/edlib on E19...
+    Done in 201.7s | Classified=2,860,664 | M1=43.86% | edlib75=43.59% | edlib80=42.75% | edlib85=39.87% | Dimer=0.87%
+
+Wrote canonical registry -> /tmp/saddle_full_verify_d0w7kgau/data/canonical_results.json
+Reservoir-sampling full validated E19 library (seed=20261124)...
+Sampled 5000 non-dimer (from 2,835,786) and 20000 cognate (from 1,254,647) in 117.7s.
+  Matched-pair edlib audit: 1000/5000 (2.4s)
+  Matched-pair edlib audit: 2000/5000 (4.6s)
+  Matched-pair edlib audit: 3000/5000 (6.8s)
+  Matched-pair edlib audit: 4000/5000 (8.9s)
+  Matched-pair edlib audit: 5000/5000 (11.0s)
+Wrote 5,000-pair per-read evidence table -> /tmp/saddle_full_verify_d0w7kgau/data/matched_pair_audit_5000.tsv.gz
+Wrote random audits -> /tmp/saddle_full_verify_d0w7kgau/data/random_audit_results.json
+Merged matched-pair random audit summary into -> /tmp/saddle_full_verify_d0w7kgau/data/canonical_results.json
+Generated data-driven figures in /tmp/saddle_full_verify_d0w7kgau/figures
+============================================================================
+SADDLE MULTI-PANEL REPLICATION VERIFICATION SUITE (V5)
+============================================================================
+
+[1/6] Running synthetic and adversarial unit tests...
+  PASS [per_read_audit]: verified all 2 unique rows, all 6 confusion matrices (24/24 cells exact), and strictly-better/tied non-cognate flags
+
+[2/6] Verifying canonical_results.json accounting closure across PS1, PS2, PS3, E19...
+  PASS [PS1]: Raw=1,823,058 | Pipeline A Dimer=90.66%, OnTarget=2.65% | Pipeline B (edlib>=75%) Dimer=90.87%, OnTarget=2.32%
+  PASS [PS2]: Raw=1,952,269 | Pipeline A Dimer=39.62%, OnTarget=32.78% | Pipeline B (edlib>=75%) Dimer=41.34%, OnTarget=29.59%
+  PASS [PS3]: Raw=1,738,418 | Pipeline A Dimer=4.97%, OnTarget=66.16% | Pipeline B (edlib>=75%) Dimer=5.34%, OnTarget=61.71%
+  PASS [E19]: Raw=3,942,385 | Pipeline A Dimer=0.85%, OnTarget=42.76% | Pipeline B (edlib>=75%) Dimer=0.87%, OnTarget=43.59%
+
+[3/6] Verifying E19 TSVs and all 6 archived 96-plex directional+unordered matrices...
+  PASS [E19 Pipeline B TSV (unordered)]: 295,296 pairs, 24,878 dimer reads, 1,174 active, top1=16,805
+  PASS [E19 Pipeline A TSV (unordered)]: 295,296 pairs, 23,534 dimer reads, 1,022 active, top1=16,365
+  PASS [PS1 Pipeline A Matrix (directional+unordered)]: 18,528 pairs, 1,239,269 dimer reads, 340 active, top1=429,438
+  PASS [PS1 Pipeline B Matrix (directional+unordered)]: 18,528 pairs, 1,307,591 dimer reads, 383 active, top1=452,750
+  PASS [PS2 Pipeline A Matrix (directional+unordered)]: 18,528 pairs, 582,366 dimer reads, 649 active, top1=153,693
+  PASS [PS2 Pipeline B Matrix (directional+unordered)]: 18,528 pairs, 615,973 dimer reads, 709 active, top1=159,752
+  PASS [PS3 Pipeline A Matrix (directional+unordered)]: 18,528 pairs, 61,262 dimer reads, 351 active, top1=27,354
+  PASS [PS3 Pipeline B Matrix (directional+unordered)]: 18,528 pairs, 65,115 dimer reads, 394 active, top1=28,611
+
+[4/6] Verifying 5,000-pair per-read audit TSV and CIGAR audits match canonical_results.json...
+  PASS [per_read_audit]: verified all 5,000 unique rows, all 6 confusion matrices (24/24 cells exact), and strictly-better/tied non-cognate flags
+
+[5/6] Verifying cross-platform UTF-8/LF manuscript (LaTeX + paper.md) & README templates...
+  PASS [template]: article/content.tex matches canonical_results.json byte-for-byte (UTF-8/LF)
+  PASS [template]: article/metadata.yaml matches canonical_results.json byte-for-byte (UTF-8/LF)
+  PASS [template]: paper.md matches canonical_results.json byte-for-byte (UTF-8/LF)
+  PASS [template]: README.md matches canonical_results.json byte-for-byte (UTF-8/LF)
+
+[6/6] Verifying CHECKSUMS.tsv SHA-256 manifest...
+  PASS [checksums]: verified 112 files against CHECKSUMS.tsv
+
+[FULL 1/4] Re-executing 4-panel replication into isolated temp dir...
+
+[FULL 2/4] Re-executing matched-pair random audits into isolated temp dir...
+
+[FULL 3/4] Re-generating data-driven figures into isolated temp dir...
+
+[FULL 4/4] Comparing recomputed scientific outputs, decompressed tables, and figure pixels...
+  [INFO provenance] Archived env:   {'platform': 'Windows-11-10.0.26300-SP0', 'python': '3.12.4', 'numpy': '2.1.3', 'openpyxl': '3.1.2', 'bowtie2': 'bowtie2 2.5.5'}
+  [INFO provenance] Recomputed env: {'platform': 'Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.43', 'python': '3.14.4', 'numpy': '2.3.5', 'openpyxl': '3.1.5', 'bowtie2': 'bowtie2 2.5.4'}
+  PASS [full:canonical_results.json]: exact scientific equivalence verified
+  PASS [full:random_audit_results.json]: exact scientific equivalence verified
+  PASS [full:saddle_384_dimer_pairs.tsv]: exact decompressed byte-for-byte match
+  PASS [full:saddle_384_dimer_pairs_bowtie2.tsv]: exact decompressed byte-for-byte match
+  PASS [full:matched_pair_audit_5000.tsv.gz]: exact decompressed byte-for-byte match
+  PASS [full:matrices/ps1_pipeline_a_dimer_pairs.tsv.gz]: exact decompressed byte-for-byte match
+  PASS [full:matrices/ps1_pipeline_b_dimer_pairs.tsv.gz]: exact decompressed byte-for-byte match
+  PASS [full:matrices/ps2_pipeline_a_dimer_pairs.tsv.gz]: exact decompressed byte-for-byte match
+  PASS [full:matrices/ps2_pipeline_b_dimer_pairs.tsv.gz]: exact decompressed byte-for-byte match
+  PASS [full:matrices/ps3_pipeline_a_dimer_pairs.tsv.gz]: exact decompressed byte-for-byte match
+  PASS [full:matrices/ps3_pipeline_b_dimer_pairs.tsv.gz]: exact decompressed byte-for-byte match
+  PASS [full:fig1_multipanel_replication.png]: visually equivalent across OS/Matplotlib font stacks (shape=3343x1303, mae=0.006896, pixel_r=0.973111)
+  PASS [full:fig2_dimer_concentration_and_matrix.png]: visually equivalent across OS/Matplotlib font stacks (shape=3343x1243, mae=0.006384, pixel_r=0.965846)
+  PASS [full:fig1_multipanel_replication.pdf]: regenerated non-empty vector PDF (29,733 bytes)
+  PASS [full:fig2_dimer_concentration_and_matrix.pdf]: regenerated non-empty vector PDF (38,644 bytes)
+  Wrote cross-environment verification report -> /mnt/c/Users/rashi/Documents/token test/multi pcr/submission_rescience_v5/data/verification_logs/wsl2_linux_cross_env_report.json
+
+============================================================================
+FULL INDEPENDENT RAW-FASTQ RECOMPUTATION & VERIFICATION: PASS
+============================================================================
+EXIT_CODE=0

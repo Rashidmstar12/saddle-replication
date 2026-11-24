@@ -1,0 +1,101 @@
+# [Re] Open-Source Replication of SADDLE NGS Read Partitions Across 96-Plex and 384-Plex Panels
+
+**Author:** Rashid Kadayil (ORCID: `0009-0009-6398-4557`)  
+**Affiliation:** Department of Biochemistry and Molecular Biology, School of Life Sciences, Pondicherry University, Puducherry 605014, India  
+**Status:** DRAFT V6-Submission-Ready (author-conducted Kaggle Cloud Linux clean-room reproduction passed; pending investigator evidence-ledger sign-off, final declaration confirmation, and public repository/Zenodo synchronization)  
+**Target Journal:** *ReScience C* (synchronized full-content `paper.md` + `paper.bib` AND official `ReScience/template` LaTeX `article/article.pdf` + `article/metadata.yaml`)  
+**Replicated Article:** Xie et al. (2022), *Nature Communications* 13, 1881, DOI: `10.1038/s41467-022-29500-4` (PMID: 35410464)  
+**Raw Data Source:** Figshare DOI: `10.6084/m9.figshare.16944154.v3` (author: Nina Xie; CC BY 4.0; live API snapshot in `data/figshare_v3_metadata_snapshot.json`)
+
+---
+
+## Summary of Replicated Results
+
+All numeric values below are rendered automatically from `data/canonical_results.json` via `code/render_manuscript.py`.
+
+| Panel | Raw Pairs | Pipeline A (Python + Bowtie2) | Pipeline B (Standalone Python/`edlib` $\ge 75\%$ / $\ge 80\%$) | Published Xie et al. (2022) |
+| :--- | ---: | :--- | :--- | :--- |
+| **PS1 (96-plex, Fig. 3a)** | {{ps1_raw}} | **{{ps1_pa_dimer_pct}}%** dimers ({{ps1_pa_ontarget_pct}}% on-target, {{ps1_pa_nonspec_pct}}% nonspecific) | {{ps1_pb_dimer_pct}}% dimers ({{ps1_pb_m2_75_on_pct}}% on-target) | {{ps1_pub_dimer}}% dimers |
+| **PS2 (96-plex, Fig. 3a)** | {{ps2_raw}} | **{{ps2_pa_dimer_pct}}%** dimers ({{ps2_pa_ontarget_pct}}% on-target, {{ps2_pa_nonspec_pct}}% nonspecific) | {{ps2_pb_dimer_pct}}% dimers ({{ps2_pb_m2_75_on_pct}}% on-target) | {{ps2_pub_dimer}}% dimers |
+| **PS3 (96-plex, Fig. 3a)** | {{ps3_raw}} | **{{ps3_pa_dimer_pct}}%** dimers ({{ps3_pa_ontarget_pct}}% on-target, {{ps3_pa_nonspec_pct}}% nonspecific) | {{ps3_pb_dimer_pct}}% dimers ({{ps3_pb_m2_75_on_pct}}% on-target) | {{ps3_pub_dimer}}% dimers |
+| **E19 (384-plex, Fig. 3f)** | {{e19_raw}} | **{{e19_pa_ontarget_pct}}%** on-target, **{{e19_pa_nonspec_pct}}%** nonspecific, **{{e19_pa_dimer_pct}}%** dimers | $\ge 75\%$: {{e19_pb_m2_75_on_pct}}% / {{e19_pb_m2_75_non_pct}}% / {{e19_pb_dimer_pct}}%<br>$\ge 80\%$: {{e19_pb_m2_80_on_pct}}% / {{e19_pb_m2_80_non_pct}}% / {{e19_pb_dimer_pct}}%<br>$\ge 85\%$: {{e19_pb_m2_85_on_pct}}% / {{e19_pb_m2_85_non_pct}}% / {{e19_pb_dimer_pct}}% | ~{{e19_pub_ontarget}}% / ~{{e19_pub_nonspec}}% / ~{{e19_pub_dimer_int}}% |
+
+### Cell-by-Cell Matrix Validation vs. Supplementary Data 3 (`MOESM7`)
+All six reconstructed 96-plex directional + unordered pair tables are archived under `data/matrices/`:
+- **PS1 (`conc optimized`):** $r = {{ps1_pa_mv_conc_optimized_r5}}$, $\rho = {{ps1_pa_mv_conc_optimized_rho}}$, Active Exact = {{ps1_pa_mv_conc_optimized_exact_act_pct}}%, Jaccard = {{ps1_pa_mv_conc_optimized_jaccard}}, Norm. L1 = {{ps1_pa_mv_conc_optimized_norm_l1}}%, Top-10 = {{ps1_pa_mv_conc_optimized_top10}}/10.
+- **PS2 (`conc optimized`):** $r = {{ps2_pa_mv_conc_optimized_r5}}$, $\rho = {{ps2_pa_mv_conc_optimized_rho}}$, Active Exact = {{ps2_pa_mv_conc_optimized_exact_act_pct}}%, Jaccard = {{ps2_pa_mv_conc_optimized_jaccard}}, Norm. L1 = {{ps2_pa_mv_conc_optimized_norm_l1}}%, Top-10 = {{ps2_pa_mv_conc_optimized_top10}}/10.
+- **PS3 (`conc optimized`):** $r = {{ps3_pa_mv_conc_optimized_r5}}$, $\rho = {{ps3_pa_mv_conc_optimized_rho}}$, Active Exact = {{ps3_pa_mv_conc_optimized_exact_act_pct}}%, Jaccard = {{ps3_pa_mv_conc_optimized_jaccard}}, Norm. L1 = {{ps3_pa_mv_conc_optimized_norm_l1}}%, Top-10 = {{ps3_pa_mv_conc_optimized_top10}}/10.
+- **`not optimized` range (PS1–PS3):** $r = {{pa_not_opt_r_min}}$–${{pa_not_opt_r_max}}$.
+
+### Matched-Pair Uniform Random Audits on E19 (`seed={{audit_seed}}`)
+Complete 12-column per-read classifications for all {{c75_n}} sampled pairs are archived in `data/matched_pair_audit_5000.tsv.gz` (verified across all 6 confusion matrices, 24/24 cells exact):
+- **Paired-end Bowtie2:** **{{bm_bt2_pct}}%** ({{bm_bt2_n}}/{{c75_n}}, identical under both-mapped and proper-pair concordant criteria; 95% CI: {{bm_bt2_ci}}%).
+- **`edlib` $\ge 75\%$:** Cognate = **{{c75_cog_on_pct}}%** (vs. Bowtie2 concordance {{bm_c75_conc}}%); all-target = **{{c75_all_on_pct}}%** (vs. Bowtie2 concordance {{bm_a75_conc}}%).
+- **`edlib` $\ge 80\%$:** Cognate = **{{c80_cog_on_pct}}%** (vs. Bowtie2 concordance {{bm_c80_conc}}%); all-target = **{{c80_all_on_pct}}%** (vs. Bowtie2 concordance {{bm_a80_conc}}%).
+- **Indel recovery ($N={{ind_n}}$):** {{ind_rec_n}} recovered ({{ind_rec_pct}}%, 95% CI: {{ind_rec_ci}}%), {{ind_gaps_pct}}% with alignment gaps (median {{ind_med_bp}} bp, IQR {{ind_iqr_lo}}–{{ind_iqr_hi}} bp).
+
+---
+
+## Reproducible Environment & Automated Data Acquisition
+
+### 1. Recommended Environment Setup (Exact Tested Pins)
+1. **Linux / macOS (Conda, recommended):**
+   ```bash
+   conda env create -f environment.yml
+   conda activate saddle-replication
+   ```
+2. **Exact Python 3.12.4 `pip` lock + system Bowtie2 ($\ge 2.5$):**
+   ```bash
+   pip install -r requirements-lock-py312.txt
+   # Linux: sudo apt-get install bowtie2   |   macOS: brew install bowtie2
+   ```
+3. **Cross-version Python 3.10–3.14 fallback:**
+   ```bash
+   pip install -r requirements.txt
+   ```
+4. **Native Windows note:** Bioconda does not distribute native Windows Bowtie2 binaries; on Windows, either install a native Bowtie2 binary on `PATH` (tested with Bowtie2 2.5.5) or run inside **WSL2 Ubuntu** / **Linux**. Author-conducted clean-room verification transcripts across all {{all_panels_total_raw}} read pairs (performed in separate Linux environments; distinct from third-party verification by an independent researcher) are archived under `data/verification_logs/`:
+   - **Author-conducted Kaggle Cloud Linux clean-room reproduction (`Linux 6.18.55+`, fresh `environment.yml`, `Python 3.12.4` / `Bowtie2 2.5.5`, `EXIT_CODE=0`):** `kaggle_cleanroom_full_verify.log`, `kaggle_cleanroom_cross_env_report.json`, and `kaggle_cleanroom_env_freeze.txt`.
+   - **Author-conducted WSL2 Ubuntu Linux reproduction (`Linux 6.6.87.2`, `Python 3.14.4` / `Bowtie2 2.5.4`, `EXIT_CODE=0`):** `wsl2_linux_full_verify.log` and `wsl2_linux_cross_env_report.json`.
+
+### 2. Automated Checksum-Verified Download of Primary Inputs (13 Files, ~2.16 GB)
+```bash
+# Downloads 8 Figshare CC BY 4.0 FASTQs, 2 Nature Communications CC BY 4.0 Excel files,
+# and 3 pinned-commit Ref_1-3.fasta references (not redistributed in this ZIP), verifying
+# exact byte sizes and SHA-256 checksums against data/expected_raw_sha256.json:
+python code/download_raw_data.py --out-dir /path/to/raw
+```
+
+### 3. Verification Commands
+```bash
+# Fast mode: 10/10 synthetic+adversarial unit tests, 4-panel closure, 6 directional 96-plex matrices,
+# 2 E19 pair tables, full 6-confusion-matrix (24/24 cell) + unique-ID verification of matched_pair_audit_5000.tsv.gz,
+# UTF-8/LF byte-for-byte check of all 4 rendered documents, and SHA-256 manifest:
+python code/verify_replication.py
+
+# Full mode: re-executes all 4 panels, 5,000-pair audit, and figures into an isolated temp dir
+# (never overwrites data/). Verifies:
+#   - 100% exact scientific equivalence on canonical_results.json & random_audit_results.json
+#   - 100% exact decompressed SHA-256 match on all 9 pair/audit tables
+#   - Exact pixel-identical PNG match on matched Matplotlib/FreeType (or shape-exact + MAE < 0.015
+#     & pixel_r > 0.95 visual tolerance across different OS/Matplotlib minor versions)
+#   - Non-empty regenerated vector PDF figures
+python code/verify_replication.py --full --raw-dir /path/to/raw --threads 4
+```
+
+### 4. Compiling the Manuscript (LaTeX or Pandoc Markdown)
+```bash
+# Official ReScience C LaTeX template -> article/article.pdf
+cd article
+python yaml-to-latex.py -i metadata.yaml -o metadata.tex
+xelatex -interaction=nonstopmode article.tex
+biber article
+xelatex -interaction=nonstopmode article.tex
+xelatex -interaction=nonstopmode article.tex
+cd ..
+
+# Synchronized Markdown entrypoint (Pandoc with citation processing, from repository root)
+pandoc paper.md --citeproc -o paper_preview.pdf
+```
+
+## Licensing & Provenance
+See `DATA_AND_LICENSES.md` for full license separation (MIT code, CC BY 4.0 manuscript and Figshare data, and programmatic retrieval of third-party `Ref_1–3.fasta` from pinned upstream commit `1e474abf88f08131544f8cb73dfbc65a5e842cf3`).

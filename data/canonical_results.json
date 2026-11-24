@@ -1,0 +1,1926 @@
+{
+  "schema_version": 5,
+  "status": "DRAFT_UNAPPROVED",
+  "generated_utc": "2026-11-24T16:41:54.641416+00:00",
+  "environment": {
+    "platform": "Windows-11-10.0.26300-SP0",
+    "python": "3.12.4",
+    "numpy": "2.1.3",
+    "openpyxl": "3.1.2",
+    "bowtie2": "bowtie2 2.5.5"
+  },
+  "raw_input_provenance": {
+    "41467_2022_29500_MOESM5_ESM.xlsx": {
+      "size_bytes": 240635,
+      "sha256": "78aea89c0ed83e03383b7ae810b3c4be247c231227175bce526d5b1b21e0fc78",
+      "verified_against_expected_manifest": true
+    },
+    "41467_2022_29500_MOESM7_ESM.xlsx": {
+      "size_bytes": 605440,
+      "sha256": "7fb0b042b4fd927ab4101dc575b2c6da9045e2bdd9341591d5a7ca51551ad067",
+      "verified_against_expected_manifest": true
+    },
+    "SADDLE_PS1_E14_Raw_R1.fastq.gz": {
+      "size_bytes": 188952149,
+      "sha256": "281cee5a54f05c7005ad0192021ee1d0b14fcddc7df99ae245862d0676f8fafb",
+      "verified_against_expected_manifest": true
+    },
+    "SADDLE_PS1_E14_Raw_R2.fastq.gz": {
+      "size_bytes": 206065552,
+      "sha256": "cd3084f2a110edc00eb3e86894ff7f69cb8c9934b60c6a07f26155420b0bf924",
+      "verified_against_expected_manifest": true
+    },
+    "Ref_1.fasta": {
+      "size_bytes": 11038,
+      "sha256": "cb430d4454854547a863a2c8a218469eb36e7b828aa450a647cb4473112fd5a5",
+      "verified_against_expected_manifest": true
+    },
+    "SADDLE_PS2_E14_Raw_R1.fastq.gz": {
+      "size_bytes": 213060277,
+      "sha256": "da4ed78bc702c1c82825bf0a3e297f408e4fd93f30c3d86f90de88bdf5c91429",
+      "verified_against_expected_manifest": true
+    },
+    "SADDLE_PS2_E14_Raw_R2.fastq.gz": {
+      "size_bytes": 232305804,
+      "sha256": "e51fc149b35d59d2c49fb8e94241a82b033aaebd1d0184ba8967c760e6eb822d",
+      "verified_against_expected_manifest": true
+    },
+    "Ref_2.fasta": {
+      "size_bytes": 10985,
+      "sha256": "080122d14eaeea77dbb2ec42abfa9b6fe55851f783722dfc4b7230ba56e9e467",
+      "verified_against_expected_manifest": true
+    },
+    "SADDLE_PS3_E14_Raw_R1.fastq.gz": {
+      "size_bytes": 192756686,
+      "sha256": "9118df046c6e10bc9e42f5cf0c896d3f1bf57a765cce95570f269ae74ac4317f",
+      "verified_against_expected_manifest": true
+    },
+    "SADDLE_PS3_E14_Raw_R2.fastq.gz": {
+      "size_bytes": 213663867,
+      "sha256": "8cdd24efca08975df97ec023adabe1aa78743a67008c3865044eccc391b9688c",
+      "verified_against_expected_manifest": true
+    },
+    "Ref_3.fasta": {
+      "size_bytes": 11021,
+      "sha256": "ba6316e90f9f1b568de09600741f51460598c31d0ff26097e340b19a9cdc88dd",
+      "verified_against_expected_manifest": true
+    },
+    "E19_384plex_NGS_R1_fastq.gz": {
+      "size_bytes": 436721324,
+      "sha256": "7ebbe758dbeaa62b91dbea5c0e9e3bd4c35806a2e8f7c82c59729475d5652c92",
+      "verified_against_expected_manifest": true
+    },
+    "E19_384plex_NGS_R2_fastq.gz": {
+      "size_bytes": 478010555,
+      "sha256": "d2e4a5facf1ccc9188a190e4b9384df3cedbd2cfc56659f8f5928531dda0396e",
+      "verified_against_expected_manifest": true
+    }
+  },
+  "panels": {
+    "PS1": {
+      "panel_id": "PS1",
+      "plex": 96,
+      "n_primers": 192,
+      "figure_ref": "Figure 3a",
+      "reference_fasta": "Ref_1.fasta",
+      "reference_fasta_sha256": "cb430d4454854547a863a2c8a218469eb36e7b828aa450a647cb4473112fd5a5",
+      "published_reference": {
+        "dimer_pct": 90.7,
+        "ontarget_pct": null,
+        "nonspecific_pct": null
+      },
+      "pipeline_a_bowtie2": {
+        "elapsed_seconds": 85.94,
+        "counts": {
+          "total_raw_reads": 1823058,
+          "no_adapter_both": 44535,
+          "no_adapter_r1_only": 101514,
+          "no_adapter_r2_only": 103036,
+          "qc_short_len": 75,
+          "qc_ambiguous_n": 5,
+          "qc_low_quality": 48105,
+          "qc_passed": 1525788,
+          "routed_long_ge60_to_bowtie2": 66693,
+          "routed_short_lt60_to_dimer_cand": 1458978,
+          "mixed_length_60bp_dropped_matlab_rule": 117,
+          "bt2_both_mapped_concordant": 36238,
+          "bt2_both_mapped_discordant": 4,
+          "bt2_one_mate_mapped": 2,
+          "bt2_both_unmapped": 30449,
+          "bt2_mapped_reads_total": 72486,
+          "dimer_cand_total": 1489427,
+          "dimer_cand_len_le15_excluded": 6,
+          "dimer_cand_primer_unmatched": 158796,
+          "dimers": 1239269,
+          "nonspecific": 91356
+        },
+        "ontarget_ipynb_formula_pairs": 36243,
+        "ontarget_both_mapped_pairs": 36242,
+        "ontarget_floor_div_extra_pairs": 1,
+        "classified_denominator_ipynb": 1366868,
+        "classified_denominator_both_mapped": 1366867,
+        "pct_of_classified_ipynb": {
+          "ontarget_pct": 2.6515,
+          "nonspecific_pct": 6.6836,
+          "dimer_pct": 90.6649
+        },
+        "pct_of_classified_both_mapped": {
+          "ontarget_pct": 2.6515,
+          "nonspecific_pct": 6.6836,
+          "dimer_pct": 90.6649
+        },
+        "pct_of_raw_reads": {
+          "ontarget_ipynb_pct": 1.988,
+          "nonspecific_pct": 5.0111,
+          "dimer_pct": 67.9775,
+          "classified_ipynb_pct": 74.9767,
+          "excluded_pct": 25.0233
+        },
+        "dimer_distribution": {
+          "total_candidate_pairs": 18528,
+          "total_dimer_reads": 1239269,
+          "zero_dimer_pairs": 18188,
+          "zero_dimer_pct": 98.1649,
+          "active_dimer_pairs_ge1": 340,
+          "active_dimer_pct_ge1": 1.8351,
+          "severe_dimer_pairs_ge10": 118,
+          "severe_dimer_pct_ge10": 0.6369,
+          "top1_pct_of_dimer_reads": 34.6525,
+          "top10_pct_of_dimer_reads": 96.851,
+          "top5_pairs": [
+            {
+              "rank": 1,
+              "pair_index": 15191,
+              "primer_1": "T15-rP15-0",
+              "primer_2": "T81-rP81-0",
+              "dimer_reads": 429438,
+              "pct_of_dimer_reads": 34.6525
+            },
+            {
+              "rank": 2,
+              "pair_index": 18356,
+              "primer_1": "T78-rP78-0",
+              "primer_2": "T96-rP96-0",
+              "dimer_reads": 338829,
+              "pct_of_dimer_reads": 27.341
+            },
+            {
+              "rank": 3,
+              "pair_index": 14543,
+              "primer_1": "T8-rP8-0",
+              "primer_2": "T28-rP28-0",
+              "dimer_reads": 145145,
+              "pct_of_dimer_reads": 11.7121
+            },
+            {
+              "rank": 4,
+              "pair_index": 13668,
+              "primer_1": "T94-fP94-0",
+              "primer_2": "T88-rP88-0",
+              "dimer_reads": 121858,
+              "pct_of_dimer_reads": 9.8331
+            },
+            {
+              "rank": 5,
+              "pair_index": 14255,
+              "primer_1": "T5-rP5-0",
+              "primer_2": "T10-rP10-0",
+              "dimer_reads": 68827,
+              "pct_of_dimer_reads": 5.5538
+            }
+          ]
+        },
+        "bowtie2_summary_stderr": "66693 reads; of these:\n  66693 (100.00%) were paired; of these:\n    30455 (45.66%) aligned concordantly 0 times\n    36227 (54.32%) aligned concordantly exactly 1 time\n    11 (0.02%) aligned concordantly >1 times\n    ----\n    30455 pairs aligned concordantly 0 times; of these:\n      4 (0.01%) aligned discordantly 1 time\n    ----\n    30451 pairs aligned 0 times concordantly or discordantly; of these:\n      60902 mates make up the pairs; of these:\n        60900 (100.00%) aligned 0 times\n        2 (0.00%) aligned exactly 1 time\n        0 (0.00%) aligned >1 times\n54.34% overall alignment rate",
+        "moesm7_matrix_validation": {
+          "not_optimized": {
+            "sheet_name": "PS1_Dimer NGS(not optimized)",
+            "published_total_dimer_reads": 861323,
+            "reconstructed_total_dimer_reads": 1239269,
+            "total_read_ratio_rec_over_pub": 1.4388,
+            "pearson_r_unordered": 0.321883,
+            "spearman_rho_unordered": 0.545799,
+            "pearson_r_ordered": 0.321904,
+            "exact_cell_match_pct": 97.0855,
+            "exact_cell_match_active_union_count": 17,
+            "exact_cell_match_active_union_pct": 3.05,
+            "active_pairs_union": 557,
+            "active_pair_jaccard": 0.3752,
+            "active_pairs_reconstructed": 340,
+            "active_pairs_published": 426,
+            "active_pairs_intersection": 209,
+            "mae_all_pairs": 76.1443,
+            "mae_active_union": 2532.8582,
+            "total_l1_error_reads": 1410802,
+            "normalized_l1_error": 1.637948,
+            "disagreeing_cells_total": 540,
+            "disagreement_stratification": {
+              "max_count_1_to_2": {
+                "cell_count": 252,
+                "pct_of_disagreeing_cells": 46.67,
+                "l1_reads": 296,
+                "pct_of_total_l1": 0.02
+              },
+              "max_count_3_to_9": {
+                "cell_count": 97,
+                "pct_of_disagreeing_cells": 17.96,
+                "l1_reads": 437,
+                "pct_of_total_l1": 0.03
+              },
+              "max_count_ge_10": {
+                "cell_count": 191,
+                "pct_of_disagreeing_cells": 35.37,
+                "l1_reads": 1410069,
+                "pct_of_total_l1": 99.95
+              }
+            },
+            "top1_exact_match": false,
+            "top10_overlap_count": 6,
+            "published_top1_pair": "T51-fP51-0 x T66-fP66-0",
+            "reconstructed_top1_pair": "T15-rP15-0 x T81-rP81-0"
+          },
+          "conc_optimized": {
+            "sheet_name": "PS1_Dimer NGS (conc optimized)",
+            "published_total_dimer_reads": 1242740,
+            "reconstructed_total_dimer_reads": 1239269,
+            "total_read_ratio_rec_over_pub": 0.9972,
+            "pearson_r_unordered": 0.999988,
+            "spearman_rho_unordered": 0.936135,
+            "pearson_r_ordered": 0.999987,
+            "exact_cell_match_pct": 99.3685,
+            "exact_cell_match_active_union_count": 223,
+            "exact_cell_match_active_union_pct": 65.59,
+            "active_pairs_union": 340,
+            "active_pair_jaccard": 0.8765,
+            "active_pairs_reconstructed": 340,
+            "active_pairs_published": 298,
+            "active_pairs_intersection": 298,
+            "mae_all_pairs": 0.3409,
+            "mae_active_union": 18.5794,
+            "total_l1_error_reads": 6317,
+            "normalized_l1_error": 0.005083,
+            "disagreeing_cells_total": 117,
+            "disagreement_stratification": {
+              "max_count_1_to_2": {
+                "cell_count": 36,
+                "pct_of_disagreeing_cells": 30.77,
+                "l1_reads": 42,
+                "pct_of_total_l1": 0.66
+              },
+              "max_count_3_to_9": {
+                "cell_count": 14,
+                "pct_of_disagreeing_cells": 11.97,
+                "l1_reads": 44,
+                "pct_of_total_l1": 0.7
+              },
+              "max_count_ge_10": {
+                "cell_count": 67,
+                "pct_of_disagreeing_cells": 57.26,
+                "l1_reads": 6231,
+                "pct_of_total_l1": 98.64
+              }
+            },
+            "top1_exact_match": true,
+            "top10_overlap_count": 10,
+            "published_top1_pair": "T15-rP15-0 x T81-rP81-0",
+            "reconstructed_top1_pair": "T15-rP15-0 x T81-rP81-0"
+          }
+        }
+      },
+      "pipeline_b_edlib": {
+        "elapsed_seconds": 38.49,
+        "counts": {
+          "total_raw_reads": 1823058,
+          "no_adapter_both": 32619,
+          "no_adapter_r1_only": 56206,
+          "no_adapter_r2_only": 59772,
+          "qc_short_len": 77,
+          "qc_ambiguous_n": 5,
+          "qc_low_quality": 60528,
+          "primer_unmatched_both": 7284,
+          "primer_unmatched_r1_only": 85088,
+          "primer_unmatched_r2_only": 82498,
+          "classified_total": 1438981,
+          "dimers": 1307591,
+          "m1_ontarget": 33847,
+          "m1_nonspecific": 97543,
+          "m2_edlib75_ontarget": 33320,
+          "m2_edlib80_ontarget": 33313,
+          "m2_edlib85_ontarget": 33307,
+          "ungapped75_ontarget": 32611
+        },
+        "exclusions_summary": {
+          "total_excluded": 384077,
+          "total_excluded_pct_raw": 21.0677,
+          "missing_adapter": 148597,
+          "missing_adapter_pct_raw": 8.151,
+          "qc_failed": 60610,
+          "qc_failed_pct_raw": 3.3246,
+          "primer_unmatched": 174870,
+          "primer_unmatched_pct_raw": 9.5921,
+          "classified_pct_raw": 78.9323
+        },
+        "method1_primer_pairing": {
+          "ontarget_count": 33847,
+          "ontarget_pct_classified": 2.3522,
+          "ontarget_pct_raw": 1.8566,
+          "nonspecific_count": 97543,
+          "nonspecific_pct_classified": 6.7786,
+          "nonspecific_pct_raw": 5.3505,
+          "dimer_count": 1307591,
+          "dimer_pct_classified": 90.8692,
+          "dimer_pct_raw": 71.7251
+        },
+        "method2_edlib_75": {
+          "ontarget_count": 33320,
+          "ontarget_pct_classified": 2.3155,
+          "ontarget_pct_raw": 1.8277,
+          "nonspecific_count": 98070,
+          "nonspecific_pct_classified": 6.8152,
+          "nonspecific_pct_raw": 5.3794,
+          "dimer_count": 1307591,
+          "dimer_pct_classified": 90.8692,
+          "dimer_pct_raw": 71.7251
+        },
+        "method2_edlib_80": {
+          "ontarget_count": 33313,
+          "ontarget_pct_classified": 2.315,
+          "ontarget_pct_raw": 1.8273,
+          "nonspecific_count": 98077,
+          "nonspecific_pct_classified": 6.8157,
+          "nonspecific_pct_raw": 5.3798,
+          "dimer_count": 1307591,
+          "dimer_pct_classified": 90.8692,
+          "dimer_pct_raw": 71.7251
+        },
+        "method2_edlib_85": {
+          "ontarget_count": 33307,
+          "ontarget_pct_classified": 2.3146,
+          "ontarget_pct_raw": 1.827,
+          "nonspecific_count": 98083,
+          "nonspecific_pct_classified": 6.8161,
+          "nonspecific_pct_raw": 5.3801,
+          "dimer_count": 1307591,
+          "dimer_pct_classified": 90.8692,
+          "dimer_pct_raw": 71.7251
+        },
+        "ungapped_positional_75": {
+          "ontarget_count": 32611,
+          "ontarget_pct_classified": 2.2663,
+          "ontarget_pct_raw": 1.7888,
+          "nonspecific_count": 98779,
+          "nonspecific_pct_classified": 6.8645,
+          "nonspecific_pct_raw": 5.4183,
+          "dimer_count": 1307591,
+          "dimer_pct_classified": 90.8692,
+          "dimer_pct_raw": 71.7251
+        },
+        "dimer_distribution": {
+          "total_candidate_pairs": 18528,
+          "total_dimer_reads": 1307591,
+          "zero_dimer_pairs": 18145,
+          "zero_dimer_pct": 97.9329,
+          "active_dimer_pairs_ge1": 383,
+          "active_dimer_pct_ge1": 2.0671,
+          "severe_dimer_pairs_ge10": 126,
+          "severe_dimer_pct_ge10": 0.6801,
+          "top1_pct_of_dimer_reads": 34.6247,
+          "top10_pct_of_dimer_reads": 96.842,
+          "top5_pairs": [
+            {
+              "rank": 1,
+              "pair_index": 15191,
+              "primer_1": "T15-rP15-0",
+              "primer_2": "T81-rP81-0",
+              "dimer_reads": 452750,
+              "pct_of_dimer_reads": 34.6247
+            },
+            {
+              "rank": 2,
+              "pair_index": 18356,
+              "primer_1": "T78-rP78-0",
+              "primer_2": "T96-rP96-0",
+              "dimer_reads": 358307,
+              "pct_of_dimer_reads": 27.4021
+            },
+            {
+              "rank": 3,
+              "pair_index": 14543,
+              "primer_1": "T8-rP8-0",
+              "primer_2": "T28-rP28-0",
+              "dimer_reads": 153198,
+              "pct_of_dimer_reads": 11.716
+            },
+            {
+              "rank": 4,
+              "pair_index": 13668,
+              "primer_1": "T94-fP94-0",
+              "primer_2": "T88-rP88-0",
+              "dimer_reads": 128440,
+              "pct_of_dimer_reads": 9.8226
+            },
+            {
+              "rank": 5,
+              "pair_index": 14255,
+              "primer_1": "T5-rP5-0",
+              "primer_2": "T10-rP10-0",
+              "dimer_reads": 71954,
+              "pct_of_dimer_reads": 5.5028
+            }
+          ]
+        },
+        "moesm7_matrix_validation": {
+          "not_optimized": {
+            "sheet_name": "PS1_Dimer NGS(not optimized)",
+            "published_total_dimer_reads": 861323,
+            "reconstructed_total_dimer_reads": 1307591,
+            "total_read_ratio_rec_over_pub": 1.5181,
+            "pearson_r_unordered": 0.322049,
+            "spearman_rho_unordered": 0.520323,
+            "pearson_r_ordered": 0.322072,
+            "exact_cell_match_pct": 96.8804,
+            "exact_cell_match_active_union_count": 19,
+            "exact_cell_match_active_union_pct": 3.18,
+            "active_pairs_union": 597,
+            "active_pair_jaccard": 0.3551,
+            "active_pairs_reconstructed": 383,
+            "active_pairs_published": 426,
+            "active_pairs_intersection": 212,
+            "mae_all_pairs": 79.6355,
+            "mae_active_union": 2471.5008,
+            "total_l1_error_reads": 1475486,
+            "normalized_l1_error": 1.713046,
+            "disagreeing_cells_total": 578,
+            "disagreement_stratification": {
+              "max_count_1_to_2": {
+                "cell_count": 273,
+                "pct_of_disagreeing_cells": 47.23,
+                "l1_reads": 322,
+                "pct_of_total_l1": 0.02
+              },
+              "max_count_3_to_9": {
+                "cell_count": 106,
+                "pct_of_disagreeing_cells": 18.34,
+                "l1_reads": 462,
+                "pct_of_total_l1": 0.03
+              },
+              "max_count_ge_10": {
+                "cell_count": 199,
+                "pct_of_disagreeing_cells": 34.43,
+                "l1_reads": 1474702,
+                "pct_of_total_l1": 99.95
+              }
+            },
+            "top1_exact_match": false,
+            "top10_overlap_count": 6,
+            "published_top1_pair": "T51-fP51-0 x T66-fP66-0",
+            "reconstructed_top1_pair": "T15-rP15-0 x T81-rP81-0"
+          },
+          "conc_optimized": {
+            "sheet_name": "PS1_Dimer NGS (conc optimized)",
+            "published_total_dimer_reads": 1242740,
+            "reconstructed_total_dimer_reads": 1307591,
+            "total_read_ratio_rec_over_pub": 1.0522,
+            "pearson_r_unordered": 0.999978,
+            "spearman_rho_unordered": 0.866754,
+            "pearson_r_ordered": 0.999977,
+            "exact_cell_match_pct": 98.7748,
+            "exact_cell_match_active_union_count": 161,
+            "exact_cell_match_active_union_pct": 41.49,
+            "active_pairs_union": 388,
+            "active_pair_jaccard": 0.7552,
+            "active_pairs_reconstructed": 383,
+            "active_pairs_published": 298,
+            "active_pairs_intersection": 293,
+            "mae_all_pairs": 3.5256,
+            "mae_active_union": 168.3582,
+            "total_l1_error_reads": 65323,
+            "normalized_l1_error": 0.052564,
+            "disagreeing_cells_total": 227,
+            "disagreement_stratification": {
+              "max_count_1_to_2": {
+                "cell_count": 75,
+                "pct_of_disagreeing_cells": 33.04,
+                "l1_reads": 85,
+                "pct_of_total_l1": 0.13
+              },
+              "max_count_3_to_9": {
+                "cell_count": 36,
+                "pct_of_disagreeing_cells": 15.86,
+                "l1_reads": 97,
+                "pct_of_total_l1": 0.15
+              },
+              "max_count_ge_10": {
+                "cell_count": 116,
+                "pct_of_disagreeing_cells": 51.1,
+                "l1_reads": 65141,
+                "pct_of_total_l1": 99.72
+              }
+            },
+            "top1_exact_match": true,
+            "top10_overlap_count": 10,
+            "published_top1_pair": "T15-rP15-0 x T81-rP81-0",
+            "reconstructed_top1_pair": "T15-rP15-0 x T81-rP81-0"
+          }
+        }
+      }
+    },
+    "PS2": {
+      "panel_id": "PS2",
+      "plex": 96,
+      "n_primers": 192,
+      "figure_ref": "Figure 3a",
+      "reference_fasta": "Ref_2.fasta",
+      "reference_fasta_sha256": "080122d14eaeea77dbb2ec42abfa9b6fe55851f783722dfc4b7230ba56e9e467",
+      "published_reference": {
+        "dimer_pct": 39.6,
+        "ontarget_pct": null,
+        "nonspecific_pct": null
+      },
+      "pipeline_a_bowtie2": {
+        "elapsed_seconds": 111.35,
+        "counts": {
+          "total_raw_reads": 1952269,
+          "no_adapter_both": 72323,
+          "no_adapter_r1_only": 83047,
+          "no_adapter_r2_only": 115211,
+          "qc_short_len": 705,
+          "qc_ambiguous_n": 3,
+          "qc_low_quality": 41490,
+          "qc_passed": 1639490,
+          "routed_long_ge60_to_bowtie2": 635304,
+          "routed_short_lt60_to_dimer_cand": 1004161,
+          "mixed_length_60bp_dropped_matlab_rule": 25,
+          "bt2_both_mapped_concordant": 481788,
+          "bt2_both_mapped_discordant": 74,
+          "bt2_one_mate_mapped": 19,
+          "bt2_both_unmapped": 153423,
+          "bt2_mapped_reads_total": 963743,
+          "dimer_cand_total": 1157584,
+          "dimer_cand_len_le15_excluded": 39,
+          "dimer_cand_primer_unmatched": 169506,
+          "dimers": 582366,
+          "nonspecific": 405673
+        },
+        "ontarget_ipynb_formula_pairs": 481871,
+        "ontarget_both_mapped_pairs": 481862,
+        "ontarget_floor_div_extra_pairs": 9,
+        "classified_denominator_ipynb": 1469910,
+        "classified_denominator_both_mapped": 1469901,
+        "pct_of_classified_ipynb": {
+          "ontarget_pct": 32.7823,
+          "nonspecific_pct": 27.5985,
+          "dimer_pct": 39.6192
+        },
+        "pct_of_classified_both_mapped": {
+          "ontarget_pct": 32.7819,
+          "nonspecific_pct": 27.5987,
+          "dimer_pct": 39.6194
+        },
+        "pct_of_raw_reads": {
+          "ontarget_ipynb_pct": 24.6826,
+          "nonspecific_pct": 20.7796,
+          "dimer_pct": 29.8302,
+          "classified_ipynb_pct": 75.2924,
+          "excluded_pct": 24.7076
+        },
+        "dimer_distribution": {
+          "total_candidate_pairs": 18528,
+          "total_dimer_reads": 582366,
+          "zero_dimer_pairs": 17879,
+          "zero_dimer_pct": 96.4972,
+          "active_dimer_pairs_ge1": 649,
+          "active_dimer_pct_ge1": 3.5028,
+          "severe_dimer_pairs_ge10": 238,
+          "severe_dimer_pct_ge10": 1.2845,
+          "top1_pct_of_dimer_reads": 26.3911,
+          "top10_pct_of_dimer_reads": 87.1624,
+          "top5_pairs": [
+            {
+              "rank": 1,
+              "pair_index": 8452,
+              "primer_1": "T51-fP51-10",
+              "primer_2": "T32-rP32-10",
+              "dimer_reads": 153693,
+              "pct_of_dimer_reads": 26.3911
+            },
+            {
+              "rank": 2,
+              "pair_index": 16640,
+              "primer_1": "T36-rP36-10",
+              "primer_2": "T39-rP39-10",
+              "dimer_reads": 92834,
+              "pct_of_dimer_reads": 15.9408
+            },
+            {
+              "rank": 3,
+              "pair_index": 17497,
+              "primer_1": "T52-rP52-10",
+              "primer_2": "T56-rP56-10",
+              "dimer_reads": 68741,
+              "pct_of_dimer_reads": 11.8037
+            },
+            {
+              "rank": 4,
+              "pair_index": 2205,
+              "primer_1": "T12-fP12-10",
+              "primer_2": "T64-rP64-10",
+              "dimer_reads": 54704,
+              "pct_of_dimer_reads": 9.3934
+            },
+            {
+              "rank": 5,
+              "pair_index": 2216,
+              "primer_1": "T12-fP12-10",
+              "primer_2": "T75-rP75-10",
+              "dimer_reads": 37583,
+              "pct_of_dimer_reads": 6.4535
+            }
+          ]
+        },
+        "bowtie2_summary_stderr": "635304 reads; of these:\n  635304 (100.00%) were paired; of these:\n    153516 (24.16%) aligned concordantly 0 times\n    480250 (75.59%) aligned concordantly exactly 1 time\n    1538 (0.24%) aligned concordantly >1 times\n    ----\n    153516 pairs aligned concordantly 0 times; of these:\n      74 (0.05%) aligned discordantly 1 time\n    ----\n    153442 pairs aligned 0 times concordantly or discordantly; of these:\n      306884 mates make up the pairs; of these:\n        306865 (99.99%) aligned 0 times\n        19 (0.01%) aligned exactly 1 time\n        0 (0.00%) aligned >1 times\n75.85% overall alignment rate",
+        "moesm7_matrix_validation": {
+          "not_optimized": {
+            "sheet_name": "PS2_Dimer NGS(not optimized)",
+            "published_total_dimer_reads": 417938,
+            "reconstructed_total_dimer_reads": 582366,
+            "total_read_ratio_rec_over_pub": 1.3934,
+            "pearson_r_unordered": 0.725052,
+            "spearman_rho_unordered": 0.585203,
+            "pearson_r_ordered": 0.723328,
+            "exact_cell_match_pct": 95.9089,
+            "exact_cell_match_active_union_count": 26,
+            "exact_cell_match_active_union_pct": 3.32,
+            "active_pairs_union": 784,
+            "active_pair_jaccard": 0.4082,
+            "active_pairs_reconstructed": 649,
+            "active_pairs_published": 455,
+            "active_pairs_intersection": 320,
+            "mae_all_pairs": 26.6694,
+            "mae_active_union": 630.2679,
+            "total_l1_error_reads": 494130,
+            "normalized_l1_error": 1.182305,
+            "disagreeing_cells_total": 758,
+            "disagreement_stratification": {
+              "max_count_1_to_2": {
+                "cell_count": 300,
+                "pct_of_disagreeing_cells": 39.58,
+                "l1_reads": 359,
+                "pct_of_total_l1": 0.07
+              },
+              "max_count_3_to_9": {
+                "cell_count": 159,
+                "pct_of_disagreeing_cells": 20.98,
+                "l1_reads": 666,
+                "pct_of_total_l1": 0.13
+              },
+              "max_count_ge_10": {
+                "cell_count": 299,
+                "pct_of_disagreeing_cells": 39.45,
+                "l1_reads": 493105,
+                "pct_of_total_l1": 99.79
+              }
+            },
+            "top1_exact_match": true,
+            "top10_overlap_count": 5,
+            "published_top1_pair": "T51-fP51-10 x T32-rP32-10",
+            "reconstructed_top1_pair": "T51-fP51-10 x T32-rP32-10"
+          },
+          "conc_optimized": {
+            "sheet_name": "PS2_Dimer NGS(conc optimized)",
+            "published_total_dimer_reads": 583203,
+            "reconstructed_total_dimer_reads": 582366,
+            "total_read_ratio_rec_over_pub": 0.9986,
+            "pearson_r_unordered": 0.999992,
+            "spearman_rho_unordered": 0.904845,
+            "pearson_r_ordered": 0.999992,
+            "exact_cell_match_pct": 98.4726,
+            "exact_cell_match_active_union_count": 371,
+            "exact_cell_match_active_union_pct": 56.73,
+            "active_pairs_union": 654,
+            "active_pair_jaccard": 0.8196,
+            "active_pairs_reconstructed": 649,
+            "active_pairs_published": 541,
+            "active_pairs_intersection": 536,
+            "mae_all_pairs": 0.217,
+            "mae_active_union": 6.1483,
+            "total_l1_error_reads": 4021,
+            "normalized_l1_error": 0.006895,
+            "disagreeing_cells_total": 283,
+            "disagreement_stratification": {
+              "max_count_1_to_2": {
+                "cell_count": 100,
+                "pct_of_disagreeing_cells": 35.34,
+                "l1_reads": 115,
+                "pct_of_total_l1": 2.86
+              },
+              "max_count_3_to_9": {
+                "cell_count": 45,
+                "pct_of_disagreeing_cells": 15.9,
+                "l1_reads": 113,
+                "pct_of_total_l1": 2.81
+              },
+              "max_count_ge_10": {
+                "cell_count": 138,
+                "pct_of_disagreeing_cells": 48.76,
+                "l1_reads": 3793,
+                "pct_of_total_l1": 94.33
+              }
+            },
+            "top1_exact_match": true,
+            "top10_overlap_count": 10,
+            "published_top1_pair": "T51-fP51-10 x T32-rP32-10",
+            "reconstructed_top1_pair": "T51-fP51-10 x T32-rP32-10"
+          }
+        }
+      },
+      "pipeline_b_edlib": {
+        "elapsed_seconds": 64.4,
+        "counts": {
+          "total_raw_reads": 1952269,
+          "no_adapter_both": 53069,
+          "no_adapter_r1_only": 50565,
+          "no_adapter_r2_only": 68779,
+          "qc_short_len": 752,
+          "qc_ambiguous_n": 4,
+          "qc_low_quality": 53319,
+          "primer_unmatched_both": 39098,
+          "primer_unmatched_r1_only": 105688,
+          "primer_unmatched_r2_only": 90962,
+          "classified_total": 1490033,
+          "dimers": 615973,
+          "m1_ontarget": 441921,
+          "m1_nonspecific": 432139,
+          "m2_edlib75_ontarget": 440850,
+          "m2_edlib80_ontarget": 440761,
+          "m2_edlib85_ontarget": 440747,
+          "ungapped75_ontarget": 431527
+        },
+        "exclusions_summary": {
+          "total_excluded": 462236,
+          "total_excluded_pct_raw": 23.6769,
+          "missing_adapter": 172413,
+          "missing_adapter_pct_raw": 8.8314,
+          "qc_failed": 54075,
+          "qc_failed_pct_raw": 2.7699,
+          "primer_unmatched": 235748,
+          "primer_unmatched_pct_raw": 12.0756,
+          "classified_pct_raw": 76.3231
+        },
+        "method1_primer_pairing": {
+          "ontarget_count": 441921,
+          "ontarget_pct_classified": 29.6585,
+          "ontarget_pct_raw": 22.6363,
+          "nonspecific_count": 432139,
+          "nonspecific_pct_classified": 29.002,
+          "nonspecific_pct_raw": 22.1352,
+          "dimer_count": 615973,
+          "dimer_pct_classified": 41.3396,
+          "dimer_pct_raw": 31.5516
+        },
+        "method2_edlib_75": {
+          "ontarget_count": 440850,
+          "ontarget_pct_classified": 29.5866,
+          "ontarget_pct_raw": 22.5814,
+          "nonspecific_count": 433210,
+          "nonspecific_pct_classified": 29.0739,
+          "nonspecific_pct_raw": 22.1901,
+          "dimer_count": 615973,
+          "dimer_pct_classified": 41.3396,
+          "dimer_pct_raw": 31.5516
+        },
+        "method2_edlib_80": {
+          "ontarget_count": 440761,
+          "ontarget_pct_classified": 29.5806,
+          "ontarget_pct_raw": 22.5769,
+          "nonspecific_count": 433299,
+          "nonspecific_pct_classified": 29.0798,
+          "nonspecific_pct_raw": 22.1946,
+          "dimer_count": 615973,
+          "dimer_pct_classified": 41.3396,
+          "dimer_pct_raw": 31.5516
+        },
+        "method2_edlib_85": {
+          "ontarget_count": 440747,
+          "ontarget_pct_classified": 29.5797,
+          "ontarget_pct_raw": 22.5761,
+          "nonspecific_count": 433313,
+          "nonspecific_pct_classified": 29.0808,
+          "nonspecific_pct_raw": 22.1954,
+          "dimer_count": 615973,
+          "dimer_pct_classified": 41.3396,
+          "dimer_pct_raw": 31.5516
+        },
+        "ungapped_positional_75": {
+          "ontarget_count": 431527,
+          "ontarget_pct_classified": 28.9609,
+          "ontarget_pct_raw": 22.1039,
+          "nonspecific_count": 442533,
+          "nonspecific_pct_classified": 29.6995,
+          "nonspecific_pct_raw": 22.6676,
+          "dimer_count": 615973,
+          "dimer_pct_classified": 41.3396,
+          "dimer_pct_raw": 31.5516
+        },
+        "dimer_distribution": {
+          "total_candidate_pairs": 18528,
+          "total_dimer_reads": 615973,
+          "zero_dimer_pairs": 17819,
+          "zero_dimer_pct": 96.1734,
+          "active_dimer_pairs_ge1": 709,
+          "active_dimer_pct_ge1": 3.8266,
+          "severe_dimer_pairs_ge10": 252,
+          "severe_dimer_pct_ge10": 1.3601,
+          "top1_pct_of_dimer_reads": 25.9349,
+          "top10_pct_of_dimer_reads": 85.8499,
+          "top5_pairs": [
+            {
+              "rank": 1,
+              "pair_index": 8452,
+              "primer_1": "T51-fP51-10",
+              "primer_2": "T32-rP32-10",
+              "dimer_reads": 159752,
+              "pct_of_dimer_reads": 25.9349
+            },
+            {
+              "rank": 2,
+              "pair_index": 16640,
+              "primer_1": "T36-rP36-10",
+              "primer_2": "T39-rP39-10",
+              "dimer_reads": 96394,
+              "pct_of_dimer_reads": 15.6491
+            },
+            {
+              "rank": 3,
+              "pair_index": 17497,
+              "primer_1": "T52-rP52-10",
+              "primer_2": "T56-rP56-10",
+              "dimer_reads": 71842,
+              "pct_of_dimer_reads": 11.6632
+            },
+            {
+              "rank": 4,
+              "pair_index": 2205,
+              "primer_1": "T12-fP12-10",
+              "primer_2": "T64-rP64-10",
+              "dimer_reads": 57175,
+              "pct_of_dimer_reads": 9.2821
+            },
+            {
+              "rank": 5,
+              "pair_index": 2216,
+              "primer_1": "T12-fP12-10",
+              "primer_2": "T75-rP75-10",
+              "dimer_reads": 39485,
+              "pct_of_dimer_reads": 6.4102
+            }
+          ]
+        },
+        "moesm7_matrix_validation": {
+          "not_optimized": {
+            "sheet_name": "PS2_Dimer NGS(not optimized)",
+            "published_total_dimer_reads": 417938,
+            "reconstructed_total_dimer_reads": 615973,
+            "total_read_ratio_rec_over_pub": 1.4738,
+            "pearson_r_unordered": 0.724791,
+            "spearman_rho_unordered": 0.562824,
+            "pearson_r_ordered": 0.722441,
+            "exact_cell_match_pct": 95.5959,
+            "exact_cell_match_active_union_count": 26,
+            "exact_cell_match_active_union_pct": 3.09,
+            "active_pairs_union": 842,
+            "active_pair_jaccard": 0.3824,
+            "active_pairs_reconstructed": 709,
+            "active_pairs_published": 455,
+            "active_pairs_intersection": 322,
+            "mae_all_pairs": 28.108,
+            "mae_active_union": 618.5095,
+            "total_l1_error_reads": 520785,
+            "normalized_l1_error": 1.246082,
+            "disagreeing_cells_total": 816,
+            "disagreement_stratification": {
+              "max_count_1_to_2": {
+                "cell_count": 337,
+                "pct_of_disagreeing_cells": 41.3,
+                "l1_reads": 403,
+                "pct_of_total_l1": 0.08
+              },
+              "max_count_3_to_9": {
+                "cell_count": 167,
+                "pct_of_disagreeing_cells": 20.47,
+                "l1_reads": 724,
+                "pct_of_total_l1": 0.14
+              },
+              "max_count_ge_10": {
+                "cell_count": 312,
+                "pct_of_disagreeing_cells": 38.24,
+                "l1_reads": 519658,
+                "pct_of_total_l1": 99.78
+              }
+            },
+            "top1_exact_match": true,
+            "top10_overlap_count": 5,
+            "published_top1_pair": "T51-fP51-10 x T32-rP32-10",
+            "reconstructed_top1_pair": "T51-fP51-10 x T32-rP32-10"
+          },
+          "conc_optimized": {
+            "sheet_name": "PS2_Dimer NGS(conc optimized)",
+            "published_total_dimer_reads": 583203,
+            "reconstructed_total_dimer_reads": 615973,
+            "total_read_ratio_rec_over_pub": 1.0562,
+            "pearson_r_unordered": 0.999263,
+            "spearman_rho_unordered": 0.85106,
+            "pearson_r_ordered": 0.998545,
+            "exact_cell_match_pct": 97.5604,
+            "exact_cell_match_active_union_count": 271,
+            "exact_cell_match_active_union_pct": 37.48,
+            "active_pairs_union": 723,
+            "active_pair_jaccard": 0.7289,
+            "active_pairs_reconstructed": 709,
+            "active_pairs_published": 541,
+            "active_pairs_intersection": 527,
+            "mae_all_pairs": 1.8116,
+            "mae_active_union": 46.426,
+            "total_l1_error_reads": 33566,
+            "normalized_l1_error": 0.057555,
+            "disagreeing_cells_total": 452,
+            "disagreement_stratification": {
+              "max_count_1_to_2": {
+                "cell_count": 161,
+                "pct_of_disagreeing_cells": 35.62,
+                "l1_reads": 183,
+                "pct_of_total_l1": 0.55
+              },
+              "max_count_3_to_9": {
+                "cell_count": 83,
+                "pct_of_disagreeing_cells": 18.36,
+                "l1_reads": 225,
+                "pct_of_total_l1": 0.67
+              },
+              "max_count_ge_10": {
+                "cell_count": 208,
+                "pct_of_disagreeing_cells": 46.02,
+                "l1_reads": 33158,
+                "pct_of_total_l1": 98.78
+              }
+            },
+            "top1_exact_match": true,
+            "top10_overlap_count": 10,
+            "published_top1_pair": "T51-fP51-10 x T32-rP32-10",
+            "reconstructed_top1_pair": "T51-fP51-10 x T32-rP32-10"
+          }
+        }
+      }
+    },
+    "PS3": {
+      "panel_id": "PS3",
+      "plex": 96,
+      "n_primers": 192,
+      "figure_ref": "Figure 3a",
+      "reference_fasta": "Ref_3.fasta",
+      "reference_fasta_sha256": "ba6316e90f9f1b568de09600741f51460598c31d0ff26097e340b19a9cdc88dd",
+      "published_reference": {
+        "dimer_pct": 4.9,
+        "ontarget_pct": null,
+        "nonspecific_pct": null
+      },
+      "pipeline_a_bowtie2": {
+        "elapsed_seconds": 119.5,
+        "counts": {
+          "total_raw_reads": 1738418,
+          "no_adapter_both": 138590,
+          "no_adapter_r1_only": 82176,
+          "no_adapter_r2_only": 116086,
+          "qc_short_len": 2098,
+          "qc_ambiguous_n": 2,
+          "qc_low_quality": 50069,
+          "qc_passed": 1349397,
+          "routed_long_ge60_to_bowtie2": 1062460,
+          "routed_short_lt60_to_dimer_cand": 286932,
+          "mixed_length_60bp_dropped_matlab_rule": 5,
+          "bt2_both_mapped_concordant": 814839,
+          "bt2_both_mapped_discordant": 123,
+          "bt2_one_mate_mapped": 46,
+          "bt2_both_unmapped": 247452,
+          "bt2_mapped_reads_total": 1629970,
+          "dimer_cand_total": 534384,
+          "dimer_cand_len_le15_excluded": 72,
+          "dimer_cand_primer_unmatched": 117372,
+          "dimers": 61262,
+          "nonspecific": 355678
+        },
+        "ontarget_ipynb_formula_pairs": 814985,
+        "ontarget_both_mapped_pairs": 814962,
+        "ontarget_floor_div_extra_pairs": 23,
+        "classified_denominator_ipynb": 1231925,
+        "classified_denominator_both_mapped": 1231902,
+        "pct_of_classified_ipynb": {
+          "ontarget_pct": 66.1554,
+          "nonspecific_pct": 28.8717,
+          "dimer_pct": 4.9729
+        },
+        "pct_of_classified_both_mapped": {
+          "ontarget_pct": 66.1548,
+          "nonspecific_pct": 28.8723,
+          "dimer_pct": 4.973
+        },
+        "pct_of_raw_reads": {
+          "ontarget_ipynb_pct": 46.8808,
+          "nonspecific_pct": 20.4599,
+          "dimer_pct": 3.524,
+          "classified_ipynb_pct": 70.8647,
+          "excluded_pct": 29.1353
+        },
+        "dimer_distribution": {
+          "total_candidate_pairs": 18528,
+          "total_dimer_reads": 61262,
+          "zero_dimer_pairs": 18177,
+          "zero_dimer_pct": 98.1056,
+          "active_dimer_pairs_ge1": 351,
+          "active_dimer_pct_ge1": 1.8944,
+          "severe_dimer_pairs_ge10": 107,
+          "severe_dimer_pct_ge10": 0.5775,
+          "top1_pct_of_dimer_reads": 44.6508,
+          "top10_pct_of_dimer_reads": 86.6002,
+          "top5_pairs": [
+            {
+              "rank": 1,
+              "pair_index": 3012,
+              "primer_1": "T17-fP17-final",
+              "primer_2": "T77-fP77-final",
+              "dimer_reads": 27354,
+              "pct_of_dimer_reads": 44.6508
+            },
+            {
+              "rank": 2,
+              "pair_index": 3282,
+              "primer_1": "T18-fP18-final",
+              "primer_2": "T76-rP76-final",
+              "dimer_reads": 9356,
+              "pct_of_dimer_reads": 15.2721
+            },
+            {
+              "rank": 3,
+              "pair_index": 4765,
+              "primer_1": "T27-fP27-final",
+              "primer_2": "T29-rP29-final",
+              "dimer_reads": 4796,
+              "pct_of_dimer_reads": 7.8287
+            },
+            {
+              "rank": 4,
+              "pair_index": 12344,
+              "primer_1": "T82-fP82-final",
+              "primer_2": "T18-rP18-final",
+              "dimer_reads": 3729,
+              "pct_of_dimer_reads": 6.087
+            },
+            {
+              "rank": 5,
+              "pair_index": 12332,
+              "primer_1": "T82-fP82-final",
+              "primer_2": "T6-rP6-final",
+              "dimer_reads": 2018,
+              "pct_of_dimer_reads": 3.294
+            }
+          ]
+        },
+        "bowtie2_summary_stderr": "1062460 reads; of these:\n  1062460 (100.00%) were paired; of these:\n    247621 (23.31%) aligned concordantly 0 times\n    809958 (76.23%) aligned concordantly exactly 1 time\n    4881 (0.46%) aligned concordantly >1 times\n    ----\n    247621 pairs aligned concordantly 0 times; of these:\n      123 (0.05%) aligned discordantly 1 time\n    ----\n    247498 pairs aligned 0 times concordantly or discordantly; of these:\n      494996 mates make up the pairs; of these:\n        494950 (99.99%) aligned 0 times\n        45 (0.01%) aligned exactly 1 time\n        1 (0.00%) aligned >1 times\n76.71% overall alignment rate",
+        "moesm7_matrix_validation": {
+          "not_optimized": {
+            "sheet_name": "PS3_Dimer NGS(not optimized)",
+            "published_total_dimer_reads": 161530,
+            "reconstructed_total_dimer_reads": 61262,
+            "total_read_ratio_rec_over_pub": 0.3793,
+            "pearson_r_unordered": 0.11426,
+            "spearman_rho_unordered": 0.489787,
+            "pearson_r_ordered": 0.113546,
+            "exact_cell_match_pct": 97.3985,
+            "exact_cell_match_active_union_count": 6,
+            "exact_cell_match_active_union_pct": 1.23,
+            "active_pairs_union": 488,
+            "active_pair_jaccard": 0.3258,
+            "active_pairs_reconstructed": 351,
+            "active_pairs_published": 296,
+            "active_pairs_intersection": 159,
+            "mae_all_pairs": 10.4099,
+            "mae_active_union": 395.2336,
+            "total_l1_error_reads": 192874,
+            "normalized_l1_error": 1.194044,
+            "disagreeing_cells_total": 482,
+            "disagreement_stratification": {
+              "max_count_1_to_2": {
+                "cell_count": 235,
+                "pct_of_disagreeing_cells": 48.76,
+                "l1_reads": 273,
+                "pct_of_total_l1": 0.14
+              },
+              "max_count_3_to_9": {
+                "cell_count": 103,
+                "pct_of_disagreeing_cells": 21.37,
+                "l1_reads": 441,
+                "pct_of_total_l1": 0.23
+              },
+              "max_count_ge_10": {
+                "cell_count": 144,
+                "pct_of_disagreeing_cells": 29.88,
+                "l1_reads": 192160,
+                "pct_of_total_l1": 99.63
+              }
+            },
+            "top1_exact_match": false,
+            "top10_overlap_count": 3,
+            "published_top1_pair": "T23-rP23-final x T29-rP29-final",
+            "reconstructed_top1_pair": "T17-fP17-final x T77-fP77-final"
+          },
+          "conc_optimized": {
+            "sheet_name": "PS3_Dimer NGS(conc optimized)",
+            "published_total_dimer_reads": 60856,
+            "reconstructed_total_dimer_reads": 61262,
+            "total_read_ratio_rec_over_pub": 1.0067,
+            "pearson_r_unordered": 0.999991,
+            "spearman_rho_unordered": 0.872163,
+            "pearson_r_ordered": 0.999988,
+            "exact_cell_match_pct": 99.2768,
+            "exact_cell_match_active_union_count": 218,
+            "exact_cell_match_active_union_pct": 61.93,
+            "active_pairs_union": 352,
+            "active_pair_jaccard": 0.7614,
+            "active_pairs_reconstructed": 351,
+            "active_pairs_published": 269,
+            "active_pairs_intersection": 268,
+            "mae_all_pairs": 0.0335,
+            "mae_active_union": 1.7614,
+            "total_l1_error_reads": 620,
+            "normalized_l1_error": 0.010188,
+            "disagreeing_cells_total": 134,
+            "disagreement_stratification": {
+              "max_count_1_to_2": {
+                "cell_count": 67,
+                "pct_of_disagreeing_cells": 50.0,
+                "l1_reads": 77,
+                "pct_of_total_l1": 12.42
+              },
+              "max_count_3_to_9": {
+                "cell_count": 18,
+                "pct_of_disagreeing_cells": 13.43,
+                "l1_reads": 68,
+                "pct_of_total_l1": 10.97
+              },
+              "max_count_ge_10": {
+                "cell_count": 49,
+                "pct_of_disagreeing_cells": 36.57,
+                "l1_reads": 475,
+                "pct_of_total_l1": 76.61
+              }
+            },
+            "top1_exact_match": true,
+            "top10_overlap_count": 10,
+            "published_top1_pair": "T17-fP17-final x T77-fP77-final",
+            "reconstructed_top1_pair": "T17-fP17-final x T77-fP77-final"
+          }
+        }
+      },
+      "pipeline_b_edlib": {
+        "elapsed_seconds": 86.91,
+        "counts": {
+          "total_raw_reads": 1738418,
+          "no_adapter_both": 97694,
+          "no_adapter_r1_only": 54809,
+          "no_adapter_r2_only": 73936,
+          "qc_short_len": 2260,
+          "qc_ambiguous_n": 3,
+          "qc_low_quality": 65807,
+          "primer_unmatched_both": 68930,
+          "primer_unmatched_r1_only": 84066,
+          "primer_unmatched_r2_only": 72676,
+          "classified_total": 1218237,
+          "dimers": 65115,
+          "m1_ontarget": 754421,
+          "m1_nonspecific": 398701,
+          "m2_edlib75_ontarget": 751769,
+          "m2_edlib80_ontarget": 751560,
+          "m2_edlib85_ontarget": 751547,
+          "ungapped75_ontarget": 738020
+        },
+        "exclusions_summary": {
+          "total_excluded": 520181,
+          "total_excluded_pct_raw": 29.9227,
+          "missing_adapter": 226439,
+          "missing_adapter_pct_raw": 13.0256,
+          "qc_failed": 68070,
+          "qc_failed_pct_raw": 3.9156,
+          "primer_unmatched": 225672,
+          "primer_unmatched_pct_raw": 12.9815,
+          "classified_pct_raw": 70.0773
+        },
+        "method1_primer_pairing": {
+          "ontarget_count": 754421,
+          "ontarget_pct_classified": 61.9273,
+          "ontarget_pct_raw": 43.397,
+          "nonspecific_count": 398701,
+          "nonspecific_pct_classified": 32.7277,
+          "nonspecific_pct_raw": 22.9347,
+          "dimer_count": 65115,
+          "dimer_pct_classified": 5.345,
+          "dimer_pct_raw": 3.7456
+        },
+        "method2_edlib_75": {
+          "ontarget_count": 751769,
+          "ontarget_pct_classified": 61.7096,
+          "ontarget_pct_raw": 43.2444,
+          "nonspecific_count": 401353,
+          "nonspecific_pct_classified": 32.9454,
+          "nonspecific_pct_raw": 23.0873,
+          "dimer_count": 65115,
+          "dimer_pct_classified": 5.345,
+          "dimer_pct_raw": 3.7456
+        },
+        "method2_edlib_80": {
+          "ontarget_count": 751560,
+          "ontarget_pct_classified": 61.6924,
+          "ontarget_pct_raw": 43.2324,
+          "nonspecific_count": 401562,
+          "nonspecific_pct_classified": 32.9626,
+          "nonspecific_pct_raw": 23.0993,
+          "dimer_count": 65115,
+          "dimer_pct_classified": 5.345,
+          "dimer_pct_raw": 3.7456
+        },
+        "method2_edlib_85": {
+          "ontarget_count": 751547,
+          "ontarget_pct_classified": 61.6914,
+          "ontarget_pct_raw": 43.2317,
+          "nonspecific_count": 401575,
+          "nonspecific_pct_classified": 32.9636,
+          "nonspecific_pct_raw": 23.1,
+          "dimer_count": 65115,
+          "dimer_pct_classified": 5.345,
+          "dimer_pct_raw": 3.7456
+        },
+        "ungapped_positional_75": {
+          "ontarget_count": 738020,
+          "ontarget_pct_classified": 60.581,
+          "ontarget_pct_raw": 42.4535,
+          "nonspecific_count": 415102,
+          "nonspecific_pct_classified": 34.074,
+          "nonspecific_pct_raw": 23.8781,
+          "dimer_count": 65115,
+          "dimer_pct_classified": 5.345,
+          "dimer_pct_raw": 3.7456
+        },
+        "dimer_distribution": {
+          "total_candidate_pairs": 18528,
+          "total_dimer_reads": 65115,
+          "zero_dimer_pairs": 18134,
+          "zero_dimer_pct": 97.8735,
+          "active_dimer_pairs_ge1": 394,
+          "active_dimer_pct_ge1": 2.1265,
+          "severe_dimer_pairs_ge10": 119,
+          "severe_dimer_pct_ge10": 0.6423,
+          "top1_pct_of_dimer_reads": 43.9392,
+          "top10_pct_of_dimer_reads": 85.2553,
+          "top5_pairs": [
+            {
+              "rank": 1,
+              "pair_index": 3012,
+              "primer_1": "T17-fP17-final",
+              "primer_2": "T77-fP77-final",
+              "dimer_reads": 28611,
+              "pct_of_dimer_reads": 43.9392
+            },
+            {
+              "rank": 2,
+              "pair_index": 3282,
+              "primer_1": "T18-fP18-final",
+              "primer_2": "T76-rP76-final",
+              "dimer_reads": 9804,
+              "pct_of_dimer_reads": 15.0564
+            },
+            {
+              "rank": 3,
+              "pair_index": 4765,
+              "primer_1": "T27-fP27-final",
+              "primer_2": "T29-rP29-final",
+              "dimer_reads": 5048,
+              "pct_of_dimer_reads": 7.7524
+            },
+            {
+              "rank": 4,
+              "pair_index": 12344,
+              "primer_1": "T82-fP82-final",
+              "primer_2": "T18-rP18-final",
+              "dimer_reads": 3895,
+              "pct_of_dimer_reads": 5.9817
+            },
+            {
+              "rank": 5,
+              "pair_index": 12332,
+              "primer_1": "T82-fP82-final",
+              "primer_2": "T6-rP6-final",
+              "dimer_reads": 2086,
+              "pct_of_dimer_reads": 3.2036
+            }
+          ]
+        },
+        "moesm7_matrix_validation": {
+          "not_optimized": {
+            "sheet_name": "PS3_Dimer NGS(not optimized)",
+            "published_total_dimer_reads": 161530,
+            "reconstructed_total_dimer_reads": 65115,
+            "total_read_ratio_rec_over_pub": 0.4031,
+            "pearson_r_unordered": 0.114504,
+            "spearman_rho_unordered": 0.467398,
+            "pearson_r_ordered": 0.113727,
+            "exact_cell_match_pct": 97.1772,
+            "exact_cell_match_active_union_count": 6,
+            "exact_cell_match_active_union_pct": 1.13,
+            "active_pairs_union": 529,
+            "active_pair_jaccard": 0.3043,
+            "active_pairs_reconstructed": 394,
+            "active_pairs_published": 296,
+            "active_pairs_intersection": 161,
+            "mae_all_pairs": 10.5626,
+            "mae_active_union": 369.949,
+            "total_l1_error_reads": 195703,
+            "normalized_l1_error": 1.211558,
+            "disagreeing_cells_total": 523,
+            "disagreement_stratification": {
+              "max_count_1_to_2": {
+                "cell_count": 265,
+                "pct_of_disagreeing_cells": 50.67,
+                "l1_reads": 309,
+                "pct_of_total_l1": 0.16
+              },
+              "max_count_3_to_9": {
+                "cell_count": 105,
+                "pct_of_disagreeing_cells": 20.08,
+                "l1_reads": 460,
+                "pct_of_total_l1": 0.24
+              },
+              "max_count_ge_10": {
+                "cell_count": 153,
+                "pct_of_disagreeing_cells": 29.25,
+                "l1_reads": 194934,
+                "pct_of_total_l1": 99.61
+              }
+            },
+            "top1_exact_match": false,
+            "top10_overlap_count": 3,
+            "published_top1_pair": "T23-rP23-final x T29-rP29-final",
+            "reconstructed_top1_pair": "T17-fP17-final x T77-fP77-final"
+          },
+          "conc_optimized": {
+            "sheet_name": "PS3_Dimer NGS(conc optimized)",
+            "published_total_dimer_reads": 60856,
+            "reconstructed_total_dimer_reads": 65115,
+            "total_read_ratio_rec_over_pub": 1.07,
+            "pearson_r_unordered": 0.999778,
+            "spearman_rho_unordered": 0.816898,
+            "pearson_r_ordered": 0.99956,
+            "exact_cell_match_pct": 98.6939,
+            "exact_cell_match_active_union_count": 155,
+            "exact_cell_match_active_union_pct": 39.04,
+            "active_pairs_union": 397,
+            "active_pair_jaccard": 0.67,
+            "active_pairs_reconstructed": 394,
+            "active_pairs_published": 269,
+            "active_pairs_intersection": 266,
+            "mae_all_pairs": 0.2321,
+            "mae_active_union": 10.8338,
+            "total_l1_error_reads": 4301,
+            "normalized_l1_error": 0.070675,
+            "disagreeing_cells_total": 242,
+            "disagreement_stratification": {
+              "max_count_1_to_2": {
+                "cell_count": 106,
+                "pct_of_disagreeing_cells": 43.8,
+                "l1_reads": 121,
+                "pct_of_total_l1": 2.81
+              },
+              "max_count_3_to_9": {
+                "cell_count": 35,
+                "pct_of_disagreeing_cells": 14.46,
+                "l1_reads": 108,
+                "pct_of_total_l1": 2.51
+              },
+              "max_count_ge_10": {
+                "cell_count": 101,
+                "pct_of_disagreeing_cells": 41.74,
+                "l1_reads": 4072,
+                "pct_of_total_l1": 94.68
+              }
+            },
+            "top1_exact_match": true,
+            "top10_overlap_count": 10,
+            "published_top1_pair": "T17-fP17-final x T77-fP77-final",
+            "reconstructed_top1_pair": "T17-fP17-final x T77-fP77-final"
+          }
+        }
+      }
+    },
+    "E19": {
+      "panel_id": "E19",
+      "plex": 384,
+      "n_primers": 768,
+      "figure_ref": "Figure 3f",
+      "reference_fasta": "reference_384_amplicons.fasta",
+      "reference_fasta_sha256": "5809ad5dcd40b61d970de6fc618ba5dfd15e4b2a22c57dd835265128dbb38bc0",
+      "published_reference": {
+        "dimer_pct": 1.0,
+        "ontarget_pct": 43.0,
+        "nonspecific_pct": 56.0
+      },
+      "pipeline_a_bowtie2": {
+        "elapsed_seconds": 444.91,
+        "counts": {
+          "total_raw_reads": 3942385,
+          "no_adapter_both": 590707,
+          "no_adapter_r1_only": 139519,
+          "no_adapter_r2_only": 213826,
+          "qc_short_len": 40,
+          "qc_ambiguous_n": 9,
+          "qc_low_quality": 101471,
+          "qc_passed": 2896813,
+          "routed_long_ge60_to_bowtie2": 2699896,
+          "routed_short_lt60_to_dimer_cand": 196916,
+          "mixed_length_60bp_dropped_matlab_rule": 1,
+          "bt2_both_mapped_concordant": 1190423,
+          "bt2_both_mapped_discordant": 90,
+          "bt2_one_mate_mapped": 238,
+          "bt2_both_unmapped": 1509145,
+          "bt2_mapped_reads_total": 2381264,
+          "dimer_cand_total": 1706061,
+          "dimer_cand_len_le15_excluded": 9,
+          "dimer_cand_primer_unmatched": 112229,
+          "dimers": 23534,
+          "nonspecific": 1570289
+        },
+        "ontarget_ipynb_formula_pairs": 1190632,
+        "ontarget_both_mapped_pairs": 1190513,
+        "ontarget_floor_div_extra_pairs": 119,
+        "classified_denominator_ipynb": 2784455,
+        "classified_denominator_both_mapped": 2784336,
+        "pct_of_classified_ipynb": {
+          "ontarget_pct": 42.76,
+          "nonspecific_pct": 56.3948,
+          "dimer_pct": 0.8452
+        },
+        "pct_of_classified_both_mapped": {
+          "ontarget_pct": 42.7575,
+          "nonspecific_pct": 56.3973,
+          "dimer_pct": 0.8452
+        },
+        "pct_of_raw_reads": {
+          "ontarget_ipynb_pct": 30.2008,
+          "nonspecific_pct": 39.8309,
+          "dimer_pct": 0.5969,
+          "classified_ipynb_pct": 70.6287,
+          "excluded_pct": 29.3713
+        },
+        "dimer_distribution": {
+          "total_candidate_pairs": 295296,
+          "total_dimer_reads": 23534,
+          "zero_dimer_pairs": 294274,
+          "zero_dimer_pct": 99.6539,
+          "active_dimer_pairs_ge1": 1022,
+          "active_dimer_pct_ge1": 0.3461,
+          "severe_dimer_pairs_ge10": 82,
+          "severe_dimer_pct_ge10": 0.0278,
+          "top1_pct_of_dimer_reads": 69.5377,
+          "top10_pct_of_dimer_reads": 83.8489,
+          "top5_pairs": [
+            {
+              "rank": 1,
+              "pair_index": 280576,
+              "primer_1": "rp213",
+              "primer_2": "rp371",
+              "dimer_reads": 16365,
+              "pct_of_dimer_reads": 69.5377
+            },
+            {
+              "rank": 2,
+              "pair_index": 183887,
+              "primer_1": "fp297",
+              "primer_2": "rp132",
+              "dimer_reads": 1192,
+              "pct_of_dimer_reads": 5.065
+            },
+            {
+              "rank": 3,
+              "pair_index": 53307,
+              "primer_1": "fp73",
+              "primer_2": "rp256",
+              "dimer_reads": 454,
+              "pct_of_dimer_reads": 1.9291
+            },
+            {
+              "rank": 4,
+              "pair_index": 257635,
+              "primer_1": "rp111",
+              "primer_2": "rp125",
+              "dimer_reads": 425,
+              "pct_of_dimer_reads": 1.8059
+            },
+            {
+              "rank": 5,
+              "pair_index": 226648,
+              "primer_1": "rp14",
+              "primer_2": "rp372",
+              "dimer_reads": 417,
+              "pct_of_dimer_reads": 1.7719
+            }
+          ]
+        },
+        "bowtie2_summary_stderr": "2699896 reads; of these:\n  2699896 (100.00%) were paired; of these:\n    1509473 (55.91%) aligned concordantly 0 times\n    1190423 (44.09%) aligned concordantly exactly 1 time\n    0 (0.00%) aligned concordantly >1 times\n    ----\n    1509473 pairs aligned concordantly 0 times; of these:\n      90 (0.01%) aligned discordantly 1 time\n    ----\n    1509383 pairs aligned 0 times concordantly or discordantly; of these:\n      3018766 mates make up the pairs; of these:\n        3018528 (99.99%) aligned 0 times\n        238 (0.01%) aligned exactly 1 time\n        0 (0.00%) aligned >1 times\n44.10% overall alignment rate"
+      },
+      "pipeline_b_edlib": {
+        "elapsed_seconds": 296.93,
+        "counts": {
+          "total_raw_reads": 3942385,
+          "no_adapter_both": 475468,
+          "no_adapter_r1_only": 116735,
+          "no_adapter_r2_only": 159441,
+          "qc_short_len": 43,
+          "qc_ambiguous_n": 10,
+          "qc_low_quality": 137033,
+          "primer_unmatched_both": 5566,
+          "primer_unmatched_r1_only": 88888,
+          "primer_unmatched_r2_only": 98537,
+          "classified_total": 2860664,
+          "dimers": 24878,
+          "m1_ontarget": 1254647,
+          "m1_nonspecific": 1581139,
+          "m2_edlib75_ontarget": 1247090,
+          "m2_edlib80_ontarget": 1223057,
+          "m2_edlib85_ontarget": 1140453,
+          "ungapped75_ontarget": 1125703
+        },
+        "exclusions_summary": {
+          "total_excluded": 1081721,
+          "total_excluded_pct_raw": 27.4382,
+          "missing_adapter": 751644,
+          "missing_adapter_pct_raw": 19.0657,
+          "qc_failed": 137086,
+          "qc_failed_pct_raw": 3.4772,
+          "primer_unmatched": 192991,
+          "primer_unmatched_pct_raw": 4.8953,
+          "classified_pct_raw": 72.5618
+        },
+        "method1_primer_pairing": {
+          "ontarget_count": 1254647,
+          "ontarget_pct_classified": 43.8586,
+          "ontarget_pct_raw": 31.8246,
+          "nonspecific_count": 1581139,
+          "nonspecific_pct_classified": 55.2717,
+          "nonspecific_pct_raw": 40.1062,
+          "dimer_count": 24878,
+          "dimer_pct_classified": 0.8697,
+          "dimer_pct_raw": 0.631
+        },
+        "method2_edlib_75": {
+          "ontarget_count": 1247090,
+          "ontarget_pct_classified": 43.5944,
+          "ontarget_pct_raw": 31.6329,
+          "nonspecific_count": 1588696,
+          "nonspecific_pct_classified": 55.5359,
+          "nonspecific_pct_raw": 40.2978,
+          "dimer_count": 24878,
+          "dimer_pct_classified": 0.8697,
+          "dimer_pct_raw": 0.631
+        },
+        "method2_edlib_80": {
+          "ontarget_count": 1223057,
+          "ontarget_pct_classified": 42.7543,
+          "ontarget_pct_raw": 31.0233,
+          "nonspecific_count": 1612729,
+          "nonspecific_pct_classified": 56.376,
+          "nonspecific_pct_raw": 40.9074,
+          "dimer_count": 24878,
+          "dimer_pct_classified": 0.8697,
+          "dimer_pct_raw": 0.631
+        },
+        "method2_edlib_85": {
+          "ontarget_count": 1140453,
+          "ontarget_pct_classified": 39.8667,
+          "ontarget_pct_raw": 28.928,
+          "nonspecific_count": 1695333,
+          "nonspecific_pct_classified": 59.2636,
+          "nonspecific_pct_raw": 43.0027,
+          "dimer_count": 24878,
+          "dimer_pct_classified": 0.8697,
+          "dimer_pct_raw": 0.631
+        },
+        "ungapped_positional_75": {
+          "ontarget_count": 1125703,
+          "ontarget_pct_classified": 39.3511,
+          "ontarget_pct_raw": 28.5539,
+          "nonspecific_count": 1710083,
+          "nonspecific_pct_classified": 59.7792,
+          "nonspecific_pct_raw": 43.3769,
+          "dimer_count": 24878,
+          "dimer_pct_classified": 0.8697,
+          "dimer_pct_raw": 0.631
+        },
+        "dimer_distribution": {
+          "total_candidate_pairs": 295296,
+          "total_dimer_reads": 24878,
+          "zero_dimer_pairs": 294122,
+          "zero_dimer_pct": 99.6024,
+          "active_dimer_pairs_ge1": 1174,
+          "active_dimer_pct_ge1": 0.3976,
+          "severe_dimer_pairs_ge10": 98,
+          "severe_dimer_pct_ge10": 0.0332,
+          "top1_pct_of_dimer_reads": 67.5496,
+          "top10_pct_of_dimer_reads": 81.4093,
+          "top5_pairs": [
+            {
+              "rank": 1,
+              "pair_index": 280576,
+              "primer_1": "rp213",
+              "primer_2": "rp371",
+              "dimer_reads": 16805,
+              "pct_of_dimer_reads": 67.5496
+            },
+            {
+              "rank": 2,
+              "pair_index": 183887,
+              "primer_1": "fp297",
+              "primer_2": "rp132",
+              "dimer_reads": 1229,
+              "pct_of_dimer_reads": 4.9401
+            },
+            {
+              "rank": 3,
+              "pair_index": 53307,
+              "primer_1": "fp73",
+              "primer_2": "rp256",
+              "dimer_reads": 465,
+              "pct_of_dimer_reads": 1.8691
+            },
+            {
+              "rank": 4,
+              "pair_index": 257635,
+              "primer_1": "rp111",
+              "primer_2": "rp125",
+              "dimer_reads": 429,
+              "pct_of_dimer_reads": 1.7244
+            },
+            {
+              "rank": 5,
+              "pair_index": 226648,
+              "primer_1": "rp14",
+              "primer_2": "rp372",
+              "dimer_reads": 425,
+              "pct_of_dimer_reads": 1.7083
+            }
+          ]
+        }
+      }
+    }
+  },
+  "random_audits_e19": {
+    "seed": 20261124,
+    "population_nondimer_reads": 2835786,
+    "population_cognate_nondimer_reads": 1254647,
+    "per_read_evidence_table": "matched_pair_audit_5000.tsv.gz",
+    "all_384_target_concordance_75": {
+      "sample_size": 5000,
+      "method_a": "cognate_edlib75",
+      "method_b": "all_target_edlib75",
+      "both_ontarget": 2244,
+      "both_offtarget": 2625,
+      "a_on_b_off": 0,
+      "a_off_b_on": 131,
+      "method_a_ontarget_pct": 44.88,
+      "method_a_ontarget_ci95": [
+        43.5058,
+        46.262
+      ],
+      "method_b_ontarget_pct": 47.5,
+      "method_b_ontarget_ci95": [
+        46.1183,
+        48.8856
+      ],
+      "diff_b_minus_a_pp": 2.62,
+      "concordance_pct": 97.38,
+      "concordance_ci95": [
+        96.8996,
+        97.7877
+      ],
+      "discordance_pct": 2.62,
+      "discordance_ci95": [
+        2.2123,
+        3.1004
+      ],
+      "cognate_total": 2256,
+      "noncognate_total": 2744,
+      "cognate_cross_target_best": 0,
+      "cognate_tied_noncognate_best": 0
+    },
+    "all_384_target_concordance_80": {
+      "sample_size": 5000,
+      "method_a": "cognate_edlib80",
+      "method_b": "all_target_edlib80",
+      "both_ontarget": 2204,
+      "both_offtarget": 2728,
+      "a_on_b_off": 0,
+      "a_off_b_on": 68,
+      "method_a_ontarget_pct": 44.08,
+      "method_a_ontarget_ci95": [
+        42.7089,
+        45.4602
+      ],
+      "method_b_ontarget_pct": 45.44,
+      "method_b_ontarget_ci95": [
+        44.0639,
+        46.8231
+      ],
+      "diff_b_minus_a_pp": 1.36,
+      "concordance_pct": 98.64,
+      "concordance_ci95": [
+        98.2796,
+        98.9257
+      ],
+      "discordance_pct": 1.36,
+      "discordance_ci95": [
+        1.0743,
+        1.7204
+      ],
+      "cognate_total": 2256,
+      "noncognate_total": 2744,
+      "cognate_cross_target_best": 0,
+      "cognate_tied_noncognate_best": 0
+    },
+    "matched_pair_bowtie2_audit": {
+      "sample_size": 5000,
+      "pairs_ge60_both_mates": 4684,
+      "pairs_lt60_either_mate": 316,
+      "bt2_both_mapped_any_count": 2063,
+      "bt2_both_mapped_any_pct": 41.26,
+      "bt2_both_mapped_any_ci95": [
+        39.9027,
+        42.6308
+      ],
+      "bt2_concordant_count": 2063,
+      "bt2_concordant_pct": 41.26,
+      "bt2_concordant_ci95": [
+        39.9027,
+        42.6308
+      ],
+      "bt2_both_equals_concordant": true,
+      "bt2_ge60_both_mapped_count": 2061,
+      "bt2_ge60_both_mapped_pct": 41.22,
+      "bt2_ge60_both_mapped_ci95": [
+        39.8629,
+        42.5906
+      ],
+      "vs_cognate_edlib75": {
+        "sample_size": 5000,
+        "method_a": "bowtie2_paired",
+        "method_b": "cognate_edlib75",
+        "both_ontarget": 2017,
+        "both_offtarget": 2710,
+        "a_on_b_off": 46,
+        "a_off_b_on": 227,
+        "method_a_ontarget_pct": 41.26,
+        "method_a_ontarget_ci95": [
+          39.9027,
+          42.6308
+        ],
+        "method_b_ontarget_pct": 44.88,
+        "method_b_ontarget_ci95": [
+          43.5058,
+          46.262
+        ],
+        "diff_b_minus_a_pp": 3.62,
+        "concordance_pct": 94.54,
+        "concordance_ci95": [
+          93.8754,
+          95.1362
+        ],
+        "discordance_pct": 5.46,
+        "discordance_ci95": [
+          4.8638,
+          6.1246
+        ]
+      },
+      "vs_cognate_edlib80": {
+        "sample_size": 5000,
+        "method_a": "bowtie2_paired",
+        "method_b": "cognate_edlib80",
+        "both_ontarget": 2017,
+        "both_offtarget": 2750,
+        "a_on_b_off": 46,
+        "a_off_b_on": 187,
+        "method_a_ontarget_pct": 41.26,
+        "method_a_ontarget_ci95": [
+          39.9027,
+          42.6308
+        ],
+        "method_b_ontarget_pct": 44.08,
+        "method_b_ontarget_ci95": [
+          42.7089,
+          45.4602
+        ],
+        "diff_b_minus_a_pp": 2.82,
+        "concordance_pct": 95.34,
+        "concordance_ci95": [
+          94.7201,
+          95.8902
+        ],
+        "discordance_pct": 4.66,
+        "discordance_ci95": [
+          4.1098,
+          5.2799
+        ]
+      },
+      "vs_all_target_edlib75": {
+        "sample_size": 5000,
+        "method_a": "bowtie2_paired",
+        "method_b": "all_target_edlib75",
+        "both_ontarget": 2063,
+        "both_offtarget": 2625,
+        "a_on_b_off": 0,
+        "a_off_b_on": 312,
+        "method_a_ontarget_pct": 41.26,
+        "method_a_ontarget_ci95": [
+          39.9027,
+          42.6308
+        ],
+        "method_b_ontarget_pct": 47.5,
+        "method_b_ontarget_ci95": [
+          46.1183,
+          48.8856
+        ],
+        "diff_b_minus_a_pp": 6.24,
+        "concordance_pct": 93.76,
+        "concordance_ci95": [
+          93.0554,
+          94.3974
+        ],
+        "discordance_pct": 6.24,
+        "discordance_ci95": [
+          5.6026,
+          6.9446
+        ]
+      },
+      "vs_all_target_edlib80": {
+        "sample_size": 5000,
+        "method_a": "bowtie2_paired",
+        "method_b": "all_target_edlib80",
+        "both_ontarget": 2063,
+        "both_offtarget": 2728,
+        "a_on_b_off": 0,
+        "a_off_b_on": 209,
+        "method_a_ontarget_pct": 41.26,
+        "method_a_ontarget_ci95": [
+          39.9027,
+          42.6308
+        ],
+        "method_b_ontarget_pct": 45.44,
+        "method_b_ontarget_ci95": [
+          44.0639,
+          46.8231
+        ],
+        "diff_b_minus_a_pp": 4.18,
+        "concordance_pct": 95.82,
+        "concordance_ci95": [
+          95.2292,
+          96.3405
+        ],
+        "discordance_pct": 4.18,
+        "discordance_ci95": [
+          3.6595,
+          4.7708
+        ]
+      }
+    },
+    "indel_recovery_audit": {
+      "sampling_method": "uniform_reservoir_over_all_E19_cognate_nondimer_reads",
+      "seed": 20261125,
+      "population_cognate_nondimer_reads": 1254647,
+      "sample_size": 20000,
+      "passed_gapped_75": 19871,
+      "passed_ungapped_75": 18015,
+      "recovered_by_gapped_count": 1856,
+      "recovered_pct_of_cognate_sample": 9.28,
+      "recovered_pct_ci95": [
+        8.8857,
+        9.69
+      ],
+      "reads_with_gaps_count": 1856,
+      "reads_with_gaps_pct": 100.0,
+      "substitution_only_count": 0,
+      "small_indels_le2bp_count": 204,
+      "small_indels_le2bp_pct": 10.9914,
+      "larger_or_multi_indels_gt2bp_count": 1652,
+      "larger_or_multi_indels_gt2bp_pct": 89.0086,
+      "median_indel_bp": 8.0,
+      "iqr_indel_bp": [
+        4.0,
+        9.0
+      ],
+      "elapsed_seconds": 0.46
+    }
+  }
+}

@@ -1,0 +1,20 @@
+# Enforce consistent LF line endings across Windows, Linux, and macOS
+* text=auto eol=lf
+*.py text eol=lf
+*.tex text eol=lf
+*.in text eol=lf
+*.yaml text eol=lf
+*.yml text eol=lf
+*.md text eol=lf
+*.bib text eol=lf
+*.tsv text eol=lf
+*.json text eol=lf
+*.fasta text eol=lf
+*.txt text eol=lf
+*.cls text eol=lf
+Makefile text eol=lf
+*.pdf binary
+*.png binary
+*.gz binary
+*.ttf binary
+*.otf binary

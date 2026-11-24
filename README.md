@@ -1,152 +1,101 @@
-# [Re] Computational Replication of SADDLE: Empirical Next-Generation Sequencing Read Partitions and Primer Interaction Distribution in a 384-Plex PCR Panel
+# [Re] Open-Source Replication of SADDLE NGS Read Partitions Across 96-Plex and 384-Plex Panels
 
-**A computational replication of:**  
-> Xie, N. G., Wang, M. X., Song, P., Mao, S., Wang, Y., Yang, Y., Luo, J., Ren, S., & Zhang, D. Y. (2022).  
-> Designing highly multiplex PCR primer sets with Simulated Annealing Design using Dimer Likelihood Estimation (SADDLE).  
-> *Nature Communications*, 13, 1881 (Figure 3f).  
-> DOI: [10.1038/s41467-022-29500-4](https://doi.org/10.1038/s41467-022-29500-4) | PMID: 35410464
-
-**Replication Author:**  
-Rashid Kadayil ([ORCID: 0009-0009-6398-4557](https://orcid.org/0009-0009-6398-4557))  
-Independent Researcher, Kerala, India  
-Email: `rashidkadayil@gmail.com`
-
-**Repository & Identifiers:**
-- **Public GitHub Repository:** [https://github.com/Rashidmstar12/saddle-replication](https://github.com/Rashidmstar12/saddle-replication)
-- **Zenodo Archive:** [10.5281/zenodo.24100087](https://doi.org/10.5281/zenodo.24100087) (Concept DOI: [10.5281/zenodo.24100086](https://doi.org/10.5281/zenodo.24100086))
-- **Primary Data Source:** Figshare [10.6084/m9.figshare.16944154.v3](https://doi.org/10.6084/m9.figshare.16944154.v3) (CC BY 4.0)
-- **ReScience C Metadata:** `article/metadata.yaml`
+**Author:** Rashid Kadayil (ORCID: `0009-0009-6398-4557`)  
+**Affiliation:** Department of Biochemistry and Molecular Biology, School of Life Sciences, Pondicherry University, Puducherry 605014, India  
+**Status:** DRAFT V6-Submission-Ready (author-conducted Kaggle Cloud Linux clean-room reproduction passed; pending investigator evidence-ledger sign-off, final declaration confirmation, and public repository/Zenodo synchronization)  
+**Target Journal:** *ReScience C* (synchronized full-content `paper.md` + `paper.bib` AND official `ReScience/template` LaTeX `article/article.pdf` + `article/metadata.yaml`)  
+**Replicated Article:** Xie et al. (2022), *Nature Communications* 13, 1881, DOI: `10.1038/s41467-022-29500-4` (PMID: 35410464)  
+**Raw Data Source:** Figshare DOI: `10.6084/m9.figshare.16944154.v3` (author: Nina Xie; CC BY 4.0; live API snapshot in `data/figshare_v3_metadata_snapshot.json`)
 
 ---
 
-## 1. Quick Start for Reviewers
+## Summary of Replicated Results
 
-Reviewers can verify this computational replication through two independent modalities:
+All numeric values below are rendered automatically from `data/canonical_results.json` via `code/render_manuscript.py`.
 
-### Modality A: Fast Standalone Consistency Check (~1.5 Seconds)
-Verifies the complete 295,296-row candidate prediction table, read partitions, label matrices, Brier score calibration, seven synthetic unit tests, and SHA-256 member checksums without downloading raw FASTQ files (outputs `ARCHIVED RESULTS CONSISTENCY: PASS`). **Requires only Python standard library and standard data science packages (no C-compilers or aligners required)**:
+| Panel | Raw Pairs | Pipeline A (Python + Bowtie2) | Pipeline B (Standalone Python/`edlib` $\ge 75\%$ / $\ge 80\%$) | Published Xie et al. (2022) |
+| :--- | ---: | :--- | :--- | :--- |
+| **PS1 (96-plex, Fig. 3a)** | 1,823,058 | **90.66%** dimers (2.65% on-target, 6.68% nonspecific) | 90.87% dimers (2.32% on-target) | 90.7% dimers |
+| **PS2 (96-plex, Fig. 3a)** | 1,952,269 | **39.62%** dimers (32.78% on-target, 27.60% nonspecific) | 41.34% dimers (29.59% on-target) | 39.6% dimers |
+| **PS3 (96-plex, Fig. 3a)** | 1,738,418 | **4.97%** dimers (66.16% on-target, 28.87% nonspecific) | 5.34% dimers (61.71% on-target) | 4.9% dimers |
+| **E19 (384-plex, Fig. 3f)** | 3,942,385 | **42.76%** on-target, **56.39%** nonspecific, **0.85%** dimers | $\ge 75\%$: 43.59% / 55.54% / 0.87%<br>$\ge 80\%$: 42.75% / 56.38% / 0.87%<br>$\ge 85\%$: 39.87% / 59.26% / 0.87% | ~43% / ~56% / ~1% |
 
+### Cell-by-Cell Matrix Validation vs. Supplementary Data 3 (`MOESM7`)
+All six reconstructed 96-plex directional + unordered pair tables are archived under `data/matrices/`:
+- **PS1 (`conc optimized`):** $r = 0.99999$, $\rho = 0.9361$, Active Exact = 65.6%, Jaccard = 0.8765, Norm. L1 = 0.51%, Top-10 = 10/10.
+- **PS2 (`conc optimized`):** $r = 0.99999$, $\rho = 0.9048$, Active Exact = 56.7%, Jaccard = 0.8196, Norm. L1 = 0.69%, Top-10 = 10/10.
+- **PS3 (`conc optimized`):** $r = 0.99999$, $\rho = 0.8722$, Active Exact = 61.9%, Jaccard = 0.7614, Norm. L1 = 1.02%, Top-10 = 10/10.
+- **`not optimized` range (PS1–PS3):** $r = 0.1143$–$0.7251$.
+
+### Matched-Pair Uniform Random Audits on E19 (`seed=20261124`)
+Complete 12-column per-read classifications for all 5,000 sampled pairs are archived in `data/matched_pair_audit_5000.tsv.gz` (verified across all 6 confusion matrices, 24/24 cells exact):
+- **Paired-end Bowtie2:** **41.26%** (2,063/5,000, identical under both-mapped and proper-pair concordant criteria; 95% CI: 39.90--42.63%).
+- **`edlib` $\ge 75\%$:** Cognate = **44.88%** (vs. Bowtie2 concordance 94.54%); all-target = **47.50%** (vs. Bowtie2 concordance 93.76%).
+- **`edlib` $\ge 80\%$:** Cognate = **44.08%** (vs. Bowtie2 concordance 95.34%); all-target = **45.44%** (vs. Bowtie2 concordance 95.82%).
+- **Indel recovery ($N=20,000$):** 1,856 recovered (9.28%, 95% CI: 8.89--9.69%), 100.0% with alignment gaps (median 8.0 bp, IQR 4.0–9.0 bp).
+
+---
+
+## Reproducible Environment & Automated Data Acquisition
+
+### 1. Recommended Environment Setup (Exact Tested Pins)
+1. **Linux / macOS (Conda, recommended):**
+   ```bash
+   conda env create -f environment.yml
+   conda activate saddle-replication
+   ```
+2. **Exact Python 3.12.4 `pip` lock + system Bowtie2 ($\ge 2.5$):**
+   ```bash
+   pip install -r requirements-lock-py312.txt
+   # Linux: sudo apt-get install bowtie2   |   macOS: brew install bowtie2
+   ```
+3. **Cross-version Python 3.10–3.14 fallback:**
+   ```bash
+   pip install -r requirements.txt
+   ```
+4. **Native Windows note:** Bioconda does not distribute native Windows Bowtie2 binaries; on Windows, either install a native Bowtie2 binary on `PATH` (tested with Bowtie2 2.5.5) or run inside **WSL2 Ubuntu** / **Linux**. Author-conducted clean-room verification transcripts across all 9,456,130 read pairs (performed in separate Linux environments; distinct from third-party verification by an independent researcher) are archived under `data/verification_logs/`:
+   - **Author-conducted Kaggle Cloud Linux clean-room reproduction (`Linux 6.18.55+`, fresh `environment.yml`, `Python 3.12.4` / `Bowtie2 2.5.5`, `EXIT_CODE=0`):** `kaggle_cleanroom_full_verify.log`, `kaggle_cleanroom_cross_env_report.json`, and `kaggle_cleanroom_env_freeze.txt`.
+   - **Author-conducted WSL2 Ubuntu Linux reproduction (`Linux 6.6.87.2`, `Python 3.14.4` / `Bowtie2 2.5.4`, `EXIT_CODE=0`):** `wsl2_linux_full_verify.log` and `wsl2_linux_cross_env_report.json`.
+
+### 2. Automated Checksum-Verified Download of Primary Inputs (13 Files, ~2.16 GB)
 ```bash
-git clone https://github.com/Rashidmstar12/saddle-replication.git
-cd saddle-replication
-pip install numpy scikit-learn
+# Downloads 8 Figshare CC BY 4.0 FASTQs, 2 Nature Communications CC BY 4.0 Excel files,
+# and 3 pinned-commit Ref_1-3.fasta references (not redistributed in this ZIP), verifying
+# exact byte sizes and SHA-256 checksums against data/expected_raw_sha256.json:
+python code/download_raw_data.py --out-dir /path/to/raw
+```
 
+### 3. Verification Commands
+```bash
+# Fast mode: 10/10 synthetic+adversarial unit tests, 4-panel closure, 6 directional 96-plex matrices,
+# 2 E19 pair tables, full 6-confusion-matrix (24/24 cell) + unique-ID verification of matched_pair_audit_5000.tsv.gz,
+# UTF-8/LF byte-for-byte check of all 4 rendered documents, and SHA-256 manifest:
 python code/verify_replication.py
+
+# Full mode: re-executes all 4 panels, 5,000-pair audit, and figures into an isolated temp dir
+# (never overwrites data/). Verifies:
+#   - 100% exact scientific equivalence on canonical_results.json & random_audit_results.json
+#   - 100% exact decompressed SHA-256 match on all 9 pair/audit tables
+#   - Exact pixel-identical PNG match on matched Matplotlib/FreeType (or shape-exact + MAE < 0.015
+#     & pixel_r > 0.95 visual tolerance across different OS/Matplotlib minor versions)
+#   - Non-empty regenerated vector PDF figures
+python code/verify_replication.py --full --raw-dir /path/to/raw --threads 4
 ```
 
-### Modality B: Direct Raw FASTQ Execution
-Verifies the classification pipeline directly against raw sequencing reads (Sample E19) using `edlib` and `openpyxl` (outputs `FULL FASTQ REPRODUCTION: PASS`):
-
+### 4. Compiling the Manuscript (LaTeX or Pandoc Markdown)
 ```bash
-# Prerequisites for raw FASTQ execution:
-pip install openpyxl edlib
+# Official ReScience C LaTeX template -> article/article.pdf
+cd article
+python yaml-to-latex.py -i metadata.yaml -o metadata.tex
+xelatex -interaction=nonstopmode article.tex
+biber article
+xelatex -interaction=nonstopmode article.tex
+xelatex -interaction=nonstopmode article.tex
+cd ..
 
-# Live sample test on first 50,000 raw reads (~1 second):
-python code/reproduce_from_fastq.py --sample 50000
-
-# Complete reconstruction across all 3,942,385 reads (~105 seconds runtime):
-python code/reproduce_from_fastq.py --full
-
-# Full pipeline verification from raw FASTQ through all four check gates:
-python code/verify_replication.py --full
-```
-*(Requires raw FASTQ files `E19_384plex_NGS_R1_fastq.gz` and `E19_384plex_NGS_R2_fastq.gz` and `41467_2022_29500_MOESM5_ESM.xlsx` in `data/raw/`. When raw files are absent, scripts exit with code 2 `SKIPPED_MISSING_INPUT` rather than falsely claiming PASS).*
-
----
-
-## 2. Replicated Findings & Scope
-
-### Primary Replicated Result: SADDLE 384-plex NGS Read Classification
-- **Target:** Figure 3f and main text of Xie et al. (2022).
-- **Dataset:** SADDLE-designed 384-plex panel (Sample E19, Illumina MiSeq paired-end sequencing using MiSeq Reagent Kit v2, 3,942,385 raw reads; Figshare: `10.6084/m9.figshare.16944154.v3`, CC BY 4.0).
-- **Denominator Reconciliation:**
-  - **Derived Classified Read Denominator ($N = 2,860,664$, reconciling with published Figure 3f proportions):**
-    *(Note: The exact integer count of classified reads was not reported in Figure 3f by Xie et al. and remains unverified; we report both the derived post-filter classified denominator under our filtering criteria and the total raw library output, presenting agreement as approximate).*
-    - Published Figure 3f: **~43% on-target**, **~56% nonspecific**, **~1% primer-dimers** (sum = 100%).
-    - Method 1 (Primer Pairing): **43.86% on-target**, **55.27% nonspecific**, **0.87% primer-dimers** ($\Delta \le 0.86\%$, PASS).
-    - Method 2 (Gapped Alignment $\ge 75\%$): **43.61% on-target**, **55.52% nonspecific**, **0.87% primer-dimers** ($\Delta \le 0.61\%$, PASS).
-    - Method 2 (Gapped Alignment $\ge 80\%$): **42.76% on-target**, **56.37% nonspecific**, **0.87% primer-dimers** ($\Delta \le 0.37\%$, PASS).
-  - **Total Raw Read Denominator ($N = 3,942,385$):**
-    - On-target: 31.64% to 31.82% ($1,247,496$ to $1,254,647$ reads)
-    - Nonspecific: 40.11% to 40.29% ($1,581,139$ to $1,588,290$ reads)
-    - Primer-dimers: 0.63% ($24,878$ reads)
-    - Excluded reads: 27.44% ($1,081,721$ reads: 19.07% adapter missing, 3.48% low QC/short, 4.90% primer unmatched).
-- **Empirical Alignment Concordance & Two-Method Confusion Matrix:**
-  - Audited via `code/audit_alignment_and_indels.py` across an initial deterministic sample of the first 5,000 qualifying non-dimer reads from Sample E19 tested against all 384 reference amplicons in both forward and reverse-complement orientations (768 target alignments per read). The sample partitions into:
-    - 2,203 cognate reads: 2,193 match own target ($\ge 75\%$), 10 fail the 75% alignment threshold against their assigned target, and **0 had a different amplicon as their best-scoring alignment $\ge 75\%$ (0/2,203 cross-target best matches; secondary sub-threshold alignments were not logged)**.
-    - 2,797 non-cognate reads: 126 match target sequences on either strand (4.50% of non-cognates, 2.52% of total sample), while 2,671 fail all 384 targets on both strands (95.50% of non-cognates).
-    - Arithmetic Check: $2,193 + 10 + 126 + 2,671 = 5,000$ (exact 100% group partition).
-  - **Two-Method Confusion Matrix (Cognate-Anchored Method 2 vs Dual-Strand All-Target Search):**
-    - Both On-Target: **2,193 reads** (43.86%)
-    - Both Off-Target: **2,681 reads** (53.62%), comprising 2,671 non-cognate reads that fail all targets plus the 10 cognate reads that fail their assigned target and also fail all 384 targets on both strands (10/10 fail both methods; both methods classify them as off-target/nonspecific).
-    - Cognate OFF / All-Target ON: **126 reads** (2.52% of sample; non-cognate reads aligning to target amplicons).
-    - Cognate ON / All-Target OFF: **0 reads** (0.00%; a read matching its assigned target cannot fail all-target search).
-    - **Verified Per-Read Binary Concordance:** $(2,193 + 2,681) / 5,000 = \mathbf{97.48\%}$ (4,874 / 5,000 reads agree).
-    - **Verified Per-Read Binary Discordance:** $126 / 5,000 = \mathbf{2.52\%}$.
-    - Crucially, this concordance is measured within the 5,000-read sample between cognate-anchored and all-target gapped alignment; it is not a full-dataset confusion matrix and does not claim mathematical equivalence to Bowtie2 reference amplicon mapping. The JSON archive `data/alignment_and_indel_audit.json` records the summary 2x2 confusion matrix, aggregate partition counts, and all 615 per-read CIGAR alignment records of recovered indel reads.
-- **Quantitative Indel Analysis:**
-  - CIGAR inspection across 615 audit reads recovered by gapped alignment confirms that **100.0% (615/615) contain alignment gaps** (insertions or deletions relative to the reference; **0.0% substitution-only**). Across the 615 records, 53 reads (8.62%) contained $\le 2$ inserted/deleted bases, while 562 reads (91.38%) exhibited larger or multiple indels, with a median of 8 indels per recovered read. Alignment gaps (e.g. `56=1D9=1X37=`) cause unaligned positional identity to drop to 64.1%, whereas gapped alignment resolves the shift and achieves 98.1% similarity ($1 - d_E / L_{\text{read}} \ge 0.75$, where $L_{\text{read}}$ is trimmed read length, `len(t1)`). All 615 per-read CIGAR alignment records are permanently preserved without truncation in `data/alignment_and_indel_audit.json`. These records confirm that alignment gap operations account for the recovery of reads failing positional comparison, documenting the operational need for gapped alignment without asserting that small indels are the predominant full-library cause across all 3.94 million reads.
-- **Interaction Concentration:** 24,872 to 24,878 observed primer-dimer reads across 295,296 candidate primer pairings. Dimer formation is strongly heavy-tailed: only 1,172 pairs form dimers, and a single dominant interaction (`rp213` $\times$ `rp371`, 16,805 reads) accounts for **67.57%** of all dimer reads in the verified pair-level interaction table ($16,805 / 24,872$).
-
-### Supplementary Exploratory Benchmark: Heuristics vs. Baselines
-*Note: This benchmark was not published in Xie et al. (2022); it is presented as a supplementary exploratory analysis.*
-- SADDLE Badness provides a **4.8-fold improvement in Average Precision** (0.0597 vs. 0.0125) and a **4.0-fold improvement in Precision@100** (24.0% vs. 6.0%) over nearest-neighbor free energy alone ($-\Delta G_{37}^\circ$).
-- Supervised models (Logistic Regression, XGBoost, trained on an augmented feature set combining $\Delta G_{37}^\circ$, alignment properties, and approximate SADDLE Badness) were optimized for ranking discrimination under severe class imbalance (0.397% prevalence), resulting in high Brier scores (0.1986, 0.2143) due to probability miscalibration (mean prediction ~0.38 vs. base rate 0.0040).
-- Constant Baseline evaluated under deterministic secondary sorting ($\text{rank\_key}(i) = (-\text{score}_i, \text{pair\_index}_i)$) yields **0.0% Precision@10, @50, and @100** (0 observed dimers in first 100 pairs); the theoretical expected precision under random choice across the entire panel is the dataset base rate ($1,172 / 295,296 = 0.3969\% \approx 0.40\%$).
-
----
-
-## 3. Directory Layout
-
-```text
-saddle-replication/
-├── CHECKSUMS.tsv                  # Cryptographic SHA-256 manifest of all files
-├── LICENSE                        # MIT License
-├── README.md                      # This reviewer guide
-├── paper.md                       # EditorialBot / journal-recognized root manuscript entrypoint
-├── paper.bib                      # BibTeX references for EditorialBot compilation
-├── article/
-│   ├── article.html               # Formatted standalone HTML with citations
-│   ├── article.md                 # Manuscript source in Markdown (ReScience format)
-│   ├── article.tex                # Generated LaTeX source
-│   ├── bibliography.bib           # Verified BibTeX references with authentic DOIs/PMIDs
-│   └── metadata.yaml              # Official ReScience C metadata file
-├── code/
-│   ├── audit_alignment_and_indels.py # Empirical dual-strand 384-target concordance & CIGAR audit
-│   ├── audit_code_equivalence.py  # Structural comparison between MATLAB and Python logic
-│   ├── canonical_classifier.py    # Authoritative single-source-of-truth primer prefix classifier
-│   ├── reconstruct_saddle_384.py  # Full read-classification pipeline from FASTQ
-│   ├── reproduce_from_fastq.py    # Turnkey FASTQ streaming pipeline (--sample or --full)
-│   ├── run_baseline_benchmark.py  # Benchmark evaluation across 295,296 pairs
-│   ├── test_classifiers.py        # Seven synthetic unit tests for classifier prefix math and simulated edge cases
-│   ├── verify_read_accounting.py  # Mutually exclusive read partition audit
-│   └── verify_replication.py      # Standalone replication verifier (~1.5s runtime)
-└── data/
-    ├── alignment_and_indel_audit.json      # Empirical all-target concordance (2x2 confusion matrix) & 615 CIGAR output
-    ├── baseline_predictions_384.tsv        # 295,296 rows of candidate pairs & predictions
-    ├── full_fastq_run_audit.log            # Execution audit log across all 3.94M raw FASTQ reads
-    ├── phase0e_recalculated_metrics.json   # Full benchmark metric dictionary
-    ├── reference_384_amplicons.fasta       # Sequences of all 384 intended target amplicons
-    ├── reference_alignment_comparison.json  # Read counts comparing Method 1 vs Method 2
-    ├── saddle_384_dimer_pairs.tsv          # Empirical read counts for all 1,172 dimer pairs
-    ├── saddle_384_read_accounting.json     # Exhaustive read partition counts
-    └── saddle_384_summary_metrics.json     # Summary metrics and comparison tolerances
+# Synchronized Markdown entrypoint (Pandoc with citation processing, from repository root)
+pandoc paper.md --citeproc -o paper_preview.pdf
 ```
 
----
-
-## 4. Methodological Disclosures
-
-1. **Replication Scope and Framework:** This work is an independent, open-source **qualified partial replication** and alternative Python reanalysis of the empirical NGS validation from Xie et al. (2022). While Xie et al. made their post-sequencing analysis workflow (`analysis_code.ipynb`, `Data_process.m`, `Dimer_Identify.m`) and Bowtie2 index files publicly available on GitHub and Figshare, and deposited raw sequencing data under CC BY 4.0, executing their workflow requires commercial MATLAB and external Bowtie2 installations. In our lightweight, standalone Python implementation, Method 2 executes cognate-anchored semi-global gapped alignment (`edlib` in prefix-matching `SHW` mode) against the 384 intended target amplicons from MOESM5. Both related classification workflows confirm the published read proportions (~43% on-target, ~56% nonspecific, ~1% primer-dimer) within 0.86% absolute difference (Method 1 difference = +0.86%, Method 2 difference = +0.61%, both within a 1.0 percentage point scientific tolerance), and dual-strand all-target testing within a 5,000-read audit sample confirms 97.48% operational binary concordance across a verified 2x2 confusion matrix (with zero cross-target best matches among cognate reads) without external dependencies.
-2. **Dual Evaluation: Primer Pairing vs. Genuine Gapped Alignment:** This replication provides two related classification workflows: a turnkey primer-pairing heuristic (Method 1) and cognate-anchored gapped semi-global sequence alignment via `edlib` (Method 2, which is conditional on Method 1's cognate-primer identification). Both workflows confirm published read proportions (~43% on-target, ~56% nonspecific, ~1% primer-dimer) within 0.86% absolute difference (Method 1 difference = +0.86%, Method 2 difference = +0.61%, within a 1.0 percentage point tolerance). Gapped alignment recovers reads with alignment gaps (100% of 615 audit reads had gaps, median 8 bp), but this sample does not establish small 1–2 bp indels as the primary full-library cause. Primer-dimer quantification (0.87% vs ~1% published) is completely invariant across all alignment methods.
-3. **Proprietary Algorithm Status:** SADDLE's simulated annealing primer selection software remains withheld under patent protection. Only the empirical NGS validation and heuristic scoring components are publicly replicable.
-4. **Distributional Characterization:** Primer-dimer formation is described as heavy-tailed and highly concentrated; no formal power-law distribution fit was conducted.
-5. **Deterministic Tie-Breaking:** All rankings enforce secondary key sorting by `pair_index` to guarantee exact numerical reproducibility across environments.
-
----
-
-## 5. License
-
-- Replication manuscript and documentation: [CC-BY 4.0 International](https://creativecommons.org/licenses/by/4.0/).
-- Replication code, verifier, and analysis scripts: [MIT License](LICENSE).
-- Primary sequencing data from Figshare (DOI: 10.6084/m9.figshare.16944154.v3) are governed by the [Creative Commons Attribution 4.0 International License (CC BY 4.0)](https://creativecommons.org/licenses/by/4.0/).
+## Licensing & Provenance
+See `DATA_AND_LICENSES.md` for full license separation (MIT code, CC BY 4.0 manuscript and Figshare data, and programmatic retrieval of third-party `Ref_1–3.fasta` from pinned upstream commit `1e474abf88f08131544f8cb73dfbc65a5e842cf3`).

@@ -1,0 +1,23 @@
+cff-version: 1.2.0
+message: "If you use this replication code or derived outputs, please cite the article below. Original code in code/ is under the MIT License; manuscript, figures, and derived outputs in data/ are under CC BY 4.0; external raw FASTQs (Figshare 10.6084/m9.figshare.16944154.v3) and MOESM5/MOESM7 (Nature Communications 10.1038/s41467-022-29500-4) are CC BY 4.0; third-party 96-plex reference FASTAs (Ref_1-3.fasta) are retrieved programmatically from pinned commit 1e474abf88f08131544f8cb73dfbc65a5e842cf3 of NinaGXie/SADDLE and are not redistributed in this archive."
+title: "[Re] Open-Source Replication of SADDLE NGS Read Partitions Across 96-Plex and 384-Plex Panels"
+type: software
+authors:
+  - family-names: "Kadayil"
+    given-names: "Rashid"
+    orcid: "https://orcid.org/0009-0009-6398-4557"
+    email: "rashidkadayil@gmail.com"
+    affiliation: "Department of Biochemistry and Molecular Biology, School of Life Sciences, Pondicherry University, Puducherry 605014, India"
+repository-code: "https://github.com/Rashidmstar12/saddle-replication"
+license: MIT
+version: "1.0.0-draft"
+date-released: 2026-11-25
+keywords:
+  - "multiplex-pcr"
+  - "primer-dimer"
+  - "saddle"
+  - "computational-replication"
+  - "next-generation-sequencing"
+  - "bowtie2"
+  - "edlib"
+  - "rescience-c"

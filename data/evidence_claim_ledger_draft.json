@@ -1,0 +1,99 @@
+{
+  "schema_version": 1,
+  "status": "DRAFT_PENDING_HUMAN_REVIEW",
+  "note": "Draft claim-to-evidence ledger prepared with AI assistance. Human investigator must independently verify each primary source and sign off before release.",
+  "claims": [
+    {
+      "claim_id": "CLM-01",
+      "statement": "SADDLE 96-plex primer dimers drop from 90.7% (PS1) to 39.6% (PS2) to 4.9% (PS3).",
+      "source_bib": "xie2022designing",
+      "doi": "10.1038/s41467-022-29500-4",
+      "pmid": "35410464",
+      "pmcid": "PMC9001684",
+      "locator": "Results (Fig. 3a discussion)",
+      "exact_quote": "Going from the PS1 to the PS3 library, the fraction of primer dimers dropped significantly, from 90.7% in the PS1 library to 39.6% in the PS2 library and then to 4.9% in the PS3 library.",
+      "checked_online_utc": "2026-11-24",
+      "human_reviewed": false
+    },
+    {
+      "claim_id": "CLM-02",
+      "statement": "SADDLE 384-plex E19 validation reports ~43% on-target, roughly 56% nonspecific amplicons, and ~1% dimers.",
+      "source_bib": "xie2022designing",
+      "doi": "10.1038/s41467-022-29500-4",
+      "pmid": "35410464",
+      "pmcid": "PMC9001684",
+      "locator": "Results (Fig. 3f discussion)",
+      "exact_quote": "Surprisingly, the observed Dimer fraction was only 1% for this library, using an input of 40 ng sheared NA18562 genomic DNA (Fig. 3f). Roughly 56% of the reads were Non-specific amplicons, resulting in a NGS library on-target rate of 43% (Supplementary section S6).",
+      "checked_online_utc": "2026-11-24",
+      "human_reviewed": false
+    },
+    {
+      "claim_id": "CLM-03",
+      "statement": "SADDLE primer design MATLAB code is available upon request under NDA for academic labs; NGS processing code is public on GitHub.",
+      "source_bib": "xie2022designing",
+      "doi": "10.1038/s41467-022-29500-4",
+      "pmid": "35410464",
+      "pmcid": "PMC9001684",
+      "locator": "Code availability",
+      "exact_quote": "The MATLAB code used for multiplex PCR primer algorithm is available upon request under NDA for academic lab. The MATLAB code and Python code for NGS data processing are available at https://github.com/NinaGXie/SADDLE.",
+      "checked_online_utc": "2026-11-24",
+      "human_reviewed": false
+    },
+    {
+      "claim_id": "CLM-04",
+      "statement": "Xie et al. (2022) Competing interests statement reports a patent pending on the Multiplex Primer Design Algorithm, exclusively licensed to NuProbe Global (current post-2022 legal status not independently audited).",
+      "source_bib": "xie2022designing",
+      "doi": "10.1038/s41467-022-29500-4",
+      "pmid": "35410464",
+      "pmcid": "PMC9001684",
+      "locator": "Competing interests",
+      "exact_quote": "There is a patent pending on the Multiplex Primer Design Algorithm presented in this manuscript, N.G.X., M.X.W., and D.Y.Z. are the inventors, patent applicant is Rice University. This patent has been exclusively licensed to Nuprobe Global.",
+      "checked_online_utc": "2026-11-24",
+      "human_reviewed": false
+    },
+    {
+      "claim_id": "CLM-05",
+      "statement": "Libraries were sequenced on an Illumina MiSeq using MiSeq Reagent Kit v2 for paired-end reads.",
+      "source_bib": "xie2022designing",
+      "doi": "10.1038/s41467-022-29500-4",
+      "pmid": "35410464",
+      "pmcid": "PMC9001684",
+      "locator": "Methods — Next-generation sequencing",
+      "exact_quote": "All the libraries were loaded on a Miseq Reagent V2 for obtaining pair-end reads and were sequenced on a Miseq (Illumina).",
+      "checked_online_utc": "2026-11-24",
+      "human_reviewed": false
+    },
+    {
+      "claim_id": "CLM-06",
+      "statement": "Original paper contains a typographical reference to '784 primers (384-plex)' in the Introduction alongside 768 primers elsewhere.",
+      "source_bib": "xie2022designing",
+      "doi": "10.1038/s41467-022-29500-4",
+      "pmid": "35410464",
+      "pmcid": "PMC9001684",
+      "locator": "Introduction",
+      "exact_quote": "Using the SADDLE, we designed and experimentally tested multiplex primer sets comprising 192 primers (96-plex) and 784 primers (384-plex), and show low primer dimer formation through NGS experiments.",
+      "checked_online_utc": "2026-11-24",
+      "human_reviewed": false
+    },
+    {
+      "claim_id": "CLM-07",
+      "statement": "Raw NGS data deposited on Figshare under CC BY 4.0 license by author Nina Xie.",
+      "source_bib": "xie2021figshare",
+      "doi": "10.6084/m9.figshare.16944154.v3",
+      "locator": "Figshare API v2 metadata (article 16944154 v3)",
+      "exact_quote": "title: SADDLE_PS1-3_Raw_NGS data; authors: Nina Xie; license: CC BY 4.0",
+      "checked_online_utc": "2026-11-24",
+      "human_reviewed": false
+    },
+    {
+      "claim_id": "CLM-08",
+      "statement": "Exact author names for Xie et al. (2022) verified against Crossref API.",
+      "source_bib": "xie2022designing",
+      "doi": "10.1038/s41467-022-29500-4",
+      "locator": "Crossref Works API",
+      "exact_quote": "Nina G. Xie, Michael X. Wang, Ping Song, Shiqi Mao, Yifan Wang, Yuxia Yang, Junfeng Luo, Shengxiang Ren, David Yu Zhang",
+      "checked_online_utc": "2026-11-24",
+      "human_reviewed": false
+    }
+  ]
+}

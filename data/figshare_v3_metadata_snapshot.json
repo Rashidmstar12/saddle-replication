@@ -1,0 +1,80 @@
+{
+  "api_endpoint": "https://api.figshare.com/v2/articles/16944154/versions/3",
+  "retrieved_utc": "2026-11-24T16:26:00Z",
+  "id": 16944154,
+  "version": 3,
+  "doi": "10.6084/m9.figshare.16944154.v3",
+  "title": "SADDLE_PS1-3_Raw_NGS data",
+  "published_date": "2021-11-07T20:06:21Z",
+  "modified_date": "2021-11-07T20:06:24Z",
+  "license": {
+    "value": 1,
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "authors": [
+    {
+      "full_name": "Nina Xie",
+      "orcid_id": ""
+    }
+  ],
+  "total_files_in_deposit": 22,
+  "primary_panel_files": [
+    {
+      "id": 31350190,
+      "name": "SADDLE_PS1_E14_Raw_R1.fastq.gz",
+      "size": 188952149,
+      "computed_md5": "e675810ebf1fb32270c1e9e1245a72cd",
+      "download_url": "https://ndownloader.figshare.com/files/31350190"
+    },
+    {
+      "id": 31350193,
+      "name": "SADDLE_PS1_E14_Raw_R2.fastq.gz",
+      "size": 206065552,
+      "computed_md5": "caac239ccbc8e3fc92ae9aae7ffbe0c8",
+      "download_url": "https://ndownloader.figshare.com/files/31350193"
+    },
+    {
+      "id": 31350196,
+      "name": "SADDLE_PS2_E14_Raw_R1.fastq.gz",
+      "size": 213060277,
+      "computed_md5": "a6e59073c820fdb7faf5efcc24811ea9",
+      "download_url": "https://ndownloader.figshare.com/files/31350196"
+    },
+    {
+      "id": 31350199,
+      "name": "SADDLE_PS2_E14_Raw_R2.fastq.gz",
+      "size": 232305804,
+      "computed_md5": "30ee5d6f384b572877d7378a7aba3f49",
+      "download_url": "https://ndownloader.figshare.com/files/31350199"
+    },
+    {
+      "id": 31350211,
+      "name": "SADDLE_PS3_E14_Raw_R1.fastq.gz",
+      "size": 192756686,
+      "computed_md5": "81b2bb8dee8755fac4470365a6093bde",
+      "download_url": "https://ndownloader.figshare.com/files/31350211"
+    },
+    {
+      "id": 31350214,
+      "name": "SADDLE_PS3_E14_Raw_R2.fastq.gz",
+      "size": 213663867,
+      "computed_md5": "2b186d412874fd02b73d7a10cbe47ab0",
+      "download_url": "https://ndownloader.figshare.com/files/31350214"
+    },
+    {
+      "id": 31352458,
+      "name": "E19_384plex_NGS_R1_fastq.gz",
+      "size": 436721324,
+      "computed_md5": "295a543934229ccc5cbfe4c742b440b6",
+      "download_url": "https://ndownloader.figshare.com/files/31352458"
+    },
+    {
+      "id": 31352461,
+      "name": "E19_384plex_NGS_R2_fastq.gz",
+      "size": 478010555,
+      "computed_md5": "9db88c9dc466c04548dc8673f9280a70",
+      "download_url": "https://ndownloader.figshare.com/files/31352461"
+    }
+  ]
+}
